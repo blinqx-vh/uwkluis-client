@@ -30,9 +30,8 @@ final class Demo
         $scopes->getScopes();
     }
 
-    public function connect(Register $register)
+    public function connect()
     {
-        $register->register();
         $view =
             '<a href="' . (new ConnectToAccount($this->ufoConfig, new Client()))->getRedirectUrl() . '">Connect</a>';
         echo $view;
