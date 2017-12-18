@@ -13,25 +13,30 @@ final class Config
     private $scopes;
     /** @var string */
     private $clientSecret;
+    /** @var string */
+    private $clientName;
 
     /**
      * Config constructor.
      *
-     * @param int    $clientId
+     * @param string $clientName
      * @param string $callbackUrl
+     * @param int    $clientId
      * @param string $clientSecret
      * @param array  $scopes
      */
     public function __construct(
-        int $clientId,
+        string $clientName,
         string $callbackUrl,
-        string $clientSecret,
-        array $scopes
+        int $clientId = null,
+        string $clientSecret = null,
+        array $scopes = null
     ) {
         $this->clientId = $clientId;
         $this->callbackUri = $callbackUrl;
         $this->clientSecret = $clientSecret;
         $this->scopes = $scopes;
+        $this->clientName = $clientName;
     }
 
     /**
@@ -64,5 +69,13 @@ final class Config
     public function getScopes(): array
     {
         return $this->scopes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClientName(): string
+    {
+        return $this->clientName;
     }
 }

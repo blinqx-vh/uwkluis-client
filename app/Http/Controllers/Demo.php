@@ -12,14 +12,14 @@ use Ufo\Client\Registration\Register;
 
 final class Demo
 {
-    /** @var Config  */
+    /** @var Config */
     private $ufoConfig;
 
     public function __construct(Scopes $scopes)
     {
-        $this->ufoConfig = new Config(
-            3,
+        $this->ufoConfig = new Config('AwesomeApp',
             'http://client.ufo.local/connect/callback',
+            3,
             '8oeoreeS02s8MEkh1HwnsN9VpSFgNP3z79tXE82a',
             $scopes->getScopes()
         );
@@ -32,9 +32,11 @@ final class Demo
 
     public function connect(Register $register)
     {
+        $register->register();
         $view =
             '<a href="' . (new ConnectToAccount($this->ufoConfig, new Client()))->getRedirectUrl() . '">Connect</a>';
-        echo $view; exit;
+        echo $view;
+        exit;
     }
 
     /**
