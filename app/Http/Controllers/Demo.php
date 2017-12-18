@@ -8,7 +8,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Ufo\Client\Connection\Config;
 use Ufo\Client\Connection\ConnectToAccount;
 use Ufo\Client\Connection\Scopes;
-use Ufo\Client\Registration\Register;
 
 final class Demo
 {
