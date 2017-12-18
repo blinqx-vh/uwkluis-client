@@ -70,7 +70,11 @@ final class Demo
         $serialized = file_get_contents(storage_path('app/oauth/accesstokenResponse.serialized'));
         /** @var AccessTokenResponse $unserialized */
         $unserialized = unserialize($serialized);
-        $response = (new Client())->get('http://organization.ufo.local/api/get-consumer-connection', [
+
+        $query = http_build_query([
+            'organization-consumer-identifier' => 'klantje1'
+        ]);
+        $response = (new Client())->get('http://organization.ufo.local/api/get-consumer-connection?' . $query, [
             'headers' => [
                 'Accept'        => 'application/json',
                 'Authorization' => 'Bearer ' . $unserialized->getAccessToken(),
