@@ -17,3 +17,5 @@ Route::get('/', function () {
 
 
 Route::get('/demo/get-scopes', 'Demo@getScopes');
+Route::get('/demo/connect', 'Demo@connect');
+Route::get('/connect/callback', 'Demo@connectionCallback');
