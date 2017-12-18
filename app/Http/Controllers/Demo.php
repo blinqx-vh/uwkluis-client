@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Redirect;
 use Psr\Http\Message\ServerRequestInterface;
 use Ufo\Client\Connection\Config;
 use Ufo\Client\Connection\ConnectToAccount;
