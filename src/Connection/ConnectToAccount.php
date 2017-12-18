@@ -11,30 +11,26 @@ final class ConnectToAccount
 {
     /** @var GuzzleClient */
     private $guzzleClient;
-    /** @var array */
+    /** @var Config  */
     private $clientConfig;
 
     /**
      * ConnectToAccount constructor.
      *
-     * @param array        $clientConfig
+     * @param Config       $clientConfig
      * @param GuzzleClient $guzzleClient
      */
-    public function __construct(array $clientConfig, GuzzleClient $guzzleClient)
+    public function __construct(Config $clientConfig, GuzzleClient $guzzleClient)
     {
         $this->clientConfig = $clientConfig;
         $this->guzzleClient = $guzzleClient;
     }
 
-    public function getRedirectUrl(
-        int $clientId,
-        string $callbackUri,
-        array $scopes
-    ) {
+    public function getRedirectUrl() {
         $query = http_build_query([
-            'client_id'     => $clientId,
-            'redirect_uri'  => $callbackUri,
-            'scope'         => implode(' ', $scopes),
+            'client_id'     => $this->clientConfig->getClientId(),
+            'redirect_uri'  => $this->clientConfig->getCallbackUri(),
+            'scope'         => implode(' ', $this->clientConfig->getScopes()),
             'response_type' => 'code',
         ]);
 
@@ -73,9 +69,9 @@ final class ConnectToAccount
             [
                 'form_params' => [
                     'grant_type'    => 'authorization_code',
-                    'client_id'     => 3,
-                    'client_secret' => '8oeoreeS02s8MEkh1HwnsN9VpSFgNP3z79tXE82a',
-                    'redirect_uri'  => 'http://client.ufo.local/connect/callback',
+                    'client_id'     => $this->clientConfig->getClientId(),
+                    'client_secret' => $this->clientConfig->getClientSecret(),
+                    'redirect_uri'  => $this->clientConfig->getCallbackUri(),
                     'code'          => $code,
                 ],
             ]
