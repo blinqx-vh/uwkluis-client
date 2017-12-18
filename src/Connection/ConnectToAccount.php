@@ -5,6 +5,7 @@ namespace Ufo\Client\Connection;
 
 use GuzzleHttp\Client as GuzzleClient;
 use Psr\Http\Message\RequestInterface;
+use Ufo\Client\Exception\InvalidRequestException;
 
 final class ConnectToAccount
 {
@@ -80,6 +81,16 @@ final class ConnectToAccount
             ]
         )->getBody()->getContents();
         $data = json_decode($response, true);
+        if (isset($data['error']) && $data['error'] === 'invalid_request') {
+            $message = '';
+            if (isset($data['message'])) {
+                $message .= $data['message'];
+            }
+            if (isset($data['hint']) && $data['hint'] === 'Authorization code has expired') {
+                $message .= ' - ' . $data['hint'];
+            }
+            throw new InvalidRequestException($message);
+        }
         $expires = (new \DateTime())->add(new \DateInterval( 'PT' . $data['expires_in']  . 'S'));
         return new AccessTokenResponse(
             $data['access_token'],
