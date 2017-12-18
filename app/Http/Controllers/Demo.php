@@ -20,7 +20,7 @@ final class Demo
             'http://client.ufo.local/connect/callback',
             3,
             '8oeoreeS02s8MEkh1HwnsN9VpSFgNP3z79tXE82a',
-            $scopes->getScopes()
+            array_keys($scopes->getScopes())
         );
     }
 
