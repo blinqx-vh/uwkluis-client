@@ -4,6 +4,8 @@ declare(strict_types = 1);
 namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
 use Psr\Http\Message\ServerRequestInterface;
 use Ufo\Client\Connection\Config;
 use Ufo\Client\Connection\ConnectToAccount;
@@ -43,7 +45,8 @@ final class Demo
     public function connectionCallback(ServerRequestInterface $request)
     {
         $accessTokenResponse = (new ConnectToAccount($this->ufoConfig, new Client()))->processResponse($request);
-        dd($accessTokenResponse, __FILE__ . ':' . __LINE__);
+        file_put_contents(storage_path('app/oauth/accesstokenResponse.serialized'), serialize($accessTokenResponse));
+        return new RedirectResponse('/');
     }
 
 
