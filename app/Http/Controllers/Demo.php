@@ -18,9 +18,9 @@ final class Demo
 
     public function __construct(Scopes $scopes)
     {
-        $this->ufoConfig = new Config('AwesomeApp',
+        $this->ufoConfig = new Config('democlient',
             'http://client.ufo.local/connect/callback',
-            3,
+            1,
             '8oeoreeS02s8MEkh1HwnsN9VpSFgNP3z79tXE82a',
             array_keys($scopes->getScopes())
         );
@@ -61,7 +61,7 @@ final class Demo
                 'Authorization' => 'Bearer ' . $unserialized->getAccessToken(),
             ],
         ])->getBody()->getContents();
-        dd($response);
+        dd(json_decode($response));
     }
 
 
@@ -80,6 +80,6 @@ final class Demo
                 'Authorization' => 'Bearer ' . $unserialized->getAccessToken(),
             ],
         ])->getBody()->getContents();
-        dd($response);
+        dd(json_decode($response));
     }
 }
