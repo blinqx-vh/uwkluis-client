@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Psr\Http\Message\ServerRequestInterface;
 use Ufo\Client\Connection\AccessTokenResponse;
 use Ufo\Client\Connection\Config;
@@ -50,12 +51,12 @@ final class Demo
         return new RedirectResponse('/');
     }
 
-    public function getAddress()
+    public function getAddress(Request $request)
     {
         $serialized = file_get_contents(storage_path('app/oauth/accesstokenResponse.serialized'));
         /** @var AccessTokenResponse $unserialized */
         $unserialized = unserialize($serialized, [AccessTokenResponse::class]);
-        $response = (new Client())->get('http://organization.ufo.local/api/address', [
+        $response = (new Client())->get('http://organization.ufo.local/api/address?consumer_id=' . $request->query('consumer_id'), [
             'headers' => [
                 'Accept'        => 'application/json',
                 'Authorization' => 'Bearer ' . $unserialized->getAccessToken(),
@@ -74,12 +75,13 @@ final class Demo
         $query = http_build_query([
             'organization-consumer-identifier' => 'klantje1'
         ]);
-        $response = (new Client())->get('http://organization.ufo.local/api/get-consumer-connection?' . $query, [
+        $response = json_decode((new Client())->get('http://organization.ufo.local/api/get-consumer-connection?' . $query, [
             'headers' => [
                 'Accept'        => 'application/json',
                 'Authorization' => 'Bearer ' . $unserialized->getAccessToken(),
             ],
-        ])->getBody()->getContents();
-        dd(json_decode($response));
+        ])->getBody()->getContents(), true);
+        echo '<a href="/demo/get-address?consumer_id=' . $response['ufo-consumer-identifier'] . '" target="_blank">Adres</a>';
+        dd($response);
     }
 }
