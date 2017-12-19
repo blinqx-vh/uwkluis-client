@@ -54,7 +54,7 @@ final class Demo
     {
         $serialized = file_get_contents(storage_path('app/oauth/accesstokenResponse.serialized'));
         /** @var AccessTokenResponse $unserialized */
-        $unserialized = unserialize($serialized);
+        $unserialized = unserialize($serialized, [AccessTokenResponse::class]);
         $response = (new Client())->get('http://organization.ufo.local/api/address', [
             'headers' => [
                 'Accept'        => 'application/json',
@@ -69,7 +69,7 @@ final class Demo
     {
         $serialized = file_get_contents(storage_path('app/oauth/accesstokenResponse.serialized'));
         /** @var AccessTokenResponse $unserialized */
-        $unserialized = unserialize($serialized);
+        $unserialized = unserialize($serialized, [AccessTokenResponse::class]);
 
         $query = http_build_query([
             'organization-consumer-identifier' => 'klantje1'
