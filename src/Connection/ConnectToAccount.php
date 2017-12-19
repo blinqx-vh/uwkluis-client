@@ -11,7 +11,7 @@ final class ConnectToAccount
 {
     /** @var GuzzleClient */
     private $guzzleClient;
-    /** @var Config  */
+    /** @var Config */
     private $clientConfig;
 
     /**
@@ -26,7 +26,8 @@ final class ConnectToAccount
         $this->guzzleClient = $guzzleClient;
     }
 
-    public function getRedirectUrl() {
+    public function getRedirectUrl()
+    {
         $query = http_build_query([
             'client_id'     => $this->clientConfig->getClientId(),
             'redirect_uri'  => $this->clientConfig->getCallbackUri(),
@@ -55,6 +56,7 @@ final class ConnectToAccount
             throw new \RuntimeException($parameters['error']);
         }
         $code = $parameters['code'];
+
         return $this->requestAccessToken($code);
     }
 
@@ -75,8 +77,9 @@ final class ConnectToAccount
                     'code'          => $code,
                 ],
             ]
-        )->getBody()->getContents();
-        $data = json_decode($response, true);
+        );
+        $content = $response->getBody()->getContents();
+        $data = json_decode($content, true);
         if (isset($data['error']) && $data['error'] === 'invalid_request') {
             $message = '';
             if (isset($data['message'])) {
@@ -87,11 +90,16 @@ final class ConnectToAccount
             }
             throw new InvalidRequestException($message);
         }
-        $expires = (new \DateTime())->add(new \DateInterval( 'PT' . $data['expires_in']  . 'S'));
-        return new AccessTokenResponse(
-            $data['access_token'],
-            $data['refresh_token'],
-            $expires
-        );
+        if ($response->getStatusCode() < 400
+            && isset($data['expires_in'], $data['access_token'], $data['refresh_token'])) {
+            $expires = (new \DateTime())->add(new \DateInterval('PT' . $data['expires_in'] . 'S'));
+
+            return new AccessTokenResponse(
+                $data['access_token'],
+                $data['refresh_token'],
+                $expires
+            );
+        }
+        echo $content; exit;
     }
 }
