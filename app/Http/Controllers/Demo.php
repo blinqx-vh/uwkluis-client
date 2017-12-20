@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Psr\Http\Message\ServerRequestInterface;
@@ -62,7 +63,7 @@ final class Demo
                 'Authorization' => 'Bearer ' . $unserialized->getAccessToken(),
             ],
         ])->getBody()->getContents();
-        dd(json_decode($response));
+        return new JsonResponse(json_decode($response, true));
     }
 
 
