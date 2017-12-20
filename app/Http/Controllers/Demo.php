@@ -52,7 +52,7 @@ final class Demo
         return new RedirectResponse('/');
     }
 
-    public function getAddress(Request $request)
+    public function getDossier(Request $request)
     {
         $serialized = file_get_contents(storage_path('app/oauth/accesstokenResponse.serialized'));
         /** @var AccessTokenResponse $unserialized */
@@ -74,15 +74,18 @@ final class Demo
         $unserialized = unserialize($serialized, [AccessTokenResponse::class]);
 
         $query = http_build_query([
-            'organization-consumer-identifier' => 'klantje1'
+            'organization_consumer_id' => 'klantje1'
         ]);
-        $response = json_decode((new Client())->get('http://organization.ufo.local/api/get-consumer-connection?' . $query, [
+        $httpResponse = (new Client())->get('http://organization.ufo.local/api/get-consumer-connection?' . $query, [
             'headers' => [
                 'Accept'        => 'application/json',
                 'Authorization' => 'Bearer ' . $unserialized->getAccessToken(),
             ],
-        ])->getBody()->getContents(), true);
-        echo '<a href="/demo/get-address?consumer_id=' . $response['ufo-consumer-identifier'] . '" target="_blank">Adres</a>';
-        dd($response);
+        ]);
+        $response = json_decode($httpResponse->getBody()->getContents(), true);
+        echo '<pre>';
+        print_r($response);
+        echo '</pre>';
+        echo '<a href="/demo/get-dossier?consumer_id=' . $response['ufo_consumer_id'] . '" target="_blank">Haal dossier op</a>';
     }
 }

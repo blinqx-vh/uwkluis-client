@@ -83,11 +83,9 @@
                 </div>
 
                 <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+                    <a target="_blank" href="/demo/connect">Verbind met Ufo</a>
+                    <a target="_blank" href="/demo/get-scopes">Zie beschikbare scopes</a>
+                    <a target="_blank" href="/demo/get-consumer-connection">Haal verbinding met klantje1 op</a>
                 </div>
             </div>
         </div>
