@@ -66,23 +66,12 @@ final class Demo
 
     public function postDossier(Request $request)
     {
-        $dossierData = '{
-          "data": {
-            "person": [
-              {
-                "lastname": "Deckers",
-                "firstname": "Erwin"
-              }
-            ],
-            "addresses": [
-              {
-                "postalcode": "1000AA",
-                "housenumber": 10,
-                "housenumber_suffix": "av"
-              }
-            ]
-          }
-        }';
+        $dossierResponse = $this->getDossier($request);
+        $dossierData = $dossierResponse->getData(true);
+        $houseNumber = $dossierData['data']['addresses'][0]['housenumber'];
+        $houseNumber++;
+        $dossierData['data']['addresses'][0]['housenumber'] = $houseNumber;
+        $dossierData = json_encode($dossierData);
         $serialized = file_get_contents(storage_path('app/oauth/accesstokenResponse.serialized'));
         /** @var AccessTokenResponse $unserialized */
         $unserialized = unserialize($serialized, [AccessTokenResponse::class]);
@@ -121,6 +110,6 @@ final class Demo
         print_r($response);
         echo '</pre>';
         echo '<p><a href="/demo/dossier?consumer_id=' . ($response['ufo_consumer_id'] ?? '') . '" target="_blank">Haal dossier op</a></p>';
-        echo '<p><a href="/demo/postdossier?consumer_id=' . ($response['ufo_consumer_id'] ?? '') . '" target="_blank">Wijzig dossier</a></p>';
+        echo '<p><a href="/demo/postdossier?consumer_id=' . ($response['ufo_consumer_id'] ?? '') . '" target="_blank">Wijzig dossier (huisnummer++)</a></p>';
     }
 }
