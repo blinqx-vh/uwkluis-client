@@ -84,8 +84,8 @@
 
                 <div class="links">
                     <a target="_blank" href="/demo/connect">Verbind met Ufo</a>
-                    <a target="_blank" href="/demo/get-scopes">Zie beschikbare scopes</a>
-                    <a target="_blank" href="/demo/get-consumer-connection">Haal verbinding met klantje1 op</a>
+                    <a target="_blank" href="/demo/scopes">Zie beschikbare scopes</a>
+                    <a target="_blank" href="/demo/consumer-connection">Haal verbinding met klantje1 op</a>
                 </div>
             </div>
         </div>
