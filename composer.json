@@ -1,9 +1,9 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
-    "license": "MIT",
-    "type": "project",
+    "name": "ufo/client",
+    "description": "Ufo client.",
+    "license": "proprietary",
+    "type": "library",
+    "version": "1.0",
     "require": {
         "php": ">=7.0.0",
         "fideloper/proxy": "~3.3",
