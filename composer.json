@@ -1,5 +1,5 @@
 {
-    "name": "ufo/client",
+    "name": "ufo/clients",
     "description": "Ufo client.",
     "license": "proprietary",
     "type": "library",
