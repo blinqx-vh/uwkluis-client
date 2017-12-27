@@ -15,6 +15,8 @@ final class Config
     private $clientSecret;
     /** @var string */
     private $clientName;
+    /** @var string */
+    private $apiHost = 'https://organization.mijnufo.nl';
 
     /**
      * Config constructor.
@@ -77,5 +79,25 @@ final class Config
     public function getClientName(): string
     {
         return $this->clientName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiHost(): string
+    {
+        return $this->apiHost;
+    }
+
+    /**
+     * @param string $apiHost
+     *
+     * @return Config
+     */
+    public function setApiHost(string $apiHost)
+    {
+        $this->apiHost = $apiHost;
+
+        return $this;
     }
 }
