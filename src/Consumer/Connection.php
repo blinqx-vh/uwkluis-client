@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Client\Consumer;
+namespace Ufo\Client\Consumer;
 
 final class Connection
 {
