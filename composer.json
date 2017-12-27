@@ -3,7 +3,6 @@
     "description": "Ufo client.",
     "license": "proprietary",
     "type": "library",
-    "version": "1.0",
     "require": {
         "php": ">=7.0.0",
         "guzzlehttp/guzzle": "^6.3",
