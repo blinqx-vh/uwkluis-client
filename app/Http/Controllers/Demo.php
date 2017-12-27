@@ -52,7 +52,13 @@ final class Demo
         $serialized = file_get_contents(storage_path('app/oauth/accesstokenResponse.serialized'));
         /** @var AccessTokenResponse $unserialized */
         $unserialized = unserialize($serialized, [AccessTokenResponse::class]);
-        $response = (new Client())->get('http://organization.ufo.local/api/dossier?consumer_id=' . $request->query('consumer_id'),
+
+        $query = [
+            'consumer_id' => $request->query('consumer_id'),
+            'version' => 1
+        ];
+        $queryString = http_build_query($query);
+        $response = (new Client())->get('http://organization.ufo.local/api/dossier?' . $queryString,
             [
                 'headers' => [
                     'Accept'        => 'application/json',
@@ -75,7 +81,13 @@ final class Demo
         $serialized = file_get_contents(storage_path('app/oauth/accesstokenResponse.serialized'));
         /** @var AccessTokenResponse $unserialized */
         $unserialized = unserialize($serialized, [AccessTokenResponse::class]);
-        $response = (new Client())->post('http://organization.ufo.local/api/dossier?consumer_id=' . $request->query('consumer_id'),
+
+        $query = [
+            'consumer_id' => $request->query('consumer_id'),
+            'version' => 1
+        ];
+        $queryString = http_build_query($query);
+        $response = (new Client())->post('http://organization.ufo.local/api/dossier?' . $queryString,
             [
                 'headers' => [
                     'Accept'        => 'application/json',
@@ -96,10 +108,10 @@ final class Demo
         $serialized = file_get_contents(storage_path('app/oauth/accesstokenResponse.serialized'));
         /** @var AccessTokenResponse $unserialized */
         $unserialized = unserialize($serialized, [AccessTokenResponse::class]);
-        $query = http_build_query([
+        $queryString = http_build_query([
             'organization_consumer_id' => 'klantje1',
         ]);
-        $httpResponse = (new Client())->get('http://organization.ufo.local/api/consumer-connection?' . $query, [
+        $httpResponse = (new Client())->get('http://organization.ufo.local/api/consumer-connection?' . $queryString, [
             'headers' => [
                 'Accept'        => 'application/json',
                 'Authorization' => 'Bearer ' . $unserialized->getAccessToken(),
