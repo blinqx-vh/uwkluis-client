@@ -9,33 +9,30 @@ use Ufo\Client\Organization\Config;
 final class Register
 {
     /** @var GuzzleClient */
-    private $client;
+    private $guzzleClient;
     /** @var Config */
-    private $clientConfig;
+    private $config;
 
     /**
      * Register constructor.
      *
      * @param Config       $clientConfig
-     * @param GuzzleClient $client
+     * @param GuzzleClient $guzzleClient
      */
-    public function __construct(GuzzleClient $client)
+    public function __construct(GuzzleClient $guzzleClient, Config $config)
     {
-        $this->clientConfig = new Config(
-            'AwesomeApp',
-            'http://client.ufo.local/connect/callback'
-        );
-        $this->client = $client;
+        $this->guzzleClient = $guzzleClient;
+        $this->config = $config;
     }
 
     public function register()
     {
         $data = [
-            'name' => $this->clientConfig->getClientName(),
-            'redirect' => $this->clientConfig->getCallbackUri(),
+            'name' => $this->config->getClientName(),
+            'redirect' => $this->config->getCallbackUri(),
         ];
 
-        $response = $this->client->post('organization.ufo.local/oauth/clients', $data)->getBody()->getContents();
-        dd($response);
+        return $this->guzzleClient->post($this->config->getApiHost() . '/oauth/clients', $data)
+            ->getBody()->getContents();
     }
 }
