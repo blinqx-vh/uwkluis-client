@@ -77,7 +77,7 @@ final class Connect
     public function refreshAccessToken(string $refreshToken): AccessTokenResponse
     {
         try {
-            $response = $this->guzzleClient->post($this->clientConfig->getApiHost() . '/token/refresh',
+            $response = $this->guzzleClient->post($this->clientConfig->getApiHost() . '/oauth/token',
                 [
                     'form_params' => [
                         'grant_type'    => 'refresh_token',
