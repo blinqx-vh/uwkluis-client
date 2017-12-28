@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Exception;
 
-class InvalidRequestException extends \RuntimeException
+final class AuthCodeExpiredException extends InvalidRequestException
 {
 
 }

@@ -12,6 +12,8 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Ufo\Client\Exception\InvalidRequestException;
+use Ufo\Client\Exception\RefreshTokenInvalidException;
+use Ufo\Client\Exception\AuthCodeExpiredException;
 
 final class Connect
 {
@@ -56,7 +58,7 @@ final class Connect
             'client_id'     => $this->clientConfig->getClientId(),
         ]);
 
-        return $this->clientConfig->getApiHost() . 'oauth/revoke?' . $query;
+        return $this->clientConfig->getApiHost() . 'config/oauth/revoke?' . $query;
     }
 
     /**
@@ -150,9 +152,13 @@ final class Connect
             $message = '';
             if (isset($data['message'])) {
                 $message .= $data['message'];
+                if ($message === 'The refresh token is invalid.') {
+                    throw new RefreshTokenInvalidException($message);
+                }
             }
             if (isset($data['hint']) && $data['hint'] === 'Authorization code has expired') {
                 $message .= ' - ' . $data['hint'];
+                throw new AuthCodeExpiredException($message);
             }
             throw new InvalidRequestException($message);
         }
