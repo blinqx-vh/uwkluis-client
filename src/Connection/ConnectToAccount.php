@@ -103,7 +103,7 @@ final class ConnectToAccount
             && isset($data['expires_in'], $data['access_token'], $data['refresh_token'])) {
             $expires = (new \DateTime())->add(new \DateInterval('PT' . $data['expires_in'] . 'S'));
             $accessToken = (new Parser())->parse($data['access_token']);
-            $refreshToken = (new Parser())->parse($data['refresh_token']);
+            $refreshToken = $data['refresh_token'];
             return new AccessTokenResponse(
                 $accessToken,
                 $refreshToken,

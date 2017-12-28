@@ -9,7 +9,7 @@ final class AccessTokenResponse
 {
     /** @var Token */
     private $accessToken;
-    /** @var Token */
+    /** @var string */
     private $refreshToken;
     /** @var \DateTime */
     private $expiration;
@@ -18,12 +18,12 @@ final class AccessTokenResponse
      * AccessTokenResponse constructor.
      *
      * @param Token     $accessToken
-     * @param Token     $refreshToken
+     * @param string     $refreshToken
      * @param \DateTime $expiration
      */
     public function __construct(
         Token $accessToken,
-        Token $refreshToken,
+        string $refreshToken,
         \DateTime $expiration
     ) {
         $this->accessToken = $accessToken;
@@ -40,9 +40,9 @@ final class AccessTokenResponse
     }
 
     /**
-     * @return Token
+     * @return string
      */
-    public function getRefreshToken(): Token
+    public function getRefreshToken(): string
     {
         return $this->refreshToken;
     }
