@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Connection;
 
+use DateTime;
 use Lcobucci\JWT\Token;
 
 final class AccessTokenResponse
@@ -11,7 +12,7 @@ final class AccessTokenResponse
     private $accessToken;
     /** @var string */
     private $refreshToken;
-    /** @var \DateTime */
+    /** @var DateTime */
     private $expiration;
 
     /**
@@ -19,12 +20,12 @@ final class AccessTokenResponse
      *
      * @param Token     $accessToken
      * @param string     $refreshToken
-     * @param \DateTime $expiration
+     * @param DateTime $expiration
      */
     public function __construct(
         Token $accessToken,
         string $refreshToken,
-        \DateTime $expiration
+        DateTime $expiration
     ) {
         $this->accessToken = $accessToken;
         $this->refreshToken = $refreshToken;
@@ -48,9 +49,9 @@ final class AccessTokenResponse
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getExpiration(): \DateTime
+    public function getExpiration(): DateTime
     {
         return $this->expiration;
     }
