@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Ufo\Client\Connection;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\BadResponseException;
 use Lcobucci\JWT\Parser;
 use Psr\Http\Message\RequestInterface;
 use Ufo\Client\Exception\InvalidRequestException;
@@ -68,18 +69,25 @@ final class ConnectToAccount
      */
     private function requestAccessToken(string $code): AccessTokenResponse
     {
-        $response = $this->guzzleClient->post($this->clientConfig->getApiHost() . '/oauth/token',
-            [
-                'form_params' => [
-                    'grant_type'    => 'authorization_code',
-                    'client_id'     => $this->clientConfig->getClientId(),
-                    'client_secret' => $this->clientConfig->getClientSecret(),
-                    'redirect_uri'  => $this->clientConfig->getCallbackUri(),
-                    'code'          => $code,
-                ],
-            ]
-        );
-        $content = $response->getBody()->getContents();
+        try {
+            $response = $this->guzzleClient->post($this->clientConfig->getApiHost() . '/oauth/token',
+                [
+                    'form_params' => [
+                        'grant_type'    => 'authorization_code',
+                        'client_id'     => $this->clientConfig->getClientId(),
+                        'client_secret' => $this->clientConfig->getClientSecret(),
+                        'redirect_uri'  => $this->clientConfig->getCallbackUri(),
+                        'code'          => $code,
+                    ],
+                ]
+            );
+
+            $content = $response->getBody()->getContents();
+            $statusCode = $response->getStatusCode();
+        } catch (BadResponseException $e) {
+            $content = $e->getResponse()->getBody()->getContents();
+            $statusCode = $e->getResponse()->getStatusCode();
+        }
         $data = json_decode($content, true);
         if (isset($data['error']) && $data['error'] === 'invalid_request') {
             $message = '';
@@ -91,7 +99,7 @@ final class ConnectToAccount
             }
             throw new InvalidRequestException($message);
         }
-        if ($response->getStatusCode() < 400
+        if ($statusCode < 400
             && isset($data['expires_in'], $data['access_token'], $data['refresh_token'])) {
             $expires = (new \DateTime())->add(new \DateInterval('PT' . $data['expires_in'] . 'S'));
             $accessToken = (new Parser())->parse($data['access_token']);
@@ -102,6 +110,5 @@ final class ConnectToAccount
                 $expires
             );
         }
-        echo $content; exit;
     }
 }
