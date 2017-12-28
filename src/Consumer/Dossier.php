@@ -5,7 +5,7 @@ namespace Ufo\Client\Consumer;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\BadResponseException;
-use Ufo\Client\Connection\AccessTokenResponse;
+use Lcobucci\JWT\Token;
 use Ufo\Client\Connection\Config;
 use Ufo\Client\Exception\InvalidRequestException;
 
@@ -31,14 +31,14 @@ final class Dossier
     }
 
     /**
-     * @param AccessTokenResponse $accessToken
-     * @param string              $consumerId
-     * @param int                 $version
+     * @param Token  $accessToken
+     * @param string $consumerId
+     * @param int    $version
      *
-     * @return mixed
+     * @return array
      */
     public function getData(
-        AccessTokenResponse $accessToken,
+        Token $accessToken,
         string $consumerId,
         int $version
     ) {
@@ -53,7 +53,7 @@ final class Dossier
                     [
                         'headers' => [
                             'Accept'        => 'application/json',
-                            'Authorization' => 'Bearer ' . $accessToken->getAccessToken(),
+                            'Authorization' => 'Bearer ' . (string) $accessToken,
                         ],
                     ])->getBody()->getContents();
         } catch (BadResponseException $e) {
@@ -67,15 +67,15 @@ final class Dossier
     }
 
     /**
-     * @param AccessTokenResponse $accessToken
-     * @param string              $consumerId
-     * @param array               $dossierData
-     * @param int                 $responseDataVersion
+     * @param Token  $accessToken
+     * @param string $consumerId
+     * @param array  $dossierData
+     * @param int    $responseDataVersion
      *
-     * @return mixed
+     * @return array
      */
     public function updateData(
-        AccessTokenResponse $accessToken,
+        Token $accessToken,
         string $consumerId,
         array $dossierData,
         int $responseDataVersion
@@ -91,7 +91,7 @@ final class Dossier
                     [
                         'headers'     => [
                             'Accept'        => 'application/json',
-                            'Authorization' => 'Bearer ' . $accessToken->getAccessToken(),
+                            'Authorization' => 'Bearer ' . (string) $accessToken,
                         ],
                         'form_params' => [
                             'dossier' => json_encode($dossierData),

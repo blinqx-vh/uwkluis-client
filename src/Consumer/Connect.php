@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Ufo\Client\Consumer;
 
 use GuzzleHttp\Client as GuzzleClient;
-use Ufo\Client\Connection\AccessTokenResponse;
+use Lcobucci\JWT\Token;
 use Ufo\Client\Connection\Config;
 
 final class Connect
@@ -28,8 +28,14 @@ final class Connect
         $this->config = $config;
     }
 
+    /**
+     * @param Token  $accessToken
+     * @param string $organizationConsumerId
+     *
+     * @return Connection
+     */
     public function getConnection(
-        AccessTokenResponse $accessToken,
+        Token $accessToken,
         string $organizationConsumerId
     ) {
         $query = http_build_query([
@@ -40,10 +46,11 @@ final class Connect
             [
                 'headers' => [
                     'Accept'        => 'application/json',
-                    'Authorization' => 'Bearer ' . $accessToken->getAccessToken(),
+                    'Authorization' => 'Bearer ' . (string) $accessToken,
                 ],
             ]);
         $response = json_decode($httpResponse->getBody()->getContents(), true);
+
         return new Connection(
             $response['organization_consumer_id'],
             $response['ufo_consumer_id'],
