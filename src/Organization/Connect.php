@@ -3,11 +3,14 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Organization;
 
+use DateInterval;
+use DateTime;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\BadResponseException;
 use Lcobucci\JWT\Parser;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
 use Ufo\Client\Exception\InvalidRequestException;
 
 final class Connect
@@ -32,7 +35,7 @@ final class Connect
     /**
      * @return string
      */
-    public function getRedirectUrl()
+    public function getRedirectUrl(): string
     {
         $query = http_build_query([
             'client_id'     => $this->clientConfig->getClientId(),
@@ -59,7 +62,7 @@ final class Connect
             $parameters[$key] = $val;
         }
         if (isset($parameters['error']) || !isset($parameters['code'])) {
-            throw new \RuntimeException($parameters['error']);
+            throw new RuntimeException($parameters['error']);
         }
         $code = $parameters['code'];
 
@@ -143,7 +146,7 @@ final class Connect
         }
         if ($statusCode < 400
             && isset($data['expires_in'], $data['access_token'], $data['refresh_token'])) {
-            $expires = (new \DateTime())->add(new \DateInterval('PT' . $data['expires_in'] . 'S'));
+            $expires = (new DateTime())->add(new DateInterval('PT' . $data['expires_in'] . 'S'));
             $accessToken = (new Parser())->parse($data['access_token']);
             $refreshToken = $data['refresh_token'];
 
@@ -153,5 +156,6 @@ final class Connect
                 $expires
             );
         }
+        throw new InvalidRequestException('An unknown error has occurred.');
     }
 }
