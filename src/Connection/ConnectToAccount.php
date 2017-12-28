@@ -37,7 +37,7 @@ final class ConnectToAccount
             'response_type' => 'code',
         ]);
 
-        return 'http://organization.ufo.local/oauth/authorize?' . $query;
+        return $this->clientConfig->getApiHost() . 'oauth/authorize?' . $query;
     }
 
     /**
