@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Ufo\Client\Connection;
 
 use GuzzleHttp\Client as GuzzleClient;
+use Lcobucci\JWT\Parser;
 use Psr\Http\Message\RequestInterface;
 use Ufo\Client\Exception\InvalidRequestException;
 
@@ -67,7 +68,7 @@ final class ConnectToAccount
      */
     private function requestAccessToken(string $code): AccessTokenResponse
     {
-        $response = $this->guzzleClient->post('http://organization.ufo.local/oauth/token',
+        $response = $this->guzzleClient->post($this->clientConfig->getApiHost() . '/oauth/token',
             [
                 'form_params' => [
                     'grant_type'    => 'authorization_code',
@@ -93,10 +94,11 @@ final class ConnectToAccount
         if ($response->getStatusCode() < 400
             && isset($data['expires_in'], $data['access_token'], $data['refresh_token'])) {
             $expires = (new \DateTime())->add(new \DateInterval('PT' . $data['expires_in'] . 'S'));
-
+            $accessToken = (new Parser())->parse($data['access_token']);
+            $refreshToken = (new Parser())->parse($data['refresh_token']);
             return new AccessTokenResponse(
-                $data['access_token'],
-                $data['refresh_token'],
+                $accessToken,
+                $refreshToken,
                 $expires
             );
         }

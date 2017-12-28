@@ -7,6 +7,7 @@
         "php": ">=7.0.0",
         "guzzlehttp/guzzle": "^6.3",
         "zendframework/zend-diactoros": "^1.6",
+        "lcobucci/jwt": "^3.2",
         "roave/security-advisories": "dev-master"
     },
     "require-dev": {
