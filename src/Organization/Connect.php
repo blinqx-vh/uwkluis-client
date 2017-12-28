@@ -7,6 +7,7 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\BadResponseException;
 use Lcobucci\JWT\Parser;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Ufo\Client\Exception\InvalidRequestException;
 
 final class Connect
@@ -28,6 +29,9 @@ final class Connect
         $this->guzzleClient = $guzzleClient;
     }
 
+    /**
+     * @return string
+     */
     public function getRedirectUrl()
     {
         $query = http_build_query([
@@ -63,6 +67,32 @@ final class Connect
     }
 
     /**
+     * @param string $refreshToken
+     *
+     * @return AccessTokenResponse
+     */
+    public function refreshAccessToken(string $refreshToken): AccessTokenResponse
+    {
+        try {
+            $response = $this->guzzleClient->post($this->clientConfig->getApiHost() . '/oauth/token',
+                [
+                    'form_params' => [
+                        'grant_type'    => 'refresh_token',
+                        'refresh_token' => $refreshToken,
+                        'client_id'     => $this->clientConfig->getClientId(),
+                        'client_secret' => $this->clientConfig->getClientSecret(),
+                        'scope'         => implode(' ', $this->clientConfig->getScopes()),
+                    ],
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $response = $e->getResponse();
+        }
+
+        return $this->processTokenResponse($response);
+    }
+
+    /**
      * @param string $code
      *
      * @return AccessTokenResponse
@@ -82,13 +112,25 @@ final class Connect
                 ]
             );
 
-            $content = $response->getBody()->getContents();
-            $statusCode = $response->getStatusCode();
+
         } catch (BadResponseException $e) {
-            $content = $e->getResponse()->getBody()->getContents();
-            $statusCode = $e->getResponse()->getStatusCode();
+            $response = $e->getResponse();
         }
+
+        return $this->processTokenResponse($response);
+    }
+
+    /**
+     * @param $response
+     *
+     * @return AccessTokenResponse
+     */
+    private function processTokenResponse(ResponseInterface $response): AccessTokenResponse
+    {
+        $content = $response->getBody()->getContents();
+        $statusCode = $response->getStatusCode();
         $data = json_decode($content, true);
+
         if (isset($data['error']) && $data['error'] === 'invalid_request') {
             $message = '';
             if (isset($data['message'])) {
@@ -104,6 +146,7 @@ final class Connect
             $expires = (new \DateTime())->add(new \DateInterval('PT' . $data['expires_in'] . 'S'));
             $accessToken = (new Parser())->parse($data['access_token']);
             $refreshToken = $data['refresh_token'];
+
             return new AccessTokenResponse(
                 $accessToken,
                 $refreshToken,
