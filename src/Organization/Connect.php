@@ -35,7 +35,7 @@ final class Connect
     /**
      * @return string
      */
-    public function getRedirectUrl(): string
+    public function getAuthorizeUrl(): string
     {
         $query = http_build_query([
             'client_id'     => $this->clientConfig->getClientId(),
@@ -45,6 +45,18 @@ final class Connect
         ]);
 
         return $this->clientConfig->getApiHost() . 'oauth/authorize?' . $query;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRevokeUrl(): string
+    {
+        $query = http_build_query([
+            'client_id'     => $this->clientConfig->getClientId(),
+        ]);
+
+        return $this->clientConfig->getApiHost() . 'oauth/revoke?' . $query;
     }
 
     /**
