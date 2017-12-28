@@ -41,7 +41,7 @@ final class Dossier
         Token $accessToken,
         string $consumerId,
         int $version
-    ) {
+    ): array {
         $query = [
             'consumer_id' => $consumerId,
             'version'     => $version,
@@ -58,8 +58,8 @@ final class Dossier
                     ])->getBody()->getContents();
         } catch (BadResponseException $e) {
             throw new InvalidRequestException(
-                $e->getResponse()->getBody()->getContents(),
-                $e->getResponse()->getStatusCode()
+                $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
+                $e->getResponse() ? $e->getResponse()->getStatusCode() : 0
             );
         }
 
@@ -79,7 +79,7 @@ final class Dossier
         string $consumerId,
         array $dossierData,
         int $responseDataVersion
-    ) {
+    ): array {
         $queryString = [
             'consumer_id' => $consumerId,
             'version'     => $responseDataVersion,
@@ -99,8 +99,8 @@ final class Dossier
                     ])->getBody()->getContents();
         } catch (BadResponseException $e) {
             throw new InvalidRequestException(
-                $e->getResponse()->getBody()->getContents(),
-                $e->getResponse()->getStatusCode()
+                $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
+                $e->getResponse() ? $e->getResponse()->getStatusCode() : 0
             );
         }
 

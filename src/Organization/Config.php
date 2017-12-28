@@ -94,7 +94,7 @@ final class Config
      *
      * @return Config
      */
-    public function setApiHost(string $apiHost)
+    public function setApiHost(string $apiHost): Config
     {
         $this->apiHost = $apiHost;
 

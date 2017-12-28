@@ -37,7 +37,7 @@ final class Connect
     public function getConnection(
         Token $accessToken,
         string $organizationConsumerId
-    ) {
+    ): Connection {
         $query = http_build_query([
             'organization_consumer_id' => $organizationConsumerId,
         ]);
