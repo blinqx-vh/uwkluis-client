@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Ufo\Client\Connection;
+namespace Ufo\Client\Organization;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\BadResponseException;
@@ -9,7 +9,7 @@ use Lcobucci\JWT\Parser;
 use Psr\Http\Message\RequestInterface;
 use Ufo\Client\Exception\InvalidRequestException;
 
-final class ConnectToAccount
+final class Connect
 {
     /** @var GuzzleClient */
     private $guzzleClient;

@@ -6,7 +6,7 @@ namespace Ufo\Client\Consumer;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\BadResponseException;
 use Lcobucci\JWT\Token;
-use Ufo\Client\Connection\Config;
+use Ufo\Client\Organization\Config;
 use Ufo\Client\Exception\InvalidRequestException;
 
 final class Dossier

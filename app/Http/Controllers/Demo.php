@@ -8,10 +8,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Psr\Http\Message\ServerRequestInterface;
-use Ufo\Client\Connection\AccessTokenResponse;
-use Ufo\Client\Connection\Config;
-use Ufo\Client\Connection\ConnectToAccount;
-use Ufo\Client\Connection\Scopes;
+use Ufo\Client\Organization\AccessTokenResponse;
+use Ufo\Client\Organization\Config;
+use Ufo\Client\Organization\Connect;
+use Ufo\Client\Organization\Scopes;
 
 final class Demo
 {
@@ -31,7 +31,7 @@ final class Demo
     public function connect()
     {
         $view =
-            '<a href="' . (new ConnectToAccount($this->ufoConfig, new Client()))->getRedirectUrl() . '">Connect</a>';
+            '<a href="' . (new Connect($this->ufoConfig, new Client()))->getRedirectUrl() . '">Connect</a>';
         echo $view;
         exit;
     }
@@ -41,7 +41,7 @@ final class Demo
      */
     public function connectionCallback(ServerRequestInterface $request)
     {
-        $accessTokenResponse = (new ConnectToAccount($this->ufoConfig, new Client()))->processResponse($request);
+        $accessTokenResponse = (new Connect($this->ufoConfig, new Client()))->processResponse($request);
         file_put_contents(storage_path('app/oauth/accesstokenResponse.serialized'), serialize($accessTokenResponse));
 
         return new RedirectResponse('/');

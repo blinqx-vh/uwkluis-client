@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace Ufo\Client\Registration;
+namespace Ufo\Client\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
-use Ufo\Client\Connection\Config;
+use Ufo\Client\Organization\Config;
 
 final class Register
 {

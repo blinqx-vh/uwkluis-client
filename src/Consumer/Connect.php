@@ -5,7 +5,7 @@ namespace Ufo\Client\Consumer;
 
 use GuzzleHttp\Client as GuzzleClient;
 use Lcobucci\JWT\Token;
-use Ufo\Client\Connection\Config;
+use Ufo\Client\Organization\Config;
 
 final class Connect
 {
