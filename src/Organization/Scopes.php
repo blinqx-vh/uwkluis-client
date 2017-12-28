@@ -9,15 +9,19 @@ final class Scopes
 {
     /** @var GuzzleClient */
     private $client;
+    /** @var Config */
+    private $config;
 
     /**
      * Scopes constructor.
      *
      * @param GuzzleClient $client
+     * @param Config       $config
      */
-    public function __construct(GuzzleClient $client)
+    public function __construct(GuzzleClient $client, Config $config)
     {
         $this->client = $client;
+        $this->config = $config;
     }
 
     /**
@@ -27,7 +31,7 @@ final class Scopes
      */
     public function getScopes(): array
     {
-        $response = $this->client->get('organization.ufo.local/api/scopes')->getBody()->getContents();
+        $response = $this->client->get($this->config->getApiHost() . '/api/scopes')->getBody()->getContents();
         return json_decode($response, true);
     }
 }
