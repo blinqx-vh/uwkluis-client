@@ -31,7 +31,7 @@ final class Webhooks
     {
         try {
             $httpResponse =
-                $this->guzzleClient->get($this->config->getApiHost() . 'api/webhooks/list',
+                $this->guzzleClient->get($this->config->getApiHost() . 'api/webhooks/webhook',
                     [
                         'headers' => [
                             'Accept'        => 'application/json',
