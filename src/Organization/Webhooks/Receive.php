@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Organization\Webhooks;
 
-use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class Receive
@@ -13,27 +13,27 @@ final class Receive
      * @param string                 $secret
      * @param callable|null          $callable
      *
-     * @return Response
+     * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, string $secret, callable $callable = null)
-    {
-        $digestable = $request->getBody()->getContents() . $secret;
+    public function process(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        string $secret,
+        callable $callable = null
+    ) {
+        $digestable = (string) $request->getBody() . $secret;
         $digest = hash_hmac('sha256', $digestable, $secret);
-        if ($request->getHeader('X-Hook-Signature') === $digest) {
-            $data = json_decode($request->getBody()->getContents());
+        if ($request->getHeader('X-Hook-Signature')
+            && $request->getHeader('X-Hook-Signature')[0] === $digest) {
+            $data = $request->getParsedBody();
             $callable($data);
-            return new Response(
-                200,
-                [
-                    'X-Hook-Secret' => $secret,
-                ],
-                'received');
+            return $response
+                ->withHeader('X-Hook-Secret', $secret)
+                ->withStatus(200, 'received')
+                ;
         }
+        return $response
+                ->withStatus(400, 'Invalid signature');
 
-        return new Response(
-            400,
-            [],
-            'Invalid signature'
-        );
     }
 }
