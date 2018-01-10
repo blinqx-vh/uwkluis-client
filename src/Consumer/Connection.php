@@ -3,6 +3,9 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
+/**
+ * Class Connection
+ */
 final class Connection
 {
     /** @var string */

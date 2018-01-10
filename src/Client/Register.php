@@ -6,6 +6,9 @@ namespace Ufo\Client\Client;
 use GuzzleHttp\Client as GuzzleClient;
 use Ufo\Client\Organization\Config;
 
+/**
+ * Class Register
+ */
 final class Register
 {
     /** @var GuzzleClient */
@@ -16,8 +19,8 @@ final class Register
     /**
      * Register constructor.
      *
-     * @param Config       $clientConfig
      * @param GuzzleClient $guzzleClient
+     * @param Config       $config
      */
     public function __construct(GuzzleClient $guzzleClient, Config $config)
     {
@@ -25,14 +28,17 @@ final class Register
         $this->config = $config;
     }
 
-    public function register()
+    /**
+     * @return string
+     */
+    public function register(): string
     {
         $data = [
-            'name' => $this->config->getClientName(),
+            'name'     => $this->config->getClientName(),
             'redirect' => $this->config->getCallbackUri(),
         ];
 
-        return $this->guzzleClient->post($this->config->getApiHost() . '/oauth/clients', $data)
+        return $this->guzzleClient->post($this->config->getOrganizationHost() . '/oauth/clients', $data)
             ->getBody()->getContents();
     }
 }

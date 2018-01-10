@@ -9,6 +9,9 @@ use Lcobucci\JWT\Token;
 use Ufo\Client\Exception\InvalidRequestException;
 use Ufo\Client\Organization\Config;
 
+/**
+ * Class Manage
+ */
 final class Manage
 {
     /**
@@ -32,13 +35,15 @@ final class Manage
     {
         try {
             $httpResponse =
-                $this->guzzleClient->get($this->config->getApiHost() . 'api/webhooks/webhook',
+                $this->guzzleClient->get(
+                    $this->config->getApiHost() . '/webhooks/webhook',
                     [
                         'headers' => [
                             'Accept'        => 'application/json',
                             'Authorization' => 'Bearer ' . (string) $accessToken,
                         ],
-                    ])->getBody()->getContents();
+                    ]
+                )->getBody()->getContents();
         } catch (BadResponseException $e) {
             throw new InvalidRequestException(
                 $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
@@ -64,14 +69,15 @@ final class Manage
         try {
             $httpResponse =
                 $this->guzzleClient->post(
-                    $this->config->getApiHost() . 'api/webhooks/webhook',
+                    $this->config->getApiHost() . '/webhooks/webhook',
                     [
                         'headers'     => [
                             'Accept'        => 'application/json',
                             'Authorization' => 'Bearer ' . (string) $accessToken,
                         ],
                         'form_params' => $data,
-                    ])->getBody()->getContents();
+                    ]
+                )->getBody()->getContents();
         } catch (BadResponseException $e) {
             throw new InvalidRequestException(
                 $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
@@ -92,13 +98,15 @@ final class Manage
     {
         try {
             $httpResponse =
-                $this->guzzleClient->get($this->config->getApiHost() . 'api/webhooks/webhook/' . $id,
+                $this->guzzleClient->get(
+                    $this->config->getApiHost() . '/webhooks/webhook/' . $id,
                     [
                         'headers' => [
                             'Accept'        => 'application/json',
                             'Authorization' => 'Bearer ' . (string) $accessToken,
                         ],
-                    ])->getBody()->getContents();
+                    ]
+                )->getBody()->getContents();
         } catch (BadResponseException $e) {
             throw new InvalidRequestException(
                 $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
@@ -125,13 +133,14 @@ final class Manage
         try {
             $httpResponse =
                 $this->guzzleClient->put(
-                    $this->config->getApiHost() . 'api/webhooks/webhook/' . $id . '?' . $queryString,
+                    $this->config->getApiHost() . '/webhooks/webhook/' . $id . '?' . $queryString,
                     [
                         'headers' => [
                             'Accept'        => 'application/json',
                             'Authorization' => 'Bearer ' . (string) $accessToken,
                         ],
-                    ])->getBody()->getContents();
+                    ]
+                )->getBody()->getContents();
         } catch (BadResponseException $e) {
             throw new InvalidRequestException(
                 $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
@@ -152,13 +161,15 @@ final class Manage
     {
         try {
             $httpResponse =
-                $this->guzzleClient->delete($this->config->getApiHost() . 'api/webhooks/webhook/' . $id,
+                $this->guzzleClient->delete(
+                    $this->config->getApiHost() . '/webhooks/webhook/' . $id,
                     [
                         'headers' => [
                             'Accept'        => 'application/json',
                             'Authorization' => 'Bearer ' . (string) $accessToken,
                         ],
-                    ])->getBody()->getContents();
+                    ]
+                )->getBody()->getContents();
         } catch (BadResponseException $e) {
             throw new InvalidRequestException(
                 $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
@@ -168,5 +179,4 @@ final class Manage
 
         return json_decode($httpResponse);
     }
-
 }

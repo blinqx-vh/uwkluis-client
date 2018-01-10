@@ -15,6 +15,9 @@ use Ufo\Client\Exception\InvalidRequestException;
 use Ufo\Client\Exception\RefreshTokenInvalidException;
 use Ufo\Client\Exception\AuthCodeExpiredException;
 
+/**
+ * Class Connect
+ */
 final class Connect
 {
     /** @var GuzzleClient */
@@ -39,14 +42,16 @@ final class Connect
      */
     public function getAuthorizeUrl(): string
     {
-        $query = http_build_query([
-            'client_id'     => $this->clientConfig->getClientId(),
-            'redirect_uri'  => $this->clientConfig->getCallbackUri(),
-            'scope'         => implode(' ', $this->clientConfig->getScopes()),
-            'response_type' => 'code',
-        ]);
+        $query = http_build_query(
+            [
+                'client_id'     => $this->clientConfig->getClientId(),
+                'redirect_uri'  => $this->clientConfig->getCallbackUri(),
+                'scope'         => implode(' ', $this->clientConfig->getScopes()),
+                'response_type' => 'code',
+            ]
+        );
 
-        return $this->clientConfig->getApiHost() . 'oauth/authorize?' . $query;
+        return $this->clientConfig->getOrganizationHost() . 'oauth/authorize?' . $query;
     }
 
     /**
@@ -54,11 +59,13 @@ final class Connect
      */
     public function getRevokeUrl(): string
     {
-        $query = http_build_query([
-            'client_id'     => $this->clientConfig->getClientId(),
-        ]);
+        $query = http_build_query(
+            [
+                'client_id' => $this->clientConfig->getClientId(),
+            ]
+        );
 
-        return $this->clientConfig->getApiHost() . 'config/oauth/revoke?' . $query;
+        return $this->clientConfig->getOrganizationHost() . 'config/oauth/revoke?' . $query;
     }
 
     /**
@@ -91,7 +98,8 @@ final class Connect
     public function refreshAccessToken(string $refreshToken): AccessTokenResponse
     {
         try {
-            $response = $this->guzzleClient->post($this->clientConfig->getApiHost() . '/oauth/token',
+            $response = $this->guzzleClient->post(
+                $this->clientConfig->getOrganizationHost() . '/oauth/token',
                 [
                     'form_params' => [
                         'grant_type'    => 'refresh_token',
@@ -117,7 +125,8 @@ final class Connect
     private function requestAccessToken(string $code): AccessTokenResponse
     {
         try {
-            $response = $this->guzzleClient->post($this->clientConfig->getApiHost() . '/oauth/token',
+            $response = $this->guzzleClient->post(
+                $this->clientConfig->getOrganizationHost() . '/oauth/token',
                 [
                     'form_params' => [
                         'grant_type'    => 'authorization_code',
@@ -128,8 +137,6 @@ final class Connect
                     ],
                 ]
             );
-
-
         } catch (BadResponseException $e) {
             $response = $e->getResponse();
         }

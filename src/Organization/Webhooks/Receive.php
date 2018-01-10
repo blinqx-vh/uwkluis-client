@@ -6,6 +6,9 @@ namespace Ufo\Client\Organization\Webhooks;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class Receive
+ */
 final class Receive
 {
     /**
@@ -27,13 +30,13 @@ final class Receive
             && $request->getHeader('X-Hook-Signature')[0] === $digest) {
             $data = $request->getParsedBody();
             $callable($data);
+
             return $response
                 ->withHeader('X-Hook-Secret', $secret)
-                ->withStatus(200, 'received')
-                ;
+                ->withStatus(200, 'received');
         }
-        return $response
-                ->withStatus(400, 'Invalid signature');
 
+        return $response
+            ->withStatus(400, 'Invalid signature');
     }
 }
