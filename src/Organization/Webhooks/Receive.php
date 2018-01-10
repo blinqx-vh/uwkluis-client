@@ -24,7 +24,7 @@ final class Receive
         $digestable = (string) $request->getBody() . $secret;
         $digest = hash_hmac('sha256', $digestable, $secret);
         if ($request->getHeader('X-Hook-Signature')
-            && $request->getHeader('X-Hook-Signature')[0] === $digest) {
+            && hash_equals($digest, $request->getHeader('X-Hook-Signature')[0])) {
             $data = $request->getParsedBody();
             $callable($data);
             return $response
