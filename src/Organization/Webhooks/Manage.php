@@ -169,4 +169,26 @@ final class Manage
         return json_decode($httpResponse);
     }
 
+    /**
+     * @param Token $accessToken
+     */
+    public function claimCheck(Token $accessToken)
+    {
+        try {
+            $httpResponse =
+                $this->guzzleClient->delete($this->config->getApiHost() . 'api/webhooks/webhook/' . $id,
+                    [
+                        'headers' => [
+                            'Accept'        => 'application/json',
+                            'Authorization' => 'Bearer ' . (string) $accessToken,
+                        ],
+                    ])->getBody()->getContents();
+        } catch (BadResponseException $e) {
+            throw new InvalidRequestException(
+                $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
+                $e->getResponse() ? $e->getResponse()->getStatusCode() : 0
+            );
+        }
+    }
+
 }
