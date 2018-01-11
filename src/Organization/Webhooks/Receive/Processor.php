@@ -26,16 +26,8 @@ final class Processor
         $digest = hash_hmac('sha256', $digestable, $secret);
         if ($request->getHeader('X-Hook-Signature')
             && $request->getHeader('X-Hook-Signature')[0] === $digest) {
-            $data = $request->getParsedBody();
-            $message = (new Message())
-                ->setData($data['data'])
-                ->setWebhookId($data['metadata']['webhook_id'])
-                ->setIdentifier($data['metadata']['identifier'])
-                ->setTries($data['metadata']['tries'])
-                ->setEvent($data['metadata']['event'])
-                ->setSequence($data['metadata']['sequence'])
-                ->setTimestamp($data['metadata']['sequence']);
-            $callable($message);
+
+            $callable($this->parseMessage($request->getParsedBody()));
 
             return $response
                 ->withHeader('X-Hook-Secret', $secret)
@@ -44,5 +36,22 @@ final class Processor
 
         return $response
             ->withStatus(400, 'Invalid signature');
+    }
+
+    /**
+     * @param array $message
+     *
+     * @return Message
+     */
+    public function parseMessage(array $message)
+    {
+        return (new Message())
+            ->setData($message['message'])
+            ->setWebhookId($message['metadata']['webhook_id'])
+            ->setIdentifier($message['metadata']['identifier'])
+            ->setTries($message['metadata']['tries'])
+            ->setEvent($message['metadata']['event'])
+            ->setSequence($message['metadata']['sequence'])
+            ->setTimestamp($message['metadata']['sequence']);
     }
 }

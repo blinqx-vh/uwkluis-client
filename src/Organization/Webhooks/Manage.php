@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\BadResponseException;
 use Lcobucci\JWT\Token;
 use Ufo\Client\Exception\InvalidRequestException;
 use Ufo\Client\Organization\Config;
+use Ufo\Client\Organization\Webhooks\Receive\Processor;
 
 final class Manage
 {
@@ -170,13 +171,16 @@ final class Manage
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token     $accessToken
+     * @param Processor $processor
+     *
+     * @return array
      */
-    public function claimCheck(Token $accessToken)
+    public function claimCheck(Token $accessToken, Processor $processor)
     {
         try {
             $httpResponse =
-                $this->guzzleClient->delete($this->config->getApiHost() . 'api/webhooks/webhook/' . $id,
+                $this->guzzleClient->get($this->config->getApiHost() . 'api/webhooks/webhook/claim-check',
                     [
                         'headers' => [
                             'Accept'        => 'application/json',
@@ -189,6 +193,12 @@ final class Manage
                 $e->getResponse() ? $e->getResponse()->getStatusCode() : 0
             );
         }
+        $messages = [];
+        foreach (json_decode($httpResponse, true)['data'] as $message) {
+            $messages[] = $processor->parseMessage($message);
+        }
+
+        return $messages;
     }
 
 }
