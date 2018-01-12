@@ -6,6 +6,9 @@ namespace Ufo\Client\Organization;
 use DateTime;
 use Lcobucci\JWT\Token;
 
+/**
+ * Class AccessTokenResponse
+ */
 final class AccessTokenResponse
 {
     /** @var Token */

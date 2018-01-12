@@ -7,6 +7,9 @@ use GuzzleHttp\Client as GuzzleClient;
 use Lcobucci\JWT\Token;
 use Ufo\Client\Organization\Config;
 
+/**
+ * Class Connect
+ */
 final class Connect
 {
     /** @var GuzzleClient */
@@ -38,17 +41,20 @@ final class Connect
         Token $accessToken,
         string $organizationConsumerId
     ): Connection {
-        $query = http_build_query([
-            'organization_consumer_id' => $organizationConsumerId,
-        ]);
+        $query = http_build_query(
+            [
+                'organization_consumer_id' => $organizationConsumerId,
+            ]
+        );
         $httpResponse = $this->guzzleClient->get(
-            $this->config->getApiHost() . 'api/consumer-connection?' . $query,
+            $this->config->getApiHost() . '/consumer-connection?' . $query,
             [
                 'headers' => [
                     'Accept'        => 'application/json',
                     'Authorization' => 'Bearer ' . (string) $accessToken,
                 ],
-            ]);
+            ]
+        );
         $response = json_decode($httpResponse->getBody()->getContents(), true);
 
         return new Connection(

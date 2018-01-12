@@ -9,6 +9,9 @@ use Lcobucci\JWT\Token;
 use Ufo\Client\Organization\Config;
 use Ufo\Client\Exception\InvalidRequestException;
 
+/**
+ * Class Dossier
+ */
 final class Dossier
 {
     /** @var GuzzleClient */
@@ -49,13 +52,15 @@ final class Dossier
         $queryString = http_build_query($query);
         try {
             $httpResponse =
-                $this->guzzleClient->get($this->config->getApiHost() . 'api/dossier?' . $queryString,
+                $this->guzzleClient->get(
+                    $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
                         'headers' => [
                             'Accept'        => 'application/json',
                             'Authorization' => 'Bearer ' . (string) $accessToken,
                         ],
-                    ])->getBody()->getContents();
+                    ]
+                )->getBody()->getContents();
         } catch (BadResponseException $e) {
             throw new InvalidRequestException(
                 $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
@@ -87,7 +92,8 @@ final class Dossier
         $queryString = http_build_query($queryString);
         try {
             $httpResponse =
-                $this->guzzleClient->post($this->config->getApiHost() . 'api/dossier?' . $queryString,
+                $this->guzzleClient->post(
+                    $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
                         'headers'     => [
                             'Accept'        => 'application/json',
@@ -96,7 +102,8 @@ final class Dossier
                         'form_params' => [
                             'dossier' => json_encode($dossierData),
                         ],
-                    ])->getBody()->getContents();
+                    ]
+                )->getBody()->getContents();
         } catch (BadResponseException $e) {
             throw new InvalidRequestException(
                 $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',

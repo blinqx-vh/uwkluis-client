@@ -3,6 +3,9 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Organization;
 
+/**
+ * Class Config
+ */
 final class Config
 {
     /** @var int */
@@ -17,6 +20,8 @@ final class Config
     private $clientName;
     /** @var string */
     private $apiHost = 'https://organization.mijnufo.nl';
+    /** @var string */
+    private $organizationHost = 'https://organization.mijnufo.nl';
 
     /**
      * Config constructor.
@@ -100,4 +105,25 @@ final class Config
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getOrganizationHost(): string
+    {
+        return $this->organizationHost;
+    }
+
+    /**
+     * @param string $organizationHost
+     *
+     * @return Config
+     */
+    public function setOrganizationHost(string $organizationHost)
+    {
+        $this->organizationHost = $organizationHost;
+
+        return $this;
+    }
+
 }

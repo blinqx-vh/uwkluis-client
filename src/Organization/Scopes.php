@@ -5,6 +5,9 @@ namespace Ufo\Client\Organization;
 
 use GuzzleHttp\Client as GuzzleClient;
 
+/**
+ * Class Scopes
+ */
 final class Scopes
 {
     /** @var GuzzleClient */
@@ -31,7 +34,8 @@ final class Scopes
      */
     public function getScopes(): array
     {
-        $response = $this->client->get($this->config->getApiHost() . '/api/scopes')->getBody()->getContents();
+        $response = $this->client->get($this->config->getApiHost() . '/scopes')->getBody()->getContents();
+
         return json_decode($response, true);
     }
 }
