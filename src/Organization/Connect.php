@@ -53,7 +53,7 @@ final class Connect
             ]
         );
 
-        return $this->clientConfig->getOrganizationHost() . 'oauth/authorize?' . $query;
+        return $this->clientConfig->getOrganizationHost() . '/oauth/authorize?' . $query;
     }
 
     /**
@@ -67,7 +67,7 @@ final class Connect
             ]
         );
 
-        return $this->clientConfig->getOrganizationHost() . 'config/oauth/revoke?' . $query;
+        return $this->clientConfig->getOrganizationHost() . '/config/oauth/revoke?' . $query;
     }
 
     /**
