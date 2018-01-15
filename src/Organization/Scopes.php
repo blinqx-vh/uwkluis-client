@@ -18,11 +18,13 @@ final class Scopes
     /**
      * Scopes constructor.
      *
-     * @param GuzzleClient $client
      * @param Config       $config
+     * @param GuzzleClient $client
      */
-    public function __construct(GuzzleClient $client, Config $config)
-    {
+    public function __construct(
+        Config $config,
+        GuzzleClient $client
+    ) {
         $this->client = $client;
         $this->config = $config;
     }

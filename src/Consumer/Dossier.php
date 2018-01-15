@@ -22,12 +22,12 @@ final class Dossier
     /**
      * Dossier constructor.
      *
-     * @param GuzzleClient $guzzleClient
      * @param Config       $config
+     * @param GuzzleClient $guzzleClient
      */
     public function __construct(
-        GuzzleClient $guzzleClient,
-        Config $config
+        Config $config,
+        GuzzleClient $guzzleClient
     ) {
         $this->guzzleClient = $guzzleClient;
         $this->config = $config;

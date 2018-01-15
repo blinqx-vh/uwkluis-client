@@ -11,9 +11,9 @@ use Lcobucci\JWT\Parser;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
+use Ufo\Client\Exception\AuthCodeExpiredException;
 use Ufo\Client\Exception\InvalidRequestException;
 use Ufo\Client\Exception\RefreshTokenInvalidException;
-use Ufo\Client\Exception\AuthCodeExpiredException;
 
 /**
  * Class Connect
@@ -31,8 +31,10 @@ final class Connect
      * @param Config       $clientConfig
      * @param GuzzleClient $guzzleClient
      */
-    public function __construct(Config $clientConfig, GuzzleClient $guzzleClient)
-    {
+    public function __construct(
+        Config $clientConfig,
+        GuzzleClient $guzzleClient
+    ) {
         $this->clientConfig = $clientConfig;
         $this->guzzleClient = $guzzleClient;
     }

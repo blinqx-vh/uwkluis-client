@@ -19,11 +19,13 @@ final class Register
     /**
      * Register constructor.
      *
-     * @param GuzzleClient $guzzleClient
      * @param Config       $config
+     * @param GuzzleClient $guzzleClient
      */
-    public function __construct(GuzzleClient $guzzleClient, Config $config)
-    {
+    public function __construct(
+        Config $config,
+        GuzzleClient $guzzleClient
+    ) {
         $this->guzzleClient = $guzzleClient;
         $this->config = $config;
     }
