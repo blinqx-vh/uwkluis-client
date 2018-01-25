@@ -19,9 +19,9 @@ final class Config
     /** @var string */
     private $clientName;
     /** @var string */
-    private $apiHost = 'https://organization.mijnufo.nl';
+    private $apiHost = '';
     /** @var string */
-    private $organizationHost = 'https://organization.mijnufo.nl';
+    private $organizationHost = '';
 
     /**
      * Config constructor.
