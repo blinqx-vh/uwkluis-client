@@ -1,22 +1,15 @@
 {
     "name": "ufo/client",
     "description": "Ufo client.",
-    "license": "proprietary",
+    "license": "MIT",
     "type": "library",
     "require": {
         "php": ">=7.0.0",
         "guzzlehttp/guzzle": "^6.3",
-        "lcobucci/jwt": "^3.2",
-        "ufo/webhook-client": "dev-master"
+        "lcobucci/jwt": "^3.2"
     },
     "require-dev": {
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@bitbucket.org:hypotheekbond/ufo-webhook-client.git"
-        }
-    ],
     "autoload": {
         "psr-4": {
             "Ufo\\Client\\": "src/"
