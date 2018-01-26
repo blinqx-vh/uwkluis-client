@@ -1,6 +1,6 @@
 {
     "name": "ufo/client",
-    "description": "Ufo client.",
+    "description": "Client package for the UFO APIs",
     "license": "MIT",
     "type": "library",
     "require": {
