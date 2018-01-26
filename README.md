@@ -131,7 +131,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/ufo/client.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/ufo/client.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/ufo/client.svg?style=flat-square
-[ico-sensiolabs]: https://insight.sensiolabs.com/projects/4ab172be-9cc4-464c-aa2e-93566244b1ac/mini.png
+[ico-sensiolabs]: https://img.shields.io/sensiolabs/i/4ab172be-9cc4-464c-aa2e-93566244b1ac.svg
 
 [link-packagist]: https://packagist.org/packages/ufo/client
 [link-travis]: https://travis-ci.org/ufo/client
