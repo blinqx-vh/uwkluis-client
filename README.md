@@ -131,7 +131,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/ufo/client.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/ufo/client.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/ufo/client.svg?style=flat-square
-[ico-sensiolabs]: https://insight.sensiolabs.com/projects/d7a6387a-192c-4614-9c74-a4889cdfa68d/mini.png
+[ico-sensiolabs]: https://insight.sensiolabs.com/projects/4ab172be-9cc4-464c-aa2e-93566244b1ac/mini.png
 
 [link-packagist]: https://packagist.org/packages/ufo/client
 [link-travis]: https://travis-ci.org/ufo/client
@@ -140,4 +140,4 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-downloads]: https://packagist.org/packages/ufo/client
 [link-author]: https://github.com/REDACTED
 [link-contributors]: ../../contributors
-[link-sensiolabs]: https://insight.sensiolabs.com/projects/d7a6387a-192c-4614-9c74-a4889cdfa68d
+[link-sensiolabs]: https://insight.sensiolabs.com/projects/4ab172be-9cc4-464c-aa2e-93566244b1ac
