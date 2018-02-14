@@ -61,19 +61,14 @@ final class Connect
      */
     public function getRevokeUrl(): string
     {
-        $query = http_build_query(
-            [
-                'client_id' => $this->clientConfig->getClientId(),
-            ]
-        );
-
-        return $this->clientConfig->getOrganizationHost() . '/config/oauth/revoke?' . $query;
+        return $this->clientConfig->getOrganizationHost() . '/applications/revoke/' . $this->clientConfig->getClientId();
     }
 
     /**
      * @param RequestInterface $request
      *
      * @return AccessTokenResponse
+     * @throws \Exception
      */
     public function processResponse(RequestInterface $request): AccessTokenResponse
     {
@@ -96,6 +91,7 @@ final class Connect
      * @param string $refreshToken
      *
      * @return AccessTokenResponse
+     * @throws \Exception
      */
     public function refreshAccessToken(string $refreshToken): AccessTokenResponse
     {
@@ -123,6 +119,7 @@ final class Connect
      * @param string $code
      *
      * @return AccessTokenResponse
+     * @throws \Exception
      */
     private function requestAccessToken(string $code): AccessTokenResponse
     {
@@ -150,6 +147,7 @@ final class Connect
      * @param $response
      *
      * @return AccessTokenResponse
+     * @throws \Exception
      */
     private function processTokenResponse(ResponseInterface $response): AccessTokenResponse
     {
