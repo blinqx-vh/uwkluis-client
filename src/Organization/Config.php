@@ -152,9 +152,9 @@ final class Config
 
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getBasicAuthPassword(): string
+    public function getBasicAuthPassword()
     {
         return $this->basicAuthPassword;
     }
