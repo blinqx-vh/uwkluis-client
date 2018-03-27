@@ -96,7 +96,6 @@ final class Dossier
                 $this->guzzleClient->post(
                     $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
-                        RequestOptions::AUTH => $this->getAuth(),
                         RequestOptions::HEADERS     => [
                             'Accept'        => 'application/json',
                             'Authorization' => 'Bearer ' . (string) $accessToken,
@@ -115,20 +114,4 @@ final class Dossier
 
         return json_decode($httpResponse, true);
     }
-
-        /**
-     * @return array
-     */
-    private function getAuth(): array
-    {
-        if ($this->config->getBasicAuthUserName() && $this->config->getBasicAuthPassword()) {
-            return [
-                $this->config->getBasicAuthUserName(),
-                $this->config->getBasicAuthPassword(),
-            ];
-        }
-
-        return [];
-    }
-
 }

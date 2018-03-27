@@ -101,7 +101,6 @@ final class Connect
             $response = $this->guzzleClient->post(
                 $this->config->getOrganizationHost() . '/oauth/token',
                 [
-                    RequestOptions::AUTH        => $this->getAuth(),
                     RequestOptions::HEADERS     => [
                         'Accept' => 'application/json',
                     ],
@@ -133,7 +132,6 @@ final class Connect
             $response = $this->guzzleClient->post(
                 $this->config->getOrganizationHost() . '/oauth/token',
                 [
-                    RequestOptions::AUTH        => $this->getAuth(),
                     RequestOptions::HEADERS     => [
                         'Accept' => 'application/json',
                     ],
@@ -192,20 +190,5 @@ final class Connect
             );
         }
         throw new InvalidRequestException('An unknown error has occurred.');
-    }
-
-    /**
-     * @return array
-     */
-    private function getAuth(): array
-    {
-        if ($this->config->getBasicAuthUserName() && $this->config->getBasicAuthPassword()) {
-            return [
-                $this->config->getBasicAuthUserName(),
-                $this->config->getBasicAuthPassword(),
-            ];
-        }
-
-        return [];
     }
 }

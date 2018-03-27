@@ -22,10 +22,6 @@ final class Config
     private $apiHost = '';
     /** @var string */
     private $organizationHost = '';
-    /** @var string */
-    private $basicAuthUserName;
-    /** @var string */
-    private $basicAuthPassword;
 
     /**
      * Config constructor.
@@ -126,47 +122,6 @@ final class Config
     public function setOrganizationHost(string $organizationHost)
     {
         $this->organizationHost = $organizationHost;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBasicAuthUserName(): string
-    {
-        return $this->basicAuthUserName;
-    }
-
-    /**
-     * @param string $basicAuthUserName
-     *
-     * @return $this
-     */
-    public function setBasicAuthUserName(string $basicAuthUserName)
-    {
-        $this->basicAuthUserName = $basicAuthUserName;
-
-        return $this;
-    }
-
-
-    /**
-     * @return string|null
-     */
-    public function getBasicAuthPassword()
-    {
-        return $this->basicAuthPassword;
-    }
-
-    /**
-     * @param string $basicAuthUserName
-     *
-     * @return $this
-     */
-    public function setBasicAuthPassword(string $basicAuthPassword)
-    {
-        $this->basicAuthPassword = $basicAuthPassword;
 
         return $this;
     }

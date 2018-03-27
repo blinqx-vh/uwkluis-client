@@ -50,7 +50,6 @@ final class Connect
         $httpResponse = $this->guzzleClient->get(
             $this->config->getApiHost() . '/consumer-connection?' . $query,
             [
-                RequestOptions::AUTH    => $this->getAuth(),
                 RequestOptions::HEADERS => [
                     'Accept'        => 'application/json',
                     'Authorization' => 'Bearer ' . (string) $accessToken,
@@ -65,20 +64,5 @@ final class Connect
             $response['connection_code'],
             explode(' ', $response['granted_scopes'])
         );
-    }
-
-    /**
-     * @return array
-     */
-    private function getAuth(): array
-    {
-        if ($this->config->getBasicAuthUserName() && $this->config->getBasicAuthPassword()) {
-            return [
-                $this->config->getBasicAuthUserName(),
-                $this->config->getBasicAuthPassword(),
-            ];
-        }
-
-        return [];
     }
 }
