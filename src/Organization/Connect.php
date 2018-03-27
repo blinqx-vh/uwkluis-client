@@ -7,6 +7,7 @@ use DateInterval;
 use DateTime;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Parser;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -23,19 +24,19 @@ final class Connect
     /** @var GuzzleClient */
     private $guzzleClient;
     /** @var Config */
-    private $clientConfig;
+    private $config;
 
     /**
      * ConnectToAccount constructor.
      *
-     * @param Config       $clientConfig
+     * @param Config       $config
      * @param GuzzleClient $guzzleClient
      */
     public function __construct(
-        Config $clientConfig,
+        Config $config,
         GuzzleClient $guzzleClient
     ) {
-        $this->clientConfig = $clientConfig;
+        $this->config = $config;
         $this->guzzleClient = $guzzleClient;
     }
 
@@ -46,14 +47,14 @@ final class Connect
     {
         $query = http_build_query(
             [
-                'client_id'     => $this->clientConfig->getClientId(),
-                'redirect_uri'  => $this->clientConfig->getCallbackUri(),
-                'scope'         => implode(' ', $this->clientConfig->getScopes()),
+                'client_id'     => $this->config->getClientId(),
+                'redirect_uri'  => $this->config->getCallbackUri(),
+                'scope'         => implode(' ', $this->config->getScopes()),
                 'response_type' => 'code',
             ]
         );
 
-        return $this->clientConfig->getOrganizationHost() . '/oauth/authorize?' . $query;
+        return $this->config->getOrganizationHost() . '/oauth/authorize?' . $query;
     }
 
     /**
@@ -61,8 +62,8 @@ final class Connect
      */
     public function getRevokeUrl(): string
     {
-        return $this->clientConfig->getOrganizationHost()
-            . '/applications/revoke/' . $this->clientConfig->getClientId();
+        return $this->config->getOrganizationHost()
+            . '/applications/revoke/' . $this->config->getClientId();
     }
 
     /**
@@ -98,18 +99,18 @@ final class Connect
     {
         try {
             $response = $this->guzzleClient->post(
-                $this->clientConfig->getOrganizationHost() . '/oauth/token',
+                $this->config->getOrganizationHost() . '/oauth/token',
                 [
-                    'auth' => $this->getBasicAuth(),
-                    'headers' => [
-                        'Accept' => 'application/json'
+                    RequestOptions::AUTH        => $this->getAuth(),
+                    RequestOptions::HEADERS     => [
+                        'Accept' => 'application/json',
                     ],
-                    'form_params' => [
+                    RequestOptions::FORM_PARAMS => [
                         'grant_type'    => 'refresh_token',
                         'refresh_token' => $refreshToken,
-                        'client_id'     => $this->clientConfig->getClientId(),
-                        'client_secret' => $this->clientConfig->getClientSecret(),
-                        'scope'         => implode(' ', $this->clientConfig->getScopes()),
+                        'client_id'     => $this->config->getClientId(),
+                        'client_secret' => $this->config->getClientSecret(),
+                        'scope'         => implode(' ', $this->config->getScopes()),
                     ],
                 ]
             );
@@ -130,17 +131,17 @@ final class Connect
     {
         try {
             $response = $this->guzzleClient->post(
-                $this->clientConfig->getOrganizationHost() . '/oauth/token',
+                $this->config->getOrganizationHost() . '/oauth/token',
                 [
-                    'auth' => $this->getBasicAuth(),
-                    'headers' => [
-                        'Accept' => 'application/json'
+                    RequestOptions::AUTH        => $this->getAuth(),
+                    RequestOptions::HEADERS     => [
+                        'Accept' => 'application/json',
                     ],
-                    'form_params' => [
+                    RequestOptions::FORM_PARAMS => [
                         'grant_type'    => 'authorization_code',
-                        'client_id'     => $this->clientConfig->getClientId(),
-                        'client_secret' => $this->clientConfig->getClientSecret(),
-                        'redirect_uri'  => $this->clientConfig->getCallbackUri(),
+                        'client_id'     => $this->config->getClientId(),
+                        'client_secret' => $this->config->getClientSecret(),
+                        'redirect_uri'  => $this->config->getCallbackUri(),
                         'code'          => $code,
                     ],
                 ]
@@ -196,14 +197,15 @@ final class Connect
     /**
      * @return array
      */
-    private function getBasicAuth(): array
+    private function getAuth(): array
     {
-        if ($this->clientConfig->getBasicAuthUserName() && $this->clientConfig->getBasicAuthPassword()) {
+        if ($this->config->getBasicAuthUserName() && $this->config->getBasicAuthPassword()) {
             return [
-                $this->clientConfig->getBasicAuthUserName(),
-                $this->clientConfig->getBasicAuthPassword()
+                $this->config->getBasicAuthUserName(),
+                $this->config->getBasicAuthPassword(),
             ];
         }
+
         return [];
     }
 }

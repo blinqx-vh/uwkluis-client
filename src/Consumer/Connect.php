@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Ufo\Client\Consumer;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Ufo\Client\Organization\Config;
 
@@ -49,8 +50,8 @@ final class Connect
         $httpResponse = $this->guzzleClient->get(
             $this->config->getApiHost() . '/consumer-connection?' . $query,
             [
-                'auth' => $this->getBasicAuth(),
-                'headers' => [
+                RequestOptions::AUTH    => $this->getAuth(),
+                RequestOptions::HEADERS => [
                     'Accept'        => 'application/json',
                     'Authorization' => 'Bearer ' . (string) $accessToken,
                 ],
@@ -66,15 +67,15 @@ final class Connect
         );
     }
 
-        /**
+    /**
      * @return array
      */
-    private function getBasicAuth(): array
+    private function getAuth(): array
     {
         if ($this->config->getBasicAuthUserName() && $this->config->getBasicAuthPassword()) {
             return [
                 $this->config->getBasicAuthUserName(),
-                $this->config->getBasicAuthPassword()
+                $this->config->getBasicAuthPassword(),
             ];
         }
 

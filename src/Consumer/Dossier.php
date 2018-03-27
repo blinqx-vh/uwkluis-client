@@ -5,9 +5,10 @@ namespace Ufo\Client\Consumer;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
-use Ufo\Client\Organization\Config;
 use Ufo\Client\Exception\InvalidRequestException;
+use Ufo\Client\Organization\Config;
 
 /**
  * Class Dossier
@@ -55,7 +56,7 @@ final class Dossier
                 $this->guzzleClient->get(
                     $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
-                        'headers' => [
+                        RequestOptions::HEADERS => [
                             'Accept'        => 'application/json',
                             'Authorization' => 'Bearer ' . (string) $accessToken,
                         ],
@@ -95,11 +96,12 @@ final class Dossier
                 $this->guzzleClient->post(
                     $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
-                        'headers'     => [
+                        RequestOptions::AUTH => $this->getAuth(),
+                        RequestOptions::HEADERS     => [
                             'Accept'        => 'application/json',
                             'Authorization' => 'Bearer ' . (string) $accessToken,
                         ],
-                        'form_params' => [
+                        RequestOptions::FORM_PARAMS => [
                             'dossier' => json_encode($dossierData),
                         ],
                     ]
@@ -113,4 +115,20 @@ final class Dossier
 
         return json_decode($httpResponse, true);
     }
+
+        /**
+     * @return array
+     */
+    private function getAuth(): array
+    {
+        if ($this->config->getBasicAuthUserName() && $this->config->getBasicAuthPassword()) {
+            return [
+                $this->config->getBasicAuthUserName(),
+                $this->config->getBasicAuthPassword(),
+            ];
+        }
+
+        return [];
+    }
+
 }
