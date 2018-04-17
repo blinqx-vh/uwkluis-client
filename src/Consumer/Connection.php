@@ -12,28 +12,37 @@ final class Connection
     private $organizationConsumerId;
     /** @var string */
     private $ufoConsumerId;
-    /** @var null|string */
-    private $connectionCode;
     /** @var array|null */
     private $grantedScopes;
+    /**
+     * @var null|string
+     */
+    private $connectionCode1;
+    /**
+     * @var null|string
+     */
+    private $connectionCode2;
 
     /**
      * Connection constructor.
      *
-     * @param string      $organizationConsumerId
-     * @param string      $ufoConsumerId
-     * @param string|null $connectionCode
-     * @param array|null  $grantedScopes
+     * @param string $organizationConsumerId
+     * @param string $ufoConsumerId
+     * @param string|null $connectionCode1
+     * @param string|null $connectionCode2
+     * @param array|null $grantedScopes
      */
     public function __construct(
         string $organizationConsumerId,
         string $ufoConsumerId,
-        string $connectionCode = null,
+        string $connectionCode1 = null,
+        string $connectionCode2 = null,
         array $grantedScopes = null
     ) {
         $this->organizationConsumerId = $organizationConsumerId;
         $this->ufoConsumerId = $ufoConsumerId;
-        $this->connectionCode = $connectionCode;
+        $this->connectionCode1 = $connectionCode1;
+        $this->connectionCode2 = $connectionCode2;
         $this->grantedScopes = $grantedScopes;
     }
 
@@ -56,9 +65,17 @@ final class Connection
     /**
      * @return null|string
      */
-    public function getConnectionCode()
+    public function getConnectionCode1()
     {
-        return $this->connectionCode;
+        return $this->connectionCode1;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getConnectionCode2()
+    {
+        return $this->connectionCode2;
     }
 
     /**
