@@ -6,6 +6,7 @@ namespace Ufo\Client\Consumer;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use Ramsey\Uuid\UuidInterface;
 use Ufo\Client\Exception\ConsumerRequestException;
 use Ufo\Client\Organization\Config;
 
@@ -71,5 +72,15 @@ final class Connect
             $response['connection_code'],
             explode(' ', $response['granted_scopes'])
         );
+    }
+
+    /**
+     * @param UuidInterface $uuid
+     *
+     * @return string
+     */
+    public function getOrganizationConsumerUrl(UuidInterface $uuid): string
+    {
+        return $this->config->getOrganizationHost() . '/consumer/' . $uuid->toString() . '/dossier';
     }
 }
