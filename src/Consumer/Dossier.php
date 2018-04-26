@@ -7,7 +7,9 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use Ufo\Client\Exception\ConsumerRequestException;
 use Ufo\Client\Exception\InvalidRequestException;
+use Ufo\Client\Exception\OrganizationRequestException;
 use Ufo\Client\Organization\Config;
 
 /**
@@ -63,6 +65,17 @@ final class Dossier
                     ]
                 )->getBody()->getContents();
         } catch (BadResponseException $e) {
+            $exceptionResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
+            if ($e->getCode() === 403 &&
+                $exceptionResponse === 'Invalid consumer connection'
+            ) {
+                throw new ConsumerRequestException($exceptionResponse, 403);
+            }
+
+            if ($e->getCode() === 401) {
+                throw new OrganizationRequestException('Invalid organization connection', 403);
+            }
+
             throw new InvalidRequestException(
                 $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
                 $e->getResponse() ? $e->getResponse()->getStatusCode() : 0
@@ -106,6 +119,17 @@ final class Dossier
                     ]
                 )->getBody()->getContents();
         } catch (BadResponseException $e) {
+            $exceptionResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
+            if ($e->getCode() === 403 &&
+                $exceptionResponse === 'Invalid consumer connection'
+            ) {
+                throw new ConsumerRequestException($exceptionResponse, 403);
+            }
+
+            if ($e->getCode() === 401) {
+                throw new OrganizationRequestException('Invalid organization connection', 403);
+            }
+
             throw new InvalidRequestException(
                 $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
                 $e->getResponse() ? $e->getResponse()->getStatusCode() : 0
