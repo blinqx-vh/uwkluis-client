@@ -69,7 +69,8 @@ final class Connect
         return new Connection(
             $response['organization_consumer_id'],
             $response['ufo_consumer_id'],
-            $response['connection_code'],
+            $response['connection_code_1'],
+            $response['connection_code_2'],
             explode(' ', $response['granted_scopes'])
         );
     }
