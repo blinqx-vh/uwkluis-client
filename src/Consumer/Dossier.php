@@ -66,10 +66,12 @@ final class Dossier
                 )->getBody()->getContents();
         } catch (BadResponseException $e) {
             $exceptionResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
-            if ($e->getCode() === 403 &&
-                $exceptionResponse === 'Invalid consumer connection'
-            ) {
-                throw new ConsumerRequestException($exceptionResponse, 403);
+            if (($e->getCode() === 403 &&
+                    $exceptionResponse === 'Invalid consumer connection'
+                ) || ($e->getCode() === 404 &&
+                    $exceptionResponse === 'consumer connection not found'
+                )) {
+                throw new ConsumerRequestException($exceptionResponse, $e->getCode());
             }
 
             if ($e->getCode() === 401) {
