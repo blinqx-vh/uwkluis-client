@@ -80,8 +80,16 @@ final class Connect
      *
      * @return string
      */
-    public function getOrganizationConsumerUrl(UuidInterface $uuid): string
+    public function getOrganizationConsumerDossierUrl(UuidInterface $uuid): string
     {
         return $this->config->getOrganizationHost() . '/consumer/' . $uuid->toString() . '/dossier';
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrganizationConsumersUrl(): string
+    {
+        return $this->config->getOrganizationHost() . '/consumers/';
     }
 }
