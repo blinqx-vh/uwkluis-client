@@ -82,7 +82,7 @@ final class Connect
      */
     public function getOrganizationConsumerDossierUrl(UuidInterface $uuid): string
     {
-        return $this->config->getOrganizationHost() . '/consumer/' . $uuid->toString() . '/dossier';
+        return $this->config->getOrganizationHost() . '/consumers/' . $uuid->toString();
     }
 
     /**
