@@ -1,5 +1,5 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Ufo\Client\Consumer;
 
@@ -27,22 +27,23 @@ final class Connect
     /**
      * Connection constructor.
      *
-     * @param Config               $config
-     * @param GuzzleClient         $guzzleClient
+     * @param Config $config
+     * @param GuzzleClient $guzzleClient
      * @param UuidFactoryInterface $uuidFactory
      */
     public function __construct(
         Config $config,
         GuzzleClient $guzzleClient,
         UuidFactoryInterface $uuidFactory
-    ) {
+    )
+    {
         $this->guzzleClient = $guzzleClient;
         $this->config = $config;
         $this->uuidFactory = $uuidFactory;
     }
 
     /**
-     * @param Token  $accessToken
+     * @param Token $accessToken
      * @param string $email
      * @param string $phoneNumber
      *
@@ -59,19 +60,19 @@ final class Connect
                 $this->config->getApiHost() . '/consumer/invite',
                 [
                     RequestOptions::FORM_PARAMS => [
-                        'email'        => $email,
+                        'email' => $email,
                         'phone_number' => $phoneNumber,
                     ],
-                    RequestOptions::HEADERS     => [
-                        'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . (string)$accessToken,
                     ],
                 ]
             );
         } catch (\Exception $e) {
             throw new ConsumerRequestException('Consumer connection failed', $e->getCode(), $e);
         }
-         return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
+        return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
     }
 
     /**
@@ -91,12 +92,12 @@ final class Connect
                 $this->config->getApiHost() . '/consumer/reinvite',
                 [
                     RequestOptions::FORM_PARAMS => [
-                        'email'        => $email,
+                        'email' => $email,
                         'phone_number' => $phoneNumber,
                     ],
-                    RequestOptions::HEADERS     => [
-                        'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . (string)$accessToken,
                     ],
                 ]
             );
