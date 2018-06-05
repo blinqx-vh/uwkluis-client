@@ -17,6 +17,11 @@ use Ufo\Client\Organization\Config;
  */
 final class Connect
 {
+    /**
+     * Phone number validation regex
+     */
+    const PHONE_NUMBER_REGEX = '/^((((00|\+)31|0)6){1}[1-9]{1}[0-9]{7})$/';
+
     /** @var GuzzleClient */
     private $guzzleClient;
     /** @var Config */
@@ -53,7 +58,7 @@ final class Connect
     public function inviteConsumer(Token $accessToken, string $email, string $phoneNumber): UuidInterface
     {
         Assertion::email($email);
-        Assertion::regex($phoneNumber, '/^((((00|\+)31|0)6){1}[1-9]{1}[0-9]{7})$/');
+        Assertion::regex($phoneNumber, self::PHONE_NUMBER_REGEX);
 
         try {
             $httpResponse = $this->guzzleClient->post(
@@ -76,17 +81,18 @@ final class Connect
     }
 
     /**
-     * @param Token $accessToken
-     * @param string $identifier
-     * @param string $email
-     * @param string $phoneNumber
+     * @param Token         $accessToken
+     * @param UuidInterface $identifier
+     * @param string        $email
+     * @param string        $phoneNumber
      *
      * @return UuidInterface
+     * @throws \Assert\AssertionFailedException
      */
-    public function reinviteConsumer(Token $accessToken, string $identifier, string $email, string $phoneNumber): UuidInterface
+    public function reinviteConsumer(Token $accessToken, UuidInterface $identifier, string $email, string $phoneNumber): UuidInterface
     {
         Assertion::email($email);
-        Assertion::regex($phoneNumber, '/^((((00|\+)31|0)6){1}[1-9]{1}[0-9]{7})$/');
+        Assertion::regex($phoneNumber, self::PHONE_NUMBER_REGEX);
 
         try {
             $httpResponse = $this->guzzleClient->post(
@@ -95,7 +101,7 @@ final class Connect
                     RequestOptions::FORM_PARAMS => [
                         'email' => $email,
                         'phone_number' => $phoneNumber,
-                        'consumer_identifier' => $identifier
+                        'consumer_identifier' => $identifier->toString()
                     ],
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
