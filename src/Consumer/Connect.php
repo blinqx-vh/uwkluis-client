@@ -75,6 +75,38 @@ final class Connect
     }
 
     /**
+     * @param Token $accessToken
+     * @param string $email
+     * @param string $phoneNumber
+     *
+     * @return UuidInterface
+     */
+    public function ReinviteConsumer(Token $accessToken, string $email, string $phoneNumber): UuidInterface
+    {
+        Assertion::email($email);
+        Assertion::regex($phoneNumber, '/^((((00|\+)31|0)6){1}[1-9]{1}[0-9]{7})$/');
+
+        try {
+            $httpResponse = $this->guzzleClient->post(
+                $this->config->getApiHost() . '/consumer/reinvite',
+                [
+                    RequestOptions::FORM_PARAMS => [
+                        'email'        => $email,
+                        'phone_number' => $phoneNumber,
+                    ],
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                    ],
+                ]
+            );
+        } catch (\Exception $e) {
+            throw new ConsumerRequestException('Consumer connection failed', $e->getCode(), $e);
+        }
+        return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
+    }
+
+    /**
      * @param UuidInterface $uuid
      *
      * @return string
