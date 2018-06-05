@@ -77,6 +77,7 @@ final class Connect
 
     /**
      * @param Token $accessToken
+     * @param string $identifier
      * @param string $email
      * @param string $phoneNumber
      *
