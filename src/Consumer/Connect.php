@@ -32,23 +32,22 @@ final class Connect
     /**
      * Connection constructor.
      *
-     * @param Config $config
-     * @param GuzzleClient $guzzleClient
+     * @param Config               $config
+     * @param GuzzleClient         $guzzleClient
      * @param UuidFactoryInterface $uuidFactory
      */
     public function __construct(
         Config $config,
         GuzzleClient $guzzleClient,
         UuidFactoryInterface $uuidFactory
-    )
-    {
+    ) {
         $this->guzzleClient = $guzzleClient;
         $this->config = $config;
         $this->uuidFactory = $uuidFactory;
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $email
      * @param string $phoneNumber
      *
