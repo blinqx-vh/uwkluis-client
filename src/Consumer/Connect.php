@@ -82,18 +82,19 @@ final class Connect
      *
      * @return UuidInterface
      */
-    public function reinviteConsumer(Token $accessToken, string $email, string $phoneNumber): UuidInterface
+    public function reinviteConsumer(Token $accessToken, string $identifier, string $email, string $phoneNumber): UuidInterface
     {
         Assertion::email($email);
         Assertion::regex($phoneNumber, '/^((((00|\+)31|0)6){1}[1-9]{1}[0-9]{7})$/');
 
         try {
             $httpResponse = $this->guzzleClient->post(
-                $this->config->getApiHost() . '/consumer/reinvite',
+                $this->config->getApiHost() . '/consumer/update-and-reinvite',
                 [
                     RequestOptions::FORM_PARAMS => [
                         'email' => $email,
                         'phone_number' => $phoneNumber,
+                        'consumer_identifier' => $identifier
                     ],
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
