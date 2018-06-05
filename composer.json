@@ -5,6 +5,7 @@
     "type": "library",
     "require": {
         "php": ">=7.0.0",
+        "beberlei/assert": "^2.9",
         "guzzlehttp/guzzle": "^6.3",
         "lcobucci/jwt": "^3.2",
         "ramsey/uuid": "^3.7"
