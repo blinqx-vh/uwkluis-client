@@ -89,7 +89,7 @@ final class Connect
      * @return UuidInterface
      * @throws \Assert\AssertionFailedException
      */
-    public function reinviteConsumer(Token $accessToken, UuidInterface $identifier, string $email, string $phoneNumber): UuidInterface
+    public function updateAndReinviteConsumer(Token $accessToken, UuidInterface $identifier, string $email, string $phoneNumber): UuidInterface
     {
         Assertion::email($email);
         Assertion::regex($phoneNumber, self::PHONE_NUMBER_REGEX);
