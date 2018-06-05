@@ -7,6 +7,7 @@ use Assert\Assertion;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
 use Ufo\Client\Exception\ConsumerRequestException;
 use Ufo\Client\Organization\Config;
@@ -20,19 +21,24 @@ final class Connect
     private $guzzleClient;
     /** @var Config */
     private $config;
+    /** @var UuidFactoryInterface */
+    private $uuidFactory;
 
     /**
      * Connection constructor.
      *
-     * @param Config       $config
-     * @param GuzzleClient $guzzleClient
+     * @param Config               $config
+     * @param GuzzleClient         $guzzleClient
+     * @param UuidFactoryInterface $uuidFactory
      */
     public function __construct(
         Config $config,
-        GuzzleClient $guzzleClient
+        GuzzleClient $guzzleClient,
+        UuidFactoryInterface $uuidFactory
     ) {
         $this->guzzleClient = $guzzleClient;
         $this->config = $config;
+        $this->uuidFactory = $uuidFactory;
     }
 
     /**
@@ -40,10 +46,10 @@ final class Connect
      * @param string $email
      * @param string $phoneNumber
      *
-     * @return Connection
+     * @return UuidInterface - the Uuid for the consumer
      * @throws \Assert\AssertionFailedException
      */
-    public function inviteConsumer(Token $accessToken, string $email, string $phoneNumber): string
+    public function inviteConsumer(Token $accessToken, string $email, string $phoneNumber): UuidInterface
     {
         Assertion::email($email);
         Assertion::regex($phoneNumber, '/^((((00|\+)31|0)6){1}[1-9]{1}[0-9]{7})$/');
@@ -65,8 +71,7 @@ final class Connect
         } catch (\Exception $e) {
             throw new ConsumerRequestException('Consumer connection failed', $e->getCode(), $e);
         }
-
-        return json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id;
+         return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
     }
 
     /**
