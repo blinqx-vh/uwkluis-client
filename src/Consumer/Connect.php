@@ -82,7 +82,7 @@ final class Connect
      *
      * @return UuidInterface
      */
-    public function ReinviteConsumer(Token $accessToken, string $email, string $phoneNumber): UuidInterface
+    public function reinviteConsumer(Token $accessToken, string $email, string $phoneNumber): UuidInterface
     {
         Assertion::email($email);
         Assertion::regex($phoneNumber, '/^((((00|\+)31|0)6){1}[1-9]{1}[0-9]{7})$/');
