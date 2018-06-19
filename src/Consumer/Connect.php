@@ -1,15 +1,19 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
 use Assert\Assertion;
+use Exception;
+use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
 use Ufo\Client\Exception\ConsumerRequestException;
+use Ufo\Client\Exception\OrganizationRequestException;
 use Ufo\Client\Organization\Config;
 
 /**
@@ -64,18 +68,24 @@ final class Connect
                 $this->config->getApiHost() . '/consumer/invite',
                 [
                     RequestOptions::FORM_PARAMS => [
-                        'email' => $email,
+                        'email'        => $email,
                         'phone_number' => $phoneNumber,
                     ],
-                    RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             );
-        } catch (\Exception $e) {
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
+                throw new OrganizationRequestException('Organization connection failed', $e->getCode(), $e);
+            }
+            throw new ConsumerRequestException('Consumer connection failed', $e->getCode(), $e);
+        } catch (Exception $e) {
             throw new ConsumerRequestException('Consumer connection failed', $e->getCode(), $e);
         }
+
         return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
     }
 
@@ -88,8 +98,12 @@ final class Connect
      * @return UuidInterface
      * @throws \Assert\AssertionFailedException
      */
-    public function updateAndReinviteConsumer(Token $accessToken, UuidInterface $identifier, string $email, string $phoneNumber): UuidInterface
-    {
+    public function updateAndReinviteConsumer(
+        Token $accessToken,
+        UuidInterface $identifier,
+        string $email,
+        string $phoneNumber
+    ): UuidInterface {
         Assertion::email($email);
         Assertion::regex($phoneNumber, self::PHONE_NUMBER_REGEX);
 
@@ -98,19 +112,25 @@ final class Connect
                 $this->config->getApiHost() . '/consumer/update-and-reinvite',
                 [
                     RequestOptions::FORM_PARAMS => [
-                        'email' => $email,
-                        'phone_number' => $phoneNumber,
-                        'consumer_identifier' => $identifier->toString()
+                        'email'               => $email,
+                        'phone_number'        => $phoneNumber,
+                        'consumer_identifier' => $identifier->toString(),
                     ],
-                    RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             );
-        } catch (\Exception $e) {
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
+                throw new OrganizationRequestException('Organization connection failed', $e->getCode(), $e);
+            }
+            throw new ConsumerRequestException('Consumer connection failed', $e->getCode(), $e);
+        } catch (Exception $e) {
             throw new ConsumerRequestException('Consumer connection failed', $e->getCode(), $e);
         }
+
         return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
     }
 
