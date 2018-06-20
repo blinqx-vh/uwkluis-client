@@ -4,7 +4,7 @@ declare(strict_types = 1);
 namespace Ufo\Client\Exception;
 
 /**
- * Class OrganizationRequestException
+ * Class OrganizationConnectionException
  */
 class OrganizationConnectionException extends \RuntimeException
 {

@@ -12,6 +12,7 @@ use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
+use Ufo\Client\Exception\ConsumerConnectionConflict;
 use Ufo\Client\Exception\ConsumerConnectionException;
 use Ufo\Client\Exception\OrganizationConnectionException;
 use Ufo\Client\Organization\Config;
@@ -80,6 +81,12 @@ final class Connect
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
                 throw new OrganizationConnectionException('Organization connection failed', $e->getCode(), $e);
+            } elseif ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_CONFLICT) {
+                throw new ConsumerConnectionConflict(
+                    'Consumer with this email and phone number is already connected or invited',
+                    $e->getCode(),
+                    $e
+                );
             }
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
         } catch (Exception $e) {
