@@ -6,6 +6,6 @@ namespace Ufo\Client\Exception;
 /**
  * Class ConsumerRequestException
  */
-class ConsumerRequestException extends \RuntimeException
+class ConsumerConnectionException extends \RuntimeException
 {
 }

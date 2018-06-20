@@ -6,6 +6,6 @@ namespace Ufo\Client\Exception;
 /**
  * Class OrganizationRequestException
  */
-class OrganizationRequestException extends \RuntimeException
+class OrganizationConnectionException extends \RuntimeException
 {
 }

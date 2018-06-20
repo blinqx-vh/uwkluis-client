@@ -7,9 +7,9 @@ use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
-use Ufo\Client\Exception\ConsumerRequestException;
+use Ufo\Client\Exception\ConsumerConnectionException;
 use Ufo\Client\Exception\InvalidRequestException;
-use Ufo\Client\Exception\OrganizationRequestException;
+use Ufo\Client\Exception\OrganizationConnectionException;
 use Ufo\Client\Organization\Config;
 
 /**
@@ -71,11 +71,11 @@ final class Dossier
                 ) || ($e->getCode() === 404 &&
                     $exceptionResponse === 'consumer connection not found'
                 )) {
-                throw new ConsumerRequestException($exceptionResponse, $e->getCode());
+                throw new ConsumerConnectionException($exceptionResponse, $e->getCode());
             }
 
             if ($e->getCode() === 401) {
-                throw new OrganizationRequestException('Invalid organization connection', 403);
+                throw new OrganizationConnectionException('Invalid organization connection', 403);
             }
 
             throw new InvalidRequestException(
@@ -125,11 +125,11 @@ final class Dossier
             if ($e->getCode() === 403 &&
                 $exceptionResponse === 'Invalid consumer connection'
             ) {
-                throw new ConsumerRequestException($exceptionResponse, 403);
+                throw new ConsumerConnectionException($exceptionResponse, 403);
             }
 
             if ($e->getCode() === 401) {
-                throw new OrganizationRequestException('Invalid organization connection', 403);
+                throw new OrganizationConnectionException('Invalid organization connection', 403);
             }
 
             throw new InvalidRequestException(

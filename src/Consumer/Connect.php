@@ -12,8 +12,8 @@ use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
-use Ufo\Client\Exception\ConsumerRequestException;
-use Ufo\Client\Exception\OrganizationRequestException;
+use Ufo\Client\Exception\ConsumerConnectionException;
+use Ufo\Client\Exception\OrganizationConnectionException;
 use Ufo\Client\Organization\Config;
 
 /**
@@ -79,11 +79,11 @@ final class Connect
             );
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
-                throw new OrganizationRequestException('Organization connection failed', $e->getCode(), $e);
+                throw new OrganizationConnectionException('Organization connection failed', $e->getCode(), $e);
             }
-            throw new ConsumerRequestException('Consumer connection failed', $e->getCode(), $e);
+            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
         } catch (Exception $e) {
-            throw new ConsumerRequestException('Consumer connection failed', $e->getCode(), $e);
+            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
         }
 
         return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
@@ -124,11 +124,11 @@ final class Connect
             );
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
-                throw new OrganizationRequestException('Organization connection failed', $e->getCode(), $e);
+                throw new OrganizationConnectionException('Organization connection failed', $e->getCode(), $e);
             }
-            throw new ConsumerRequestException('Consumer connection failed', $e->getCode(), $e);
+            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
         } catch (Exception $e) {
-            throw new ConsumerRequestException('Consumer connection failed', $e->getCode(), $e);
+            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
         }
 
         return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
