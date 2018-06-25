@@ -12,7 +12,7 @@ final class Config
     private $clientId;
     /** @var string */
     private $callbackUri;
-    /** @var array|scopes */
+    /** @var array */
     private $scopes;
     /** @var string */
     private $clientSecret;
