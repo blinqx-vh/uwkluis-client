@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
+use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
@@ -65,25 +66,10 @@ final class Dossier
                     ]
                 )->getBody()->getContents();
         } catch (BadResponseException $e) {
-            $exceptionResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
-            if (($e->getCode() === 403 &&
-                    $exceptionResponse === 'Invalid consumer connection'
-                ) || ($e->getCode() === 404 &&
-                    $exceptionResponse === 'consumer connection not found'
-                )) {
-                throw new ConsumerConnectionException($exceptionResponse, $e->getCode());
-            }
-
-            if ($e->getCode() === 401) {
-                throw new OrganizationConnectionException('Invalid organization connection', 403);
-            }
-
-            throw new InvalidRequestException(
-                $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
-                $e->getResponse() ? $e->getResponse()->getStatusCode() : 0
-            );
+            $this->processBadResponse($e);
         }
 
+        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -121,23 +107,37 @@ final class Dossier
                     ]
                 )->getBody()->getContents();
         } catch (BadResponseException $e) {
-            $exceptionResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
-            if ($e->getCode() === 403 &&
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return json_decode($httpResponse, true);
+    }
+
+    /**
+     * @param BadResponseException $e
+     */
+    private function processBadResponse(BadResponseException $e)
+    {
+        $exceptionResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
+        if (($e->getCode() === StatusCodeInterface::STATUS_FORBIDDEN &&
                 $exceptionResponse === 'Invalid consumer connection'
-            ) {
-                throw new ConsumerConnectionException($exceptionResponse, 403);
-            }
+            ) || ($e->getCode() === StatusCodeInterface::STATUS_NOT_FOUND &&
+                $exceptionResponse === 'consumer connection not found'
+            )) {
+            throw new ConsumerConnectionException($exceptionResponse, $e->getCode());
+        }
 
-            if ($e->getCode() === 401) {
-                throw new OrganizationConnectionException('Invalid organization connection', 403);
-            }
-
-            throw new InvalidRequestException(
-                $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
-                $e->getResponse() ? $e->getResponse()->getStatusCode() : 0
+        if ($e->getCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
+            throw new OrganizationConnectionException(
+                'Invalid organization connection',
+                StatusCodeInterface::STATUS_FORBIDDEN
             );
         }
 
-        return json_decode($httpResponse, true);
+        throw new InvalidRequestException(
+            $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
+            $e->getResponse() ? $e->getResponse()->getStatusCode() : 0
+        );
     }
 }
