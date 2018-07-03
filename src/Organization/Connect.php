@@ -188,7 +188,7 @@ final class Connect
     private function processError(array $data)
     {
         $message = '';
-        if ($data['error'] === 'invalid_scopes') {
+        if ($data['error'] === 'invalid_scope') {
             if (isset($data['message'])) {
                 $message .= $data['message'];
 
