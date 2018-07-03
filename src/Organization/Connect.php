@@ -164,27 +164,8 @@ final class Connect
         $statusCode = $response->getStatusCode();
         $data = json_decode($content, true);
 
-        if (isset($data['error']) && $data['error'] === 'invalid_scopes') {
-            $message = $data['message'];
-            if (isset($data['hint']) && $data['hint'] === 'Authorization code has expired') {
-                $message .= ' - ' . $data['hint'];
-            }
-            throw new InvalidScopesException($message);
-        }
-
-        if (isset($data['error']) && $data['error'] === 'invalid_request') {
-            $message = '';
-            if (isset($data['message'])) {
-                $message .= $data['message'];
-                if ($message === 'The refresh token is invalid.') {
-                    throw new RefreshTokenInvalidException($message);
-                }
-            }
-            if (isset($data['hint']) && $data['hint'] === 'Authorization code has expired') {
-                $message .= ' - ' . $data['hint'];
-                throw new AuthCodeExpiredException($message);
-            }
-            throw new InvalidRequestException($message);
+        if (isset($data['error'])) {
+            $this->processError($data);
         }
         if ($statusCode < 400
             && isset($data['expires_in'], $data['access_token'], $data['refresh_token'])) {
@@ -199,5 +180,37 @@ final class Connect
             );
         }
         throw new InvalidRequestException('An unknown error has occurred.');
+    }
+
+    /**
+     * @param array $data
+     */
+    private function processError(array $data)
+    {
+        $message = '';
+        if ($data['error'] === 'invalid_scopes') {
+            if (isset($data['message'])) {
+                $message .= $data['message'];
+
+            }
+            if (isset($data['hint'])) {
+                $message .= ' - ' . $data['hint'];
+            }
+            throw new InvalidScopesException($message);
+        }
+
+        if ($data['error'] === 'invalid_request') {
+            if (isset($data['message'])) {
+                $message .= $data['message'];
+                if ($message === 'The refresh token is invalid.') {
+                    throw new RefreshTokenInvalidException($message);
+                }
+            }
+            if (isset($data['hint']) && $data['hint'] === 'Authorization code has expired') {
+                $message .= ' - ' . $data['hint'];
+                throw new AuthCodeExpiredException($message);
+            }
+            throw new InvalidRequestException($message);
+        }
     }
 }
