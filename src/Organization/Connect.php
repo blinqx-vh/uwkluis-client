@@ -14,6 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Ufo\Client\Exception\AuthCodeExpiredException;
 use Ufo\Client\Exception\InvalidRequestException;
+use Ufo\Client\Exception\InvalidScopesException;
 use Ufo\Client\Exception\RefreshTokenInvalidException;
 
 /**
@@ -162,6 +163,14 @@ final class Connect
         $content = $response->getBody()->getContents();
         $statusCode = $response->getStatusCode();
         $data = json_decode($content, true);
+
+        if (isset($data['error']) && $data['error'] === 'invalid_scopes') {
+            $message = $data['message'];
+            if (isset($data['hint']) && $data['hint'] === 'Authorization code has expired') {
+                $message .= ' - ' . $data['hint'];
+            }
+            throw new InvalidScopesException($message);
+        }
 
         if (isset($data['error']) && $data['error'] === 'invalid_request') {
             $message = '';
