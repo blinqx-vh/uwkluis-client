@@ -11,6 +11,7 @@ use Lcobucci\JWT\Token;
 use Ufo\Client\Exception\ConsumerConnectionException;
 use Ufo\Client\Exception\InvalidRequestException;
 use Ufo\Client\Exception\OrganizationConnectionException;
+use Ufo\Client\Exception\ValidationException;
 use Ufo\Client\Organization\Config;
 
 /**
@@ -34,7 +35,7 @@ final class Dossier
         GuzzleClient $guzzleClient
     ) {
         $this->guzzleClient = $guzzleClient;
-        $this->config = $config;
+        $this->config       = $config;
     }
 
     /**
@@ -49,7 +50,7 @@ final class Dossier
         string $consumerId,
         int $version
     ): array {
-        $query = [
+        $query       = [
             'consumer_id' => $consumerId,
             'version'     => $version,
         ];
@@ -120,24 +121,34 @@ final class Dossier
     private function processBadResponse(BadResponseException $e)
     {
         $exceptionResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
-        if (($e->getCode() === StatusCodeInterface::STATUS_FORBIDDEN &&
-                $exceptionResponse === 'Invalid consumer connection'
-            ) || ($e->getCode() === StatusCodeInterface::STATUS_NOT_FOUND &&
-                $exceptionResponse === 'consumer connection not found'
-            )) {
-            throw new ConsumerConnectionException($exceptionResponse, $e->getCode());
+        if (
+            ($e->getCode() === StatusCodeInterface::STATUS_FORBIDDEN
+             && $exceptionResponse === 'Invalid consumer connection'
+            )
+            || ($e->getCode() === StatusCodeInterface::STATUS_NOT_FOUND
+                && $exceptionResponse === 'consumer connection not found'
+            )
+        ) {
+            throw new ConsumerConnectionException($exceptionResponse, $e->getCode(), $e);
         }
 
         if ($e->getCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
             throw new OrganizationConnectionException(
                 'Invalid organization connection',
-                StatusCodeInterface::STATUS_FORBIDDEN
+                StatusCodeInterface::STATUS_FORBIDDEN,
+                $e
             );
+        }
+
+        if ($e->getCode() === StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY) {
+            throw  (new ValidationException('Validation failed', $e->getCode(), $e))
+                ->setValidationErrors(json_decode(json_decode($e->getResponse()->getBody()->getContents())->message));
         }
 
         throw new InvalidRequestException(
             $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
-            $e->getResponse() ? $e->getResponse()->getStatusCode() : 0
+            $e->getResponse() ? $e->getResponse()->getStatusCode() : 0,
+            $e
         );
     }
 }
