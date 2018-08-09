@@ -142,7 +142,7 @@ final class Dossier
 
         if ($e->getCode() === StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY) {
             throw  (new ValidationException('Validation failed', $e->getCode(), $e))
-                ->setValidationErrors(json_decode(json_decode($e->getResponse()->getBody()->getContents())->message));
+                ->setValidationErrors(json_decode($exceptionResponse['message']));
         }
 
         throw new InvalidRequestException(
