@@ -37,8 +37,8 @@ final class Connect
     /**
      * Connection constructor.
      *
-     * @param Config $config
-     * @param GuzzleClient $guzzleClient
+     * @param Config               $config
+     * @param GuzzleClient         $guzzleClient
      * @param UuidFactoryInterface $uuidFactory
      */
     public function __construct(
@@ -47,12 +47,12 @@ final class Connect
         UuidFactoryInterface $uuidFactory
     ) {
         $this->guzzleClient = $guzzleClient;
-        $this->config       = $config;
-        $this->uuidFactory  = $uuidFactory;
+        $this->config = $config;
+        $this->uuidFactory = $uuidFactory;
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $email
      * @param string $phoneNumber
      *
@@ -97,10 +97,10 @@ final class Connect
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token         $accessToken
      * @param UuidInterface $identifier
-     * @param string $email
-     * @param string $phoneNumber
+     * @param string        $email
+     * @param string        $phoneNumber
      *
      * @return UuidInterface
      * @throws \Assert\AssertionFailedException
@@ -119,45 +119,11 @@ final class Connect
                 $this->config->getApiHost() . '/consumer/update-and-reinvite',
                 [
                     RequestOptions::FORM_PARAMS => [
-                        'email' => $email,
-                        'phone_number' => $phoneNumber,
+                        'email'               => $email,
+                        'phone_number'        => $phoneNumber,
                         'consumer_identifier' => $identifier->toString(),
                     ],
-                    RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
-                    ],
-                ]
-            );
-        } catch (ClientException $e) {
-            if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
-                throw new OrganizationConnectionException('Organization connection failed', $e->getCode(), $e);
-            }
-            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
-        } catch (Exception $e) {
-            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
-        }
-
-        return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
-    }
-
-    /**
-     * @param Token         $accessToken
-     * @param UuidInterface $identifier
-     */
-    public function getConnectionStatus(
-        Token $accessToken,
-        UuidInterface $identifier
-    ) {
-        try {
-            $httpResponse = $this->guzzleClient->get(
-                $this->config->getApiHost() . '/consumer/get-connection-status?' . http_build_query(
-                    [
-                        'consumer_identifier' => $identifier->toString(),
-                    ]
-                ),
-                [
-                    RequestOptions::HEADERS => [
+                    RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
                         'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
@@ -172,7 +138,7 @@ final class Connect
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
         }
 
-        return json_decode((string) $httpResponse->getBody());
+        return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
     }
 
     /**
