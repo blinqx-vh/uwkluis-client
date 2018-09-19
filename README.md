@@ -128,8 +128,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-travis]: https://img.shields.io/travis/ufo/client/master.svg?style=flat-square
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/ufo/client.svg?style=flat-square
-[ico-code-quality]: 
-https://scrutinizer-ci.com/gp/ufo-client/badges/quality-score.png?b=master&s=6a0bcea240c60e70290bf3857c2966e9c38b29c8
+[ico-code-quality]: https://scrutinizer-ci.com/gp/ufo-client/badges/quality-score.png?b=master&s=6a0bcea240c60e70290bf3857c2966e9c38b29c8
 [ico-downloads]: https://img.shields.io/packagist/dt/ufo/client.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/ufo/client
