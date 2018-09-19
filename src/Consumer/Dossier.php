@@ -35,7 +35,7 @@ final class Dossier
         GuzzleClient $guzzleClient
     ) {
         $this->guzzleClient = $guzzleClient;
-        $this->config = $config;
+        $this->config       = $config;
     }
 
     /**
@@ -50,7 +50,7 @@ final class Dossier
         string $consumerId,
         int $version
     ): array {
-        $query = [
+        $query       = [
             'consumer_id' => $consumerId,
             'version'     => $version,
         ];
