@@ -121,9 +121,8 @@ final class Dossier
     private function processBadResponse(BadResponseException $e)
     {
         $exceptionResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
-        if (
-            ($e->getCode() === StatusCodeInterface::STATUS_FORBIDDEN
-             && $exceptionResponse === 'Invalid consumer connection'
+        if (($e->getCode() === StatusCodeInterface::STATUS_FORBIDDEN
+                && $exceptionResponse === 'Invalid consumer connection'
             )
             || ($e->getCode() === StatusCodeInterface::STATUS_NOT_FOUND
                 && $exceptionResponse === 'consumer connection not found'

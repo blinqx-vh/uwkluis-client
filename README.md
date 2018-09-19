@@ -5,7 +5,6 @@
 [![Coverage Status][ico-scrutinizer]][link-scrutinizer]
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
-[![SensioLabsInsight][ico-sensiolabs]][link-sensiolabs]
 
 
 This package can assist in connecting to the UFO API.
@@ -129,9 +128,9 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 [ico-travis]: https://img.shields.io/travis/ufo/client/master.svg?style=flat-square
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/ufo/client.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/ufo/client.svg?style=flat-square
+[ico-code-quality]: 
+https://scrutinizer-ci.com/gp/ufo-client/badges/quality-score.png?b=master&s=6a0bcea240c60e70290bf3857c2966e9c38b29c8
 [ico-downloads]: https://img.shields.io/packagist/dt/ufo/client.svg?style=flat-square
-[ico-sensiolabs]: https://img.shields.io/sensiolabs/i/4ab172be-9cc4-464c-aa2e-93566244b1ac.svg
 
 [link-packagist]: https://packagist.org/packages/ufo/client
 [link-travis]: https://travis-ci.org/ufo/client
@@ -139,5 +138,3 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-code-quality]: https://scrutinizer-ci.com/g/ufo/client
 [link-downloads]: https://packagist.org/packages/ufo/client
 [link-author]: https://github.com/REDACTED
-[link-contributors]: ../../contributors
-[link-sensiolabs]: https://insight.sensiolabs.com/projects/4ab172be-9cc4-464c-aa2e-93566244b1ac

@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
@@ -47,8 +47,8 @@ final class Connect
         UuidFactoryInterface $uuidFactory
     ) {
         $this->guzzleClient = $guzzleClient;
-        $this->config = $config;
-        $this->uuidFactory = $uuidFactory;
+        $this->config       = $config;
+        $this->uuidFactory  = $uuidFactory;
     }
 
     /**
@@ -69,12 +69,12 @@ final class Connect
                 $this->config->getApiHost() . '/consumer/invite',
                 [
                     RequestOptions::FORM_PARAMS => [
-                        'email' => $email,
+                        'email'        => $email,
                         'phone_number' => $phoneNumber,
                     ],
-                    RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             );
@@ -139,6 +139,40 @@ final class Connect
         }
 
         return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
+    }
+
+    /**
+     * @param Token         $accessToken
+     * @param UuidInterface $identifier
+     */
+    public function getConnectionStatus(
+        Token $accessToken,
+        UuidInterface $identifier
+    ) {
+        try {
+            $httpResponse = $this->guzzleClient->get(
+                $this->config->getApiHost() . '/consumer/get-connection-status?' . http_build_query(
+                    [
+                        'consumer_identifier' => $identifier->toString(),
+                    ]
+                ),
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                    ],
+                ]
+            );
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
+                throw new OrganizationConnectionException('Organization connection failed', $e->getCode(), $e);
+            }
+            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
+        } catch (Exception $e) {
+            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
+        }
+
+        return json_decode((string) $httpResponse->getBody());
     }
 
     /**
