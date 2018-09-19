@@ -35,7 +35,7 @@ final class Dossier
         GuzzleClient $guzzleClient
     ) {
         $this->guzzleClient = $guzzleClient;
-        $this->config       = $config;
+        $this->config = $config;
     }
 
     /**
@@ -50,7 +50,7 @@ final class Dossier
         string $consumerId,
         int $version
     ): array {
-        $query       = [
+        $query = [
             'consumer_id' => $consumerId,
             'version'     => $version,
         ];
@@ -121,9 +121,8 @@ final class Dossier
     private function processBadResponse(BadResponseException $e)
     {
         $exceptionResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
-        if (
-            ($e->getCode() === StatusCodeInterface::STATUS_FORBIDDEN
-             && $exceptionResponse === 'Invalid consumer connection'
+        if (($e->getCode() === StatusCodeInterface::STATUS_FORBIDDEN
+                && $exceptionResponse === 'Invalid consumer connection'
             )
             || ($e->getCode() === StatusCodeInterface::STATUS_NOT_FOUND
                 && $exceptionResponse === 'consumer connection not found'
