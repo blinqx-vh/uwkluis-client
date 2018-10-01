@@ -110,7 +110,7 @@ final class Files
      * @param string $consumerId
      * @param string $fileId
      *
-     * @return mixed
+     * @return \Psr\Http\Message\ResponseInterface
      */
     public function download(
         Token $accessToken,
