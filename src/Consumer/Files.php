@@ -104,4 +104,35 @@ final class Files
         /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
+
+    /**
+     * @param Token  $accessToken
+     * @param string $consumerId
+     * @param string $fileId
+     *
+     * @return mixed
+     */
+    public function download(
+        Token $accessToken,
+        string $consumerId,
+        string $fileId
+    ) {
+        $query = [
+            'consumer_id' => $consumerId,
+        ];
+        $queryString = http_build_query($query);
+        try {
+            return $this->guzzleClient->get(
+                    $this->config->getApiHost() . "/files/{$fileId}?" . $queryString,
+                    [
+                        RequestOptions::HEADERS => [
+                            'Accept'        => 'application/json',
+                            'Authorization' => 'Bearer ' . (string) $accessToken,
+                        ],
+                    ]
+                )->getBody()->getContents();
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+    }
 }
