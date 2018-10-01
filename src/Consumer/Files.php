@@ -130,7 +130,7 @@ final class Files
                             'Authorization' => 'Bearer ' . (string) $accessToken,
                         ],
                     ]
-                )->getBody()->getContents();
+                );
         } catch (BadResponseException $e) {
             $this->processBadResponse($e);
         }
