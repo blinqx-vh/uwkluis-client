@@ -3,22 +3,19 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
-use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
-use Ufo\Client\Exception\ConsumerConnectionException;
-use Ufo\Client\Exception\InvalidRequestException;
-use Ufo\Client\Exception\OrganizationConnectionException;
-use Ufo\Client\Exception\ValidationException;
 use Ufo\Client\Organization\Config;
+use Ufo\Client\Traits\ProcessesBadResponses;
 
 /**
  * Class Dossier
  */
 final class Dossier
 {
+    use ProcessesBadResponses;
     /** @var GuzzleClient */
     private $guzzleClient;
     /** @var Config */
@@ -113,41 +110,5 @@ final class Dossier
 
         /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
-    }
-
-    /**
-     * @param BadResponseException $e
-     */
-    private function processBadResponse(BadResponseException $e)
-    {
-        $exceptionResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
-        if (($e->getCode() === StatusCodeInterface::STATUS_FORBIDDEN
-                && $exceptionResponse === 'Invalid consumer connection'
-            )
-            || ($e->getCode() === StatusCodeInterface::STATUS_NOT_FOUND
-                && $exceptionResponse === 'consumer connection not found'
-            )
-        ) {
-            throw new ConsumerConnectionException($exceptionResponse, $e->getCode(), $e);
-        }
-
-        if ($e->getCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
-            throw new OrganizationConnectionException(
-                'Invalid organization connection',
-                StatusCodeInterface::STATUS_FORBIDDEN,
-                $e
-            );
-        }
-
-        if ($e->getCode() === StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY) {
-            throw  (new ValidationException('Validation failed', $e->getCode(), $e))
-                ->setValidationErrors(json_decode($exceptionResponse['message']));
-        }
-
-        throw new InvalidRequestException(
-            $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
-            $e->getResponse() ? $e->getResponse()->getStatusCode() : 0,
-            $e
-        );
     }
 }
