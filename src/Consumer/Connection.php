@@ -26,11 +26,11 @@ final class Connection
     /**
      * Connection constructor.
      *
-     * @param string $organizationConsumerId
-     * @param string $ufoConsumerId
+     * @param string      $organizationConsumerId
+     * @param string      $ufoConsumerId
      * @param string|null $connectionCode1
      * @param string|null $connectionCode2
-     * @param array|null $grantedScopes
+     * @param array|null  $grantedScopes
      */
     public function __construct(
         string $organizationConsumerId,

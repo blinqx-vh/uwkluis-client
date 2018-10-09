@@ -5,8 +5,10 @@ namespace Ufo\Client\Consumer;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use Psr\Http\Message\UploadedFileInterface;
 use Ufo\Client\Organization\Config;
 use Ufo\Client\Traits\ProcessesBadResponses;
 
@@ -47,14 +49,13 @@ final class Files
         Token $accessToken,
         string $consumerId
     ): array {
-        $query = [
+        $queryString = http_build_query([
             'consumer_id' => $consumerId,
-        ];
-        $queryString = http_build_query($query);
+        ]);
         try {
             $httpResponse =
                 $this->guzzleClient->get(
-                    $this->config->getApiHost() . '/files?' . $queryString,
+                    "{$this->config->getApiHost()}/files?{$queryString}",
                     [
                         RequestOptions::HEADERS => [
                             'Accept'        => 'application/json',
@@ -82,14 +83,13 @@ final class Files
         Token $accessToken,
         string $consumerId
     ): array {
-        $query = [
+        $queryString = http_build_query([
             'consumer_id' => $consumerId,
-        ];
-        $queryString = http_build_query($query);
+        ]);
         try {
             $httpResponse =
                 $this->guzzleClient->get(
-                    $this->config->getApiHost() . '/files/shared?' . $queryString,
+                    "{$this->config->getApiHost()}/files/shared?{$queryString}",
                     [
                         RequestOptions::HEADERS => [
                             'Accept'        => 'application/json',
@@ -117,20 +117,48 @@ final class Files
         string $consumerId,
         string $fileId
     ) {
-        $query = [
+        $queryString = http_build_query([
             'consumer_id' => $consumerId,
-        ];
-        $queryString = http_build_query($query);
+        ]);
         try {
             return $this->guzzleClient->get(
-                    $this->config->getApiHost() . "/files/{$fileId}?" . $queryString,
-                    [
-                        RequestOptions::HEADERS => [
-                            'Accept'        => 'application/json',
-                            'Authorization' => 'Bearer ' . (string) $accessToken,
-                        ],
-                    ]
-                );
+                "{$this->config->getApiHost()}/files/{$fileId}?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                    ],
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+    }
+
+    /**
+     * @param Token                 $accessToken
+     * @param string                $consumerId
+     * @param UploadedFileInterface $uploadedFile
+     *
+     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function upload(
+        Token $accessToken,
+        string $consumerId,
+        UploadedFileInterface $uploadedFile
+    ) {
+        $queryString = http_build_query([
+            'consumer_id' => $consumerId,
+        ]);
+        try {
+            return $this->guzzleClient->send(
+                (new ServerRequest(
+                    'post',
+                    "{$this->config->getApiHost()}/files/?{$queryString}", [
+                    'Accept'        => 'application/json',
+                    'Authorization' => 'Bearer ' . (string) $accessToken,
+                ]))->withUploadedFiles([$uploadedFile]));
         } catch (BadResponseException $e) {
             $this->processBadResponse($e);
         }

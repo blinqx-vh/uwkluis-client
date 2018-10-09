@@ -144,6 +144,8 @@ final class Connect
     /**
      * @param Token         $accessToken
      * @param UuidInterface $identifier
+     *
+     * @return object
      */
     public function getConnectionStatus(
         Token $accessToken,
