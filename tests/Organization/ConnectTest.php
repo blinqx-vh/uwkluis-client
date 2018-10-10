@@ -114,7 +114,6 @@ class ConnectTest extends TestCase
         } catch (\Throwable $e) {
             $this->assertInstanceOf(RefreshTokenInvalidException::class, $e);
             $this->assertEquals('The refresh token is invalid.', $e->getMessage());
-
         }
         try {
             $connect->processResponse(new Request('get', 'foo?code=baz'));
@@ -175,7 +174,8 @@ class ConnectTest extends TestCase
                         . '.eyJmb28iOiJiYXIifQ'
                         . '.sLoOvOXnOK490o8iHakkNCMmsMMUwrZK9prFvjqOtYI',
                     'refresh_token' => 'baz',
-                ])));
+                ]))
+            );
 
         $response = $connect->refreshAccessToken('foo');
         $this->assertInstanceOf(AccessTokenResponse::class, $response);

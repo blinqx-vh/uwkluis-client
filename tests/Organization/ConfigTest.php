@@ -33,7 +33,6 @@ class ConfigTest extends TestCase
             'bar',
             1,
             'baz'
-
         );
         $this->assertEquals('baz', $config->getClientSecret());
     }
