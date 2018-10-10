@@ -54,7 +54,6 @@ class DossierTest extends TestCase
         } catch (Throwable $e) {
             $this->assertInstanceOf(InvalidRequestException::class, $e);
         }
-
     }
 
     /**

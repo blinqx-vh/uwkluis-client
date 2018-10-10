@@ -169,6 +169,6 @@ final class Files
         }
 
         /** @noinspection PhpUndefinedVariableInspection */
-        return json_decode($httpResponse, true);
+        return json_decode($httpResponse->getBody()->getContents(), true);
     }
 }
