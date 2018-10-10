@@ -84,7 +84,7 @@ final class Connect
             $parameters[$key] = $val;
         }
         if (isset($parameters['error']) || !isset($parameters['code'])) {
-            throw new RuntimeException($parameters['error']);
+            throw new RuntimeException($parameters['error'] ?? 'unexpected error');
         }
         $code = $parameters['code'];
 
@@ -216,5 +216,7 @@ final class Connect
             }
             throw new InvalidRequestException($message);
         }
+
+        throw new InvalidRequestException('An unknown error has occurred.');
     }
 }
