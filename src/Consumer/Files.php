@@ -44,6 +44,7 @@ final class Files
      * @param string $consumerId
      *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function list(
         Token $accessToken,
@@ -53,7 +54,8 @@ final class Files
             'consumer_id' => $consumerId,
         ]);
         try {
-            $httpResponse = $this->guzzleClient->get(
+            $httpResponse = $this->guzzleClient->request(
+                'get',
                 "{$this->config->getApiHost()}/files?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
@@ -77,6 +79,7 @@ final class Files
      * @param string $consumerId
      *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function listShared(
         Token $accessToken,
@@ -84,7 +87,8 @@ final class Files
     ): array {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $httpResponse = $this->guzzleClient->get(
+            $httpResponse = $this->guzzleClient->request(
+                'get',
                 "{$this->config->getApiHost()}/files/shared?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
@@ -107,6 +111,7 @@ final class Files
      * @param string $fileId
      *
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function download(
         Token $accessToken,
@@ -115,7 +120,8 @@ final class Files
     ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            return $this->guzzleClient->get(
+            $response = $this->guzzleClient->request(
+                'get',
                 "{$this->config->getApiHost()}/files/{$fileId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
@@ -127,6 +133,9 @@ final class Files
         } catch (BadResponseException $e) {
             $this->processBadResponse($e);
         }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return $response;
     }
 
     /**
