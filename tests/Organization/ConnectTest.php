@@ -67,6 +67,13 @@ class ConnectTest extends TestCase
                 ])),
                 new Response(200, [], json_encode([
                     'error'   => 'foo',
+                ])),
+                new Response(200, [], json_encode([
+                    'expires_in' => '1000',
+                    'access_token' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
+                        . '.eyJmb28iOiJiYXIifQ'
+                        . '.sLoOvOXnOK490o8iHakkNCMmsMMUwrZK9prFvjqOtYI',
+                    'refresh_token' => 'baz'
                 ]))
             );
         /** @noinspection PhpParamsInspection */
@@ -121,6 +128,9 @@ class ConnectTest extends TestCase
             $this->assertInstanceOf(InvalidRequestException::class, $e);
             $this->assertEquals('An unknown error has occurred.', $e->getMessage());
         }
+        $goodResponse = $connect->processResponse(new Request('get', 'foo?code=baz'));
+        $this->assertInstanceOf(AccessTokenResponse::class, $goodResponse);
+
         /** @noinspection PhpParamsInspection */
         $guzzleClientMock->expects($this->any())
             ->method('request')
