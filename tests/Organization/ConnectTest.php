@@ -66,14 +66,14 @@ class ConnectTest extends TestCase
                     'hint'    => 'Authorization code has expired',
                 ])),
                 new Response(200, [], json_encode([
-                    'error'   => 'foo',
+                    'error' => 'foo',
                 ])),
                 new Response(200, [], json_encode([
-                    'expires_in' => '1000',
-                    'access_token' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
+                    'expires_in'    => '1000',
+                    'access_token'  => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
                         . '.eyJmb28iOiJiYXIifQ'
                         . '.sLoOvOXnOK490o8iHakkNCMmsMMUwrZK9prFvjqOtYI',
-                    'refresh_token' => 'baz'
+                    'refresh_token' => 'baz',
                 ]))
             );
         /** @noinspection PhpParamsInspection */
@@ -143,6 +143,54 @@ class ConnectTest extends TestCase
             );
         try {
             $connect->processResponse(new Request('get', 'foo?code=baz'));
+        } catch (\Throwable $e) {
+            $this->assertInstanceOf(InvalidRequestException::class, $e);
+            $this->assertEquals('An unknown error has occurred.', $e->getMessage());
+        }
+    }
+
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function testRefreshAccessToken()
+    {
+        $guzzleClientMock = $this->getMockBuilder(Client::class)
+            ->getMock();
+
+        /** @noinspection PhpParamsInspection */
+        $connect = new Connect(new Config(
+            'foo',
+            'https://example.org/test/',
+            1,
+            'bar',
+            ['baz', 'quu', 'quuz']
+        ), $guzzleClientMock);
+
+        $guzzleClientMock->expects($this->any())
+            ->method('request')
+            ->willReturn(
+                new Response(200, [], json_encode([
+                    'expires_in'    => '1000',
+                    'access_token'  => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9'
+                        . '.eyJmb28iOiJiYXIifQ'
+                        . '.sLoOvOXnOK490o8iHakkNCMmsMMUwrZK9prFvjqOtYI',
+                    'refresh_token' => 'baz',
+                ])));
+
+        $response = $connect->refreshAccessToken('foo');
+        $this->assertInstanceOf(AccessTokenResponse::class, $response);
+         /** @noinspection PhpParamsInspection */
+        $guzzleClientMock->expects($this->any())
+            ->method('request')
+            ->willThrowException(
+                (new BadResponseException(
+                    'foo',
+                    new Request('get', 'foo'),
+                    new Response()
+                ))
+            );
+        try {
+            $connect->refreshAccessToken('foo');
         } catch (\Throwable $e) {
             $this->assertInstanceOf(InvalidRequestException::class, $e);
             $this->assertEquals('An unknown error has occurred.', $e->getMessage());
