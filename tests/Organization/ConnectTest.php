@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Ufo\Client\Organization;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
@@ -114,6 +115,22 @@ class ConnectTest extends TestCase
             $this->assertInstanceOf(AuthCodeExpiredException::class, $e);
             $this->assertEquals('foo - Authorization code has expired', $e->getMessage());
         }
+        try {
+            $connect->processResponse(new Request('get', 'foo?code=baz'));
+        } catch (\Throwable $e) {
+            $this->assertInstanceOf(InvalidRequestException::class, $e);
+            $this->assertEquals('An unknown error has occurred.', $e->getMessage());
+        }
+        /** @noinspection PhpParamsInspection */
+        $guzzleClientMock->expects($this->any())
+            ->method('request')
+            ->willThrowException(
+                (new BadResponseException(
+                    'foo',
+                    new Request('get', 'foo'),
+                    new Response()
+                ))
+            );
         try {
             $connect->processResponse(new Request('get', 'foo?code=baz'));
         } catch (\Throwable $e) {
