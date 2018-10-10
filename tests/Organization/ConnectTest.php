@@ -81,36 +81,44 @@ class ConnectTest extends TestCase
             $connect->processResponse(new Request('get', 'foo?code=baz'));
         } catch (\Throwable $e) {
             $this->assertInstanceOf(InvalidScopesException::class, $e);
+            $this->assertEquals('foo - bar', $e->getMessage());
         }
         try {
             $connect->processResponse(new Request('get', 'foo?bar=baz'));
         } catch (\Throwable $e) {
             $this->assertInstanceOf(RuntimeException::class, $e);
+            $this->assertEquals('unexpected error', $e->getMessage());
         }
         try {
             $connect->processResponse(new Request('get', 'foo?error=foo'));
         } catch (\Throwable $e) {
             $this->assertInstanceOf(RuntimeException::class, $e);
+            $this->assertEquals('foo', $e->getMessage());
         }
         try {
             $connect->processResponse(new Request('get', 'foo?code=baz'));
         } catch (\Throwable $e) {
             $this->assertEquals(InvalidRequestException::class, get_class($e));
+            $this->assertEquals('foo', $e->getMessage());
         }
         try {
             $connect->processResponse(new Request('get', 'foo?code=baz'));
         } catch (\Throwable $e) {
             $this->assertInstanceOf(RefreshTokenInvalidException::class, $e);
+            $this->assertEquals('The refresh token is invalid.', $e->getMessage());
+
         }
         try {
             $connect->processResponse(new Request('get', 'foo?code=baz'));
         } catch (\Throwable $e) {
             $this->assertInstanceOf(AuthCodeExpiredException::class, $e);
+            $this->assertEquals('foo - Authorization code has expired', $e->getMessage());
         }
         try {
             $connect->processResponse(new Request('get', 'foo?code=baz'));
         } catch (\Throwable $e) {
-            $this->assertInstanceOf(AuthCodeExpiredException::class, $e);
+            $this->assertInstanceOf(InvalidRequestException::class, $e);
+            $this->assertEquals('An unknown error has occurred.', $e->getMessage());
         }
     }
 }
