@@ -191,7 +191,6 @@ final class Connect
         if ($data['error'] === 'invalid_scope') {
             if (isset($data['message'])) {
                 $message .= $data['message'];
-
             }
             if (isset($data['hint'])) {
                 $message .= ' - ' . $data['hint'];

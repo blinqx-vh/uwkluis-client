@@ -21,8 +21,8 @@ final class AccessTokenResponse
     /**
      * AccessTokenResponse constructor.
      *
-     * @param Token     $accessToken
-     * @param string     $refreshToken
+     * @param Token    $accessToken
+     * @param string   $refreshToken
      * @param DateTime $expiration
      */
     public function __construct(
@@ -58,6 +58,4 @@ final class AccessTokenResponse
     {
         return $this->expiration;
     }
-
-
 }

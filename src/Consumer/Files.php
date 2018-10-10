@@ -53,16 +53,15 @@ final class Files
             'consumer_id' => $consumerId,
         ]);
         try {
-            $httpResponse =
-                $this->guzzleClient->get(
-                    "{$this->config->getApiHost()}/files?{$queryString}",
-                    [
-                        RequestOptions::HEADERS => [
-                            'Accept'        => 'application/json',
-                            'Authorization' => 'Bearer ' . (string) $accessToken,
-                        ],
-                    ]
-                )->getBody()->getContents();
+            $httpResponse = $this->guzzleClient->get(
+                "{$this->config->getApiHost()}/files?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                    ],
+                ]
+            )->getBody()->getContents();
         } catch (BadResponseException $e) {
             $this->processBadResponse($e);
         }
@@ -83,20 +82,17 @@ final class Files
         Token $accessToken,
         string $consumerId
     ): array {
-        $queryString = http_build_query([
-            'consumer_id' => $consumerId,
-        ]);
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $httpResponse =
-                $this->guzzleClient->get(
-                    "{$this->config->getApiHost()}/files/shared?{$queryString}",
-                    [
-                        RequestOptions::HEADERS => [
-                            'Accept'        => 'application/json',
-                            'Authorization' => 'Bearer ' . (string) $accessToken,
-                        ],
-                    ]
-                )->getBody()->getContents();
+            $httpResponse = $this->guzzleClient->get(
+                "{$this->config->getApiHost()}/files/shared?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                    ],
+                ]
+            )->getBody()->getContents();
         } catch (BadResponseException $e) {
             $this->processBadResponse($e);
         }
@@ -117,9 +113,7 @@ final class Files
         string $consumerId,
         string $fileId
     ) {
-        $queryString = http_build_query([
-            'consumer_id' => $consumerId,
-        ]);
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
             return $this->guzzleClient->get(
                 "{$this->config->getApiHost()}/files/{$fileId}?{$queryString}",
@@ -148,19 +142,24 @@ final class Files
         string $consumerId,
         UploadedFileInterface $uploadedFile
     ) {
-        $queryString = http_build_query([
-            'consumer_id' => $consumerId,
-        ]);
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            return $this->guzzleClient->send(
+            $httpResponse = $this->guzzleClient->send(
                 (new ServerRequest(
                     'post',
-                    "{$this->config->getApiHost()}/files/?{$queryString}", [
-                    'Accept'        => 'application/json',
-                    'Authorization' => 'Bearer ' . (string) $accessToken,
-                ]))->withUploadedFiles([$uploadedFile]));
+                    "{$this->config->getApiHost()}/files/?{$queryString}",
+                    [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                    ]
+                )
+                )->withUploadedFiles([$uploadedFile])
+            );
         } catch (BadResponseException $e) {
             $this->processBadResponse($e);
         }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return json_decode($httpResponse, true);
     }
 }
