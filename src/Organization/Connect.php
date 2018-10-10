@@ -5,7 +5,7 @@ namespace Ufo\Client\Organization;
 
 use DateInterval;
 use DateTime;
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Parser;
@@ -22,20 +22,20 @@ use Ufo\Client\Exception\RefreshTokenInvalidException;
  */
 final class Connect
 {
-    /** @var GuzzleClient */
+    /** @var ClientInterface */
     private $guzzleClient;
     /** @var Config */
     private $config;
 
     /**
-     * ConnectToAccount constructor.
+     * Connect constructor.
      *
-     * @param Config       $config
-     * @param GuzzleClient $guzzleClient
+     * @param Config          $config
+     * @param ClientInterface $guzzleClient
      */
     public function __construct(
         Config $config,
-        GuzzleClient $guzzleClient
+        ClientInterface $guzzleClient
     ) {
         $this->config = $config;
         $this->guzzleClient = $guzzleClient;
@@ -72,6 +72,7 @@ final class Connect
      *
      * @return AccessTokenResponse
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function processResponse(RequestInterface $request): AccessTokenResponse
     {
@@ -95,11 +96,13 @@ final class Connect
      *
      * @return AccessTokenResponse
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function refreshAccessToken(string $refreshToken): AccessTokenResponse
     {
         try {
-            $response = $this->guzzleClient->post(
+            $response = $this->guzzleClient->request(
+                'post',
                 $this->config->getOrganizationHost() . '/oauth/token',
                 [
                     RequestOptions::HEADERS     => [
@@ -126,11 +129,13 @@ final class Connect
      *
      * @return AccessTokenResponse
      * @throws \Exception
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     private function requestAccessToken(string $code): AccessTokenResponse
     {
         try {
-            $response = $this->guzzleClient->post(
+            $response = $this->guzzleClient->request(
+                'post',
                 $this->config->getOrganizationHost() . '/oauth/token',
                 [
                     RequestOptions::HEADERS     => [

@@ -14,13 +14,9 @@ final class Connection
     private $ufoConsumerId;
     /** @var array|null */
     private $grantedScopes;
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     private $connectionCode1;
-    /**
-     * @var null|string
-     */
+    /** @var null|string */
     private $connectionCode2;
 
     /**

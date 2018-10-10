@@ -6,7 +6,7 @@ namespace Ufo\Client\Consumer;
 use Assert\Assertion;
 use Exception;
 use Fig\Http\Message\StatusCodeInterface;
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
@@ -27,7 +27,7 @@ final class Connect
      */
     const PHONE_NUMBER_REGEX = '/^((((00|\+)31|0)6){1}[1-9]{1}[0-9]{7})$/';
 
-    /** @var GuzzleClient */
+    /** @var ClientInterface */
     private $guzzleClient;
     /** @var Config */
     private $config;
@@ -35,15 +35,15 @@ final class Connect
     private $uuidFactory;
 
     /**
-     * Connection constructor.
+     * Connect constructor.
      *
      * @param Config               $config
-     * @param GuzzleClient         $guzzleClient
+     * @param ClientInterface      $guzzleClient
      * @param UuidFactoryInterface $uuidFactory
      */
     public function __construct(
         Config $config,
-        GuzzleClient $guzzleClient,
+        ClientInterface $guzzleClient,
         UuidFactoryInterface $uuidFactory
     ) {
         $this->guzzleClient = $guzzleClient;
@@ -58,6 +58,7 @@ final class Connect
      *
      * @return UuidInterface - the Uuid for the consumer
      * @throws \Assert\AssertionFailedException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function inviteConsumer(Token $accessToken, string $email, string $phoneNumber): UuidInterface
     {
@@ -65,7 +66,8 @@ final class Connect
         Assertion::regex($phoneNumber, self::PHONE_NUMBER_REGEX);
 
         try {
-            $httpResponse = $this->guzzleClient->post(
+            $httpResponse = $this->guzzleClient->request(
+                'post',
                 $this->config->getApiHost() . '/consumer/invite',
                 [
                     RequestOptions::FORM_PARAMS => [
@@ -104,6 +106,7 @@ final class Connect
      *
      * @return UuidInterface
      * @throws \Assert\AssertionFailedException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function updateAndReinviteConsumer(
         Token $accessToken,
@@ -115,7 +118,8 @@ final class Connect
         Assertion::regex($phoneNumber, self::PHONE_NUMBER_REGEX);
 
         try {
-            $httpResponse = $this->guzzleClient->post(
+            $httpResponse = $this->guzzleClient->request(
+                'post',
                 $this->config->getApiHost() . '/consumer/update-and-reinvite',
                 [
                     RequestOptions::FORM_PARAMS => [
@@ -146,13 +150,15 @@ final class Connect
      * @param UuidInterface $identifier
      *
      * @return object
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getConnectionStatus(
         Token $accessToken,
         UuidInterface $identifier
     ) {
         try {
-            $httpResponse = $this->guzzleClient->get(
+            $httpResponse = $this->guzzleClient->request(
+                'post',
                 $this->config->getApiHost() . '/consumer/get-connection-status?' . http_build_query(
                     [
                         'consumer_identifier' => $identifier->toString(),

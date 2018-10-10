@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
@@ -16,7 +16,7 @@ use Ufo\Client\Traits\ProcessesBadResponses;
 final class Dossier
 {
     use ProcessesBadResponses;
-    /** @var GuzzleClient */
+    /** @var ClientInterface */
     private $guzzleClient;
     /** @var Config */
     private $config;
@@ -24,12 +24,12 @@ final class Dossier
     /**
      * Dossier constructor.
      *
-     * @param Config       $config
-     * @param GuzzleClient $guzzleClient
+     * @param Config          $config
+     * @param ClientInterface $guzzleClient
      */
     public function __construct(
         Config $config,
-        GuzzleClient $guzzleClient
+        ClientInterface $guzzleClient
     ) {
         $this->guzzleClient = $guzzleClient;
         $this->config = $config;
@@ -41,6 +41,7 @@ final class Dossier
      * @param int    $version
      *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getData(
         Token $accessToken,
@@ -54,7 +55,8 @@ final class Dossier
         $queryString = http_build_query($query);
         try {
             $httpResponse =
-                $this->guzzleClient->get(
+                $this->guzzleClient->request(
+                    'get',
                     $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
                         RequestOptions::HEADERS => [
@@ -78,6 +80,7 @@ final class Dossier
      * @param int    $responseDataVersion
      *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function updateData(
         Token $accessToken,
@@ -92,7 +95,8 @@ final class Dossier
         $queryString = http_build_query($queryString);
         try {
             $httpResponse =
-                $this->guzzleClient->post(
+                $this->guzzleClient->request(
+                    'post',
                     $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
                         RequestOptions::HEADERS     => [

@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\RequestOptions;
@@ -18,20 +18,20 @@ use Ufo\Client\Traits\ProcessesBadResponses;
 final class Files
 {
     use ProcessesBadResponses;
-    /** @var GuzzleClient */
+    /** @var ClientInterface */
     private $guzzleClient;
     /** @var Config */
     private $config;
 
     /**
-     * Dossier constructor.
+     * Files constructor.
      *
-     * @param Config       $config
-     * @param GuzzleClient $guzzleClient
+     * @param Config          $config
+     * @param ClientInterface $guzzleClient
      */
     public function __construct(
         Config $config,
-        GuzzleClient $guzzleClient
+        ClientInterface $guzzleClient
     ) {
         $this->guzzleClient = $guzzleClient;
         $this->config = $config;
