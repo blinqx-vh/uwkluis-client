@@ -20,32 +20,35 @@ trait ProcessesBadResponses
      */
     private function processBadResponse(BadResponseException $e)
     {
-        $exceptionResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
-        if (($e->getCode() === StatusCodeInterface::STATUS_FORBIDDEN
-                && $exceptionResponse === 'Invalid consumer connection'
-            )
-            || ($e->getCode() === StatusCodeInterface::STATUS_NOT_FOUND
-                && $exceptionResponse === 'consumer connection not found'
-            )
-        ) {
-            throw new ConsumerConnectionException($exceptionResponse, $e->getCode(), $e);
-        }
+        if ($e->getResponse()) {
+            $contents = $e->getResponse()->getBody()->getContents();
+            $exceptionResponse = json_decode($contents, true);
+            if (($e->getCode() === StatusCodeInterface::STATUS_FORBIDDEN
+                    && $exceptionResponse === 'Invalid consumer connection'
+                )
+                || ($e->getCode() === StatusCodeInterface::STATUS_NOT_FOUND
+                    && $exceptionResponse === 'consumer connection not found'
+                )
+            ) {
+                throw new ConsumerConnectionException($exceptionResponse, $e->getCode(), $e);
+            }
 
-        if ($e->getCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
-            throw new OrganizationConnectionException(
-                'Invalid organization connection',
-                StatusCodeInterface::STATUS_FORBIDDEN,
-                $e
-            );
-        }
+            if ($e->getCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
+                throw new OrganizationConnectionException(
+                    'Invalid organization connection',
+                    StatusCodeInterface::STATUS_FORBIDDEN,
+                    $e
+                );
+            }
 
-        if ($e->getCode() === StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY) {
-            throw  (new ValidationException('Validation failed', $e->getCode(), $e))
-                ->setValidationErrors(json_decode($exceptionResponse['message']));
+            if ($e->getCode() === StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY) {
+                throw  (new ValidationException('Validation failed', $e->getCode(), $e))
+                    ->setValidationErrors(json_decode($exceptionResponse['message']));
+            }
         }
 
         throw new InvalidRequestException(
-            $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
+            $e->getResponse() ? $contents : 'An unknown error has occurred',
             $e->getResponse() ? $e->getResponse()->getStatusCode() : 0,
             $e
         );
