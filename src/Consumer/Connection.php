@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace Ufo\Client\Consumer;
 
 use Ramsey\Uuid\UuidInterface;
+use UwKluis\Enums\ConsumerConnection\Status;
 
 /**
  * Class Connection
@@ -14,18 +15,23 @@ final class Connection
     private $ufoConsumerId;
     /** @var array|null */
     private $grantedScopes;
+    /** @var Status */
+    private $status;
 
     /**
      * Connection constructor.
      *
      * @param UuidInterface $ufoConsumerId
+     * @param Status|null   $status
      * @param array|null    $grantedScopes
      */
     public function __construct(
         UuidInterface $ufoConsumerId,
+        Status $status = null,
         array $grantedScopes = null
     ) {
         $this->ufoConsumerId = $ufoConsumerId;
+        $this->status = $status;
         $this->grantedScopes = $grantedScopes;
     }
 
@@ -38,6 +44,13 @@ final class Connection
         return $this->ufoConsumerId;
     }
 
+    /**
+     * @return Status
+     */
+    public function getStatus(): Status
+    {
+        return $this->status;
+    }
 
     /**
      * @return array|null
