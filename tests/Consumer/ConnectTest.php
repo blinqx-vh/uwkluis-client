@@ -233,13 +233,16 @@ class ConnectTest extends TestCase
             ->willThrowException(new ClientException(
                 'foo',
                 new Request('get', 'foo'),
-                new Response(StatusCodeInterface::STATUS_CONFLICT, [],
+                new Response(
+                    StatusCodeInterface::STATUS_CONFLICT,
+                    [],
                     json_encode([
                         "message" => 'Consumer with this email and phone number is already connected or invited',
                         "data"    => [
                             "ufo_consumer_id" => $uuid->toString(),
                         ],
-                    ]))
+                    ])
+                )
             ));
         try {
             $connect->inviteConsumer(
@@ -308,7 +311,8 @@ class ConnectTest extends TestCase
                 $uuid,
                 'foo@example.org',
                 '0612345678'
-            ));
+            )
+        );
 
         $mockGuzzleClient->method('request')
             ->willThrowException(
