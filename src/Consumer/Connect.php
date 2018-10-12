@@ -165,7 +165,7 @@ final class Connect
     ): Connection {
         try {
             $httpResponse = $this->guzzleClient->request(
-                'post',
+                'get',
                 $this->config->getApiHost() . '/consumer/get-connection-status?' . http_build_query(
                     [
                         'consumer_identifier' => $identifier->toString(),
@@ -192,7 +192,7 @@ final class Connect
         return new Connection(
             $this->uuidFactory->fromString($connection->ufo_consumer_id),
             new Status($connection->status),
-            $connection->scopes
+            explode(' ', $connection->granted_scopes)
         );
     }
 

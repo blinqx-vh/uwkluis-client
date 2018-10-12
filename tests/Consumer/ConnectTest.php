@@ -77,7 +77,7 @@ class ConnectTest extends TestCase
                 json_encode([
                     'ufo_consumer_id' => $uuid->toString(),
                     'status'          => Status::NEW,
-                    'scopes'          => ['foo'],
+                    'granted_scopes'          => 'foo bar',
                 ])
             ));
 
@@ -93,7 +93,7 @@ class ConnectTest extends TestCase
         $this->assertEquals(new Connection(
             $uuid,
             new Status(Status::NEW),
-            ['foo']
+            ['foo', 'bar']
         ), $connect->getConnectionStatus(new Token(), $uuid));
         $mockGuzzleClient->method('request')
             ->willThrowException(
