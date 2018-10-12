@@ -17,6 +17,7 @@ use Ufo\Client\Exception\ConsumerConnectionConflict;
 use Ufo\Client\Exception\ConsumerConnectionException;
 use Ufo\Client\Exception\OrganizationConnectionException;
 use Ufo\Client\Organization\Config;
+use UwKluis\Enums\ConsumerConnection\Status;
 
 class ConnectTest extends TestCase
 {
@@ -67,12 +68,17 @@ class ConnectTest extends TestCase
     public function testGetConnectionStatus()
     {
         $mockGuzzleClient = $this->getMockBuilder(Client::class)->getMock();
+        $uuid = Uuid::uuid4();
         $mockGuzzleClient->expects($this->any())
             ->method('request')
             ->willReturn(new Response(
                 200,
                 [],
-                json_encode(['foo'])
+                json_encode([
+                    'ufo_consumer_id' => $uuid->toString(),
+                    'status'          => Status::NEW,
+                    'scopes'          => ['foo'],
+                ])
             ));
 
         /** @noinspection PhpParamsInspection */
@@ -84,8 +90,11 @@ class ConnectTest extends TestCase
             $mockGuzzleClient,
             new UuidFactory()
         );
-        $uuid = Uuid::uuid4();
-        $this->assertEquals(['foo'], $connect->getConnectionStatus(new Token(), $uuid));
+        $this->assertEquals(new Connection(
+            $uuid,
+            new Status(Status::NEW),
+            ['foo']
+        ), $connect->getConnectionStatus(new Token(), $uuid));
         $mockGuzzleClient->method('request')
             ->willThrowException(
                 new ClientException(
@@ -158,18 +167,18 @@ class ConnectTest extends TestCase
         );
 
 
-        $this->assertEquals($uuid->toString(), $connect->inviteConsumer(
+        $this->assertEquals(new Connection($uuid), $connect->inviteConsumer(
             new Token(),
             'foo@example.org',
             '0612345678'
-        )->toString());
+        ));
 
         try {
             $connect->inviteConsumer(
                 new Token(),
                 'foo',
                 '0612345678'
-            )->toString();
+            );
         } catch (\Throwable $e) {
             $this->assertInstanceOf(InvalidArgumentException::class, $e);
             $this->assertEquals('Value "foo" was expected to be a valid e-mail address.', $e->getMessage());
@@ -179,7 +188,7 @@ class ConnectTest extends TestCase
                 new Token(),
                 'foo@example.org',
                 '0612345'
-            )->toString();
+            );
         } catch (\Throwable $e) {
             $this->assertInstanceOf(InvalidArgumentException::class, $e);
             $this->assertEquals('Value "0612345" does not match expression.', $e->getMessage());
@@ -197,7 +206,7 @@ class ConnectTest extends TestCase
                 new Token(),
                 'foo@example.org',
                 '0612345678'
-            )->toString();
+            );
         } catch (\Throwable $e) {
             $this->assertInstanceOf(ConsumerConnectionException::class, $e);
             $this->assertEquals('Consumer connection failed', $e->getMessage());
@@ -214,7 +223,7 @@ class ConnectTest extends TestCase
                 new Token(),
                 'foo@example.org',
                 '0612345678'
-            )->toString();
+            );
         } catch (\Throwable $e) {
             $this->assertInstanceOf(OrganizationConnectionException::class, $e);
             $this->assertEquals('Organization connection failed', $e->getMessage());
@@ -224,14 +233,20 @@ class ConnectTest extends TestCase
             ->willThrowException(new ClientException(
                 'foo',
                 new Request('get', 'foo'),
-                new Response(StatusCodeInterface::STATUS_CONFLICT)
+                new Response(StatusCodeInterface::STATUS_CONFLICT, [],
+                    json_encode([
+                        "message" => 'Consumer with this email and phone number is already connected or invited',
+                        "data"    => [
+                            "ufo_consumer_id" => $uuid->toString(),
+                        ],
+                    ]))
             ));
         try {
             $connect->inviteConsumer(
                 new Token(),
                 'foo@example.org',
                 '0612345678'
-            )->toString();
+            );
         } catch (\Throwable $e) {
             $this->assertInstanceOf(ConsumerConnectionConflict::class, $e);
             $this->assertEquals(
@@ -249,7 +264,7 @@ class ConnectTest extends TestCase
                 new Token(),
                 'foo@example.org',
                 '0612345678'
-            )->toString();
+            );
         } catch (\Throwable $e) {
             $this->assertInstanceOf(ConsumerConnectionException::class, $e);
             $this->assertEquals('Consumer connection failed', $e->getMessage());
@@ -286,12 +301,14 @@ class ConnectTest extends TestCase
         );
 
 
-        $this->assertEquals($uuid->toString(), $connect->updateAndReinviteConsumer(
-            new Token(),
-            $uuid,
-            'foo@example.org',
-            '0612345678'
-        )->toString());
+        $this->assertEquals(
+            new Connection($uuid),
+            $connect->updateAndReinviteConsumer(
+                new Token(),
+                $uuid,
+                'foo@example.org',
+                '0612345678'
+            ));
 
         $mockGuzzleClient->method('request')
             ->willThrowException(

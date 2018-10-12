@@ -21,6 +21,9 @@ class ConnectionTest extends TestCase
         $this->assertSame($uuid, $connection->getUfoConsumerId());
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testGetStatus()
     {
         $status = new Status(Status::NEW);

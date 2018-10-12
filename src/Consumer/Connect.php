@@ -16,6 +16,7 @@ use Ufo\Client\Exception\ConsumerConnectionConflict;
 use Ufo\Client\Exception\ConsumerConnectionException;
 use Ufo\Client\Exception\OrganizationConnectionException;
 use Ufo\Client\Organization\Config;
+use UwKluis\Enums\ConsumerConnection\Status;
 
 /**
  * Class Connect
@@ -56,11 +57,11 @@ final class Connect
      * @param string $email
      * @param string $phoneNumber
      *
-     * @return UuidInterface - the Uuid for the consumer
+     * @return Connection
      * @throws \Assert\AssertionFailedException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function inviteConsumer(Token $accessToken, string $email, string $phoneNumber): UuidInterface
+    public function inviteConsumer(Token $accessToken, string $email, string $phoneNumber): Connection
     {
         Assertion::email($email);
         Assertion::regex($phoneNumber, self::PHONE_NUMBER_REGEX);
@@ -84,10 +85,12 @@ final class Connect
             if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
                 throw new OrganizationConnectionException('Organization connection failed', $e->getCode(), $e);
             } elseif ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_CONFLICT) {
+                $response = json_decode($e->getResponse()->getBody()->getContents());
                 throw new ConsumerConnectionConflict(
-                    'Consumer with this email and phone number is already connected or invited',
+                    $response->message,
                     $e->getCode(),
-                    $e
+                    $e,
+                    new Connection($this->uuidFactory->fromString($response->data->ufo_consumer_id))
                 );
             }
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
@@ -95,7 +98,9 @@ final class Connect
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
         }
 
-        return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
+        return new Connection(
+            $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id)
+        );
     }
 
     /**
@@ -104,7 +109,7 @@ final class Connect
      * @param string        $email
      * @param string        $phoneNumber
      *
-     * @return UuidInterface
+     * @return Connection
      * @throws \Assert\AssertionFailedException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -113,7 +118,7 @@ final class Connect
         UuidInterface $identifier,
         string $email,
         string $phoneNumber
-    ): UuidInterface {
+    ): Connection {
         Assertion::email($email);
         Assertion::regex($phoneNumber, self::PHONE_NUMBER_REGEX);
 
@@ -142,20 +147,22 @@ final class Connect
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
         }
 
-        return $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id);
+        return new Connection(
+            $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id)
+        );
     }
 
     /**
      * @param Token         $accessToken
      * @param UuidInterface $identifier
      *
-     * @return object
+     * @return Connection
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getConnectionStatus(
         Token $accessToken,
         UuidInterface $identifier
-    ) {
+    ): Connection {
         try {
             $httpResponse = $this->guzzleClient->request(
                 'post',
@@ -180,7 +187,13 @@ final class Connect
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
         }
 
-        return json_decode((string) $httpResponse->getBody());
+        $connection = json_decode($httpResponse->getBody()->getContents());
+
+        return new Connection(
+            $this->uuidFactory->fromString($connection->ufo_consumer_id),
+            new Status($connection->status),
+            $connection->scopes
+        );
     }
 
     /**
