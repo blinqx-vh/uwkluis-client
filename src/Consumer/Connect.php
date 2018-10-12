@@ -192,7 +192,7 @@ final class Connect
         return new Connection(
             $this->uuidFactory->fromString($connection->ufo_consumer_id),
             new Status($connection->status),
-            explode(' ', $connection->granted_scopes)
+            $connection->granted_scopes ? explode(' ', $connection->granted_scopes) : null
         );
     }
 
