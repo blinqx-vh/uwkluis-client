@@ -251,11 +251,13 @@ class ConnectTest extends TestCase
                 '0612345678'
             );
         } catch (\Throwable $e) {
+            /** @var $e ConsumerConnectionConflict */
             $this->assertInstanceOf(ConsumerConnectionConflict::class, $e);
             $this->assertEquals(
                 'Consumer with this email and phone number is already connected or invited',
                 $e->getMessage()
             );
+            $this->assertEquals(new Connection($uuid), $e->getConflictingConnection());
         }
         $mockGuzzleClient
             ->method('request')

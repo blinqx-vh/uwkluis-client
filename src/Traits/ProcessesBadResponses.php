@@ -48,7 +48,7 @@ trait ProcessesBadResponses
         }
 
         throw new InvalidRequestException(
-            $e->getResponse() ? $contents : 'An unknown error has occurred',
+            $contents ?? 'An unknown error has occurred',
             $e->getResponse() ? $e->getResponse()->getStatusCode() : 0,
             $e
         );
