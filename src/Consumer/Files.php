@@ -5,7 +5,6 @@ namespace Ufo\Client\Consumer;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Psr\Http\Message\UploadedFileInterface;
@@ -149,20 +148,40 @@ final class Files
     public function upload(
         Token $accessToken,
         string $consumerId,
-        UploadedFileInterface $uploadedFile
+        UploadedFileInterface $uploadedFile,
+        string $fileName,
+        string $description
     ) {
-        $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $httpResponse = $this->guzzleClient->send(
-                (new ServerRequest(
-                    'post',
-                    "{$this->config->getApiHost()}/files/?{$queryString}",
-                    [
+            $httpResponse = $this->guzzleClient->request(
+                'post',
+                "{$this->config->getApiHost()}/files/",
+                [
+                    RequestOptions::HEADERS   => [
                         'Accept'        => 'application/json',
                         'Authorization' => 'Bearer ' . (string) $accessToken,
-                    ]
-                )
-                )->withUploadedFiles([$uploadedFile])
+                    ],
+                    RequestOptions::MULTIPART => [
+                        [
+                            'Content-type' => 'multipart/form-data',
+                            'name'         => 'file',
+                            'contents'     => $uploadedFile->getStream(),
+                            'filename'     => $uploadedFile->getClientFilename(),
+                        ],
+                        [
+                            'name'     => 'name',
+                            'contents' => $fileName,
+                        ],
+                        [
+                            'name'     => 'description',
+                            'contents' => $description,
+                        ],
+                        [
+                            'name'     => 'consumer_id',
+                            'contents' => $consumerId,
+                        ],
+                    ],
+                ]
             );
         } catch (BadResponseException $e) {
             $this->processBadResponse($e);
