@@ -92,14 +92,14 @@ class FilesTest extends TestCase
             )
         );
 
-        $mockGuzzleClient->method('send')
+        $mockGuzzleClient->method('request')
             ->willThrowException(new BadResponseException(
                 'foo',
                 new Request('get', 'foo'),
                 null
             ));
         try {
-            $this->getFiles($mockGuzzleClient)->upload(
+            $response = $this->getFiles($mockGuzzleClient)->upload(
                 new Token(),
                 'foo',
                 ServerRequest::normalizeFiles([
