@@ -3,23 +3,20 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
-use Fig\Http\Message\StatusCodeInterface;
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
-use Ufo\Client\Exception\ConsumerConnectionException;
-use Ufo\Client\Exception\InvalidRequestException;
-use Ufo\Client\Exception\OrganizationConnectionException;
-use Ufo\Client\Exception\ValidationException;
 use Ufo\Client\Organization\Config;
+use Ufo\Client\Traits\ProcessesBadResponses;
 
 /**
  * Class Dossier
  */
 final class Dossier
 {
-    /** @var GuzzleClient */
+    use ProcessesBadResponses;
+    /** @var ClientInterface */
     private $guzzleClient;
     /** @var Config */
     private $config;
@@ -27,12 +24,12 @@ final class Dossier
     /**
      * Dossier constructor.
      *
-     * @param Config       $config
-     * @param GuzzleClient $guzzleClient
+     * @param Config          $config
+     * @param ClientInterface $guzzleClient
      */
     public function __construct(
         Config $config,
-        GuzzleClient $guzzleClient
+        ClientInterface $guzzleClient
     ) {
         $this->guzzleClient = $guzzleClient;
         $this->config = $config;
@@ -44,6 +41,7 @@ final class Dossier
      * @param int    $version
      *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getData(
         Token $accessToken,
@@ -57,7 +55,8 @@ final class Dossier
         $queryString = http_build_query($query);
         try {
             $httpResponse =
-                $this->guzzleClient->get(
+                $this->guzzleClient->request(
+                    'get',
                     $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
                         RequestOptions::HEADERS => [
@@ -81,6 +80,7 @@ final class Dossier
      * @param int    $responseDataVersion
      *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function updateData(
         Token $accessToken,
@@ -95,7 +95,8 @@ final class Dossier
         $queryString = http_build_query($queryString);
         try {
             $httpResponse =
-                $this->guzzleClient->post(
+                $this->guzzleClient->request(
+                    'post',
                     $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
                         RequestOptions::HEADERS     => [
@@ -113,41 +114,5 @@ final class Dossier
 
         /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
-    }
-
-    /**
-     * @param BadResponseException $e
-     */
-    private function processBadResponse(BadResponseException $e)
-    {
-        $exceptionResponse = json_decode($e->getResponse()->getBody()->getContents(), true);
-        if (($e->getCode() === StatusCodeInterface::STATUS_FORBIDDEN
-                && $exceptionResponse === 'Invalid consumer connection'
-            )
-            || ($e->getCode() === StatusCodeInterface::STATUS_NOT_FOUND
-                && $exceptionResponse === 'consumer connection not found'
-            )
-        ) {
-            throw new ConsumerConnectionException($exceptionResponse, $e->getCode(), $e);
-        }
-
-        if ($e->getCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
-            throw new OrganizationConnectionException(
-                'Invalid organization connection',
-                StatusCodeInterface::STATUS_FORBIDDEN,
-                $e
-            );
-        }
-
-        if ($e->getCode() === StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY) {
-            throw  (new ValidationException('Validation failed', $e->getCode(), $e))
-                ->setValidationErrors(json_decode($exceptionResponse['message']));
-        }
-
-        throw new InvalidRequestException(
-            $e->getResponse() ? $e->getResponse()->getBody()->getContents() : 'An unknown error has occurred',
-            $e->getResponse() ? $e->getResponse()->getStatusCode() : 0,
-            $e
-        );
     }
 }

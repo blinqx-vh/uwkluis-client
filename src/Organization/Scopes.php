@@ -3,14 +3,14 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Organization;
 
-use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\ClientInterface;
 
 /**
  * Class Scopes
  */
 final class Scopes
 {
-    /** @var GuzzleClient */
+    /** @var ClientInterface */
     private $client;
     /** @var Config */
     private $config;
@@ -18,12 +18,12 @@ final class Scopes
     /**
      * Scopes constructor.
      *
-     * @param Config       $config
-     * @param GuzzleClient $client
+     * @param Config          $config
+     * @param ClientInterface $client
      */
     public function __construct(
         Config $config,
-        GuzzleClient $client
+        ClientInterface $client
     ) {
         $this->client = $client;
         $this->config = $config;
@@ -33,10 +33,11 @@ final class Scopes
      * returns an associative array with available scopes and their Dutch translations
      *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getScopes(): array
     {
-        $response = $this->client->get($this->config->getApiHost() . '/scopes')->getBody()->getContents();
+        $response = $this->client->request('get', $this->config->getApiHost() . '/scopes')->getBody()->getContents();
 
         return json_decode($response, true);
     }

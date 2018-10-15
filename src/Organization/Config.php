@@ -37,7 +37,7 @@ final class Config
         string $callbackUrl,
         int $clientId = null,
         string $clientSecret = null,
-        array $scopes = null
+        array $scopes = []
     ) {
         $this->clientId = $clientId;
         $this->callbackUri = $callbackUrl;
