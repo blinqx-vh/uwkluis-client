@@ -37,8 +37,8 @@ final class Connect
     /**
      * Connection constructor.
      *
-     * @param Config $config
-     * @param GuzzleClient $guzzleClient
+     * @param Config               $config
+     * @param GuzzleClient         $guzzleClient
      * @param UuidFactoryInterface $uuidFactory
      */
     public function __construct(
@@ -47,12 +47,12 @@ final class Connect
         UuidFactoryInterface $uuidFactory
     ) {
         $this->guzzleClient = $guzzleClient;
-        $this->config       = $config;
-        $this->uuidFactory  = $uuidFactory;
+        $this->config = $config;
+        $this->uuidFactory = $uuidFactory;
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $email
      * @param string $phoneNumber
      *
@@ -97,10 +97,10 @@ final class Connect
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token         $accessToken
      * @param UuidInterface $identifier
-     * @param string $email
-     * @param string $phoneNumber
+     * @param string        $email
+     * @param string        $phoneNumber
      *
      * @return UuidInterface
      * @throws \Assert\AssertionFailedException
@@ -119,13 +119,13 @@ final class Connect
                 $this->config->getApiHost() . '/consumer/update-and-reinvite',
                 [
                     RequestOptions::FORM_PARAMS => [
-                        'email' => $email,
-                        'phone_number' => $phoneNumber,
+                        'email'               => $email,
+                        'phone_number'        => $phoneNumber,
                         'consumer_identifier' => $identifier->toString(),
                     ],
-                    RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             );
