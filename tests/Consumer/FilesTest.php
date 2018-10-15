@@ -86,7 +86,9 @@ class FilesTest extends TestCase
                         'name'     => 'bar',
                         'type'     => 'bar',
                     ]
-                ])[0]
+                ])[0],
+                'foo',
+                'bar'
             )
         );
 
@@ -108,7 +110,9 @@ class FilesTest extends TestCase
                         'name'     => 'bar',
                         'type'     => 'bar',
                     ]
-                ])[0]
+                ])[0],
+                'foo',
+                'bar'
             );
         } catch (Throwable $e) {
             $this->assertInstanceOf(InvalidRequestException::class, $e);
