@@ -3,79 +3,53 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
+use Ramsey\Uuid\UuidInterface;
+use UwKluis\Enums\ConsumerConnection\Status;
+
 /**
  * Class Connection
  */
 final class Connection
 {
-    /** @var string */
-    private $organizationConsumerId;
-    /** @var string */
-    private $ufoConsumerId;
+    /** @var UuidInterface */
+    private $uwKluisConsumerId;
     /** @var array|null */
     private $grantedScopes;
-    /**
-     * @var null|string
-     */
-    private $connectionCode1;
-    /**
-     * @var null|string
-     */
-    private $connectionCode2;
+    /** @var Status */
+    private $status;
 
     /**
      * Connection constructor.
      *
-     * @param string $organizationConsumerId
-     * @param string $ufoConsumerId
-     * @param string|null $connectionCode1
-     * @param string|null $connectionCode2
-     * @param array|null $grantedScopes
+     * @param UuidInterface $uwKluisConsumerId
+     * @param Status|null   $status
+     * @param array|null    $grantedScopes
      */
     public function __construct(
-        string $organizationConsumerId,
-        string $ufoConsumerId,
-        string $connectionCode1 = null,
-        string $connectionCode2 = null,
+        UuidInterface $uwKluisConsumerId,
+        Status $status = null,
         array $grantedScopes = null
     ) {
-        $this->organizationConsumerId = $organizationConsumerId;
-        $this->ufoConsumerId = $ufoConsumerId;
-        $this->connectionCode1 = $connectionCode1;
-        $this->connectionCode2 = $connectionCode2;
+        $this->uwKluisConsumerId = $uwKluisConsumerId;
+        $this->status = $status;
         $this->grantedScopes = $grantedScopes;
     }
 
+
     /**
-     * @return string
+     * @return UuidInterface
      */
-    public function getOrganizationConsumerId(): string
+    public function getUwKluisConsumerId(): UuidInterface
     {
-        return $this->organizationConsumerId;
+        return $this->uwKluisConsumerId;
     }
 
     /**
-     * @return string
+     * @return Status
      */
-    public function getUfoConsumerId(): string
+    public function getStatus(): Status
     {
-        return $this->ufoConsumerId;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getConnectionCode1()
-    {
-        return $this->connectionCode1;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getConnectionCode2()
-    {
-        return $this->connectionCode2;
+        return $this->status;
     }
 
     /**
