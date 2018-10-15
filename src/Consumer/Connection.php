@@ -12,7 +12,7 @@ use UwKluis\Enums\ConsumerConnection\Status;
 final class Connection
 {
     /** @var UuidInterface */
-    private $ufoConsumerId;
+    private $uwKluisConsumerId;
     /** @var array|null */
     private $grantedScopes;
     /** @var Status */
@@ -21,16 +21,16 @@ final class Connection
     /**
      * Connection constructor.
      *
-     * @param UuidInterface $ufoConsumerId
+     * @param UuidInterface $uwKluisConsumerId
      * @param Status|null   $status
      * @param array|null    $grantedScopes
      */
     public function __construct(
-        UuidInterface $ufoConsumerId,
+        UuidInterface $uwKluisConsumerId,
         Status $status = null,
         array $grantedScopes = null
     ) {
-        $this->ufoConsumerId = $ufoConsumerId;
+        $this->uwKluisConsumerId = $uwKluisConsumerId;
         $this->status = $status;
         $this->grantedScopes = $grantedScopes;
     }
@@ -39,9 +39,9 @@ final class Connection
     /**
      * @return UuidInterface
      */
-    public function getUfoConsumerId(): UuidInterface
+    public function getUwKluisConsumerId(): UuidInterface
     {
-        return $this->ufoConsumerId;
+        return $this->uwKluisConsumerId;
     }
 
     /**

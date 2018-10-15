@@ -75,7 +75,7 @@ class ConnectTest extends TestCase
                 200,
                 [],
                 json_encode([
-                    'ufo_consumer_id' => $uuid->toString(),
+                    'uwkluis_consumer_id' => $uuid->toString(),
                     'status'          => Status::NEW,
                     'granted_scopes'          => 'foo bar',
                 ])
@@ -147,7 +147,7 @@ class ConnectTest extends TestCase
         $mockGuzzleClient = $this->getMockBuilder(Client::class)->getMock();
         $response = new \stdClass();
         $uuid = Uuid::uuid4();
-        $response->ufo_consumer_id = $uuid;
+        $response->uwkluis_consumer_id = $uuid;
         $mockGuzzleClient->expects($this->any())
             ->method('request')
             ->willReturn(new Response(
@@ -239,7 +239,7 @@ class ConnectTest extends TestCase
                     json_encode([
                         "message" => 'Consumer with this email and phone number is already connected or invited',
                         "data"    => [
-                            "ufo_consumer_id" => $uuid->toString(),
+                            "uwkluis_consumer_id" => $uuid->toString(),
                         ],
                     ])
                 )
@@ -284,7 +284,7 @@ class ConnectTest extends TestCase
         $mockGuzzleClient = $this->getMockBuilder(Client::class)->getMock();
         $response = new \stdClass();
         $uuid = Uuid::uuid4();
-        $response->ufo_consumer_id = $uuid;
+        $response->uwkluis_consumer_id = $uuid;
         $mockGuzzleClient->expects($this->any())
             ->method('request')
             ->willReturn(new Response(

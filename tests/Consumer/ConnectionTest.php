@@ -18,7 +18,7 @@ class ConnectionTest extends TestCase
         $connection = new Connection(
             $uuid
         );
-        $this->assertSame($uuid, $connection->getUfoConsumerId());
+        $this->assertSame($uuid, $connection->getUwKluisConsumerId());
     }
 
     /**

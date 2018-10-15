@@ -62,7 +62,7 @@ for future requests.
 $organizationConsumerId = 'JOHNSON_AMSTERDAM_001';
 $consumerConnect = new \Ufo\Client\Consumer\Connect($config, $guzzleClient);
 $connection = $consumerConnect->getConnection($accessToken, $organizationConsumerId);
-$ufoConsumerId = $connection->getUfoConsumerId();
+$uwKluisConsumerId = $connection->getUwKluisConsumerId();
 ```
 If the user's organization already has a connection, it will also contain the granted scopes. If it  hasn't established 
 a connection with that consumer before, it will instead contain a connection code. Both the organization consumer id
@@ -76,7 +76,7 @@ the desired consumer dossier json schema version:
 $dossier = new \Ufo\Client\Consumer\Dossier($config, $guzzleClient);
 $response = $dossier->getData(
     $accessToken,
-    $ufoConsumerId,
+    $uwKluisConsumerId,
     1
 );
 $data = $response['data'];
@@ -87,7 +87,7 @@ using the updateData() method.
 /** @var array $mergedData */
 $dossier->updateData(
     $accessToken,
-    $ufoConsumerId,
+    $uwKluisConsumerId,
     $mergedData
     1
 );

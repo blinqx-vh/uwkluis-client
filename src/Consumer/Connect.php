@@ -90,7 +90,7 @@ final class Connect
                     $response->message,
                     $e->getCode(),
                     $e,
-                    new Connection($this->uuidFactory->fromString($response->data->ufo_consumer_id))
+                    new Connection($this->uuidFactory->fromString($response->data->uwkluis_consumer_id))
                 );
             }
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
@@ -99,7 +99,7 @@ final class Connect
         }
 
         return new Connection(
-            $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id)
+            $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->uwkluis_consumer_id)
         );
     }
 
@@ -148,7 +148,7 @@ final class Connect
         }
 
         return new Connection(
-            $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->ufo_consumer_id)
+            $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->uwkluis_consumer_id)
         );
     }
 
@@ -190,7 +190,7 @@ final class Connect
         $connection = json_decode($httpResponse->getBody()->getContents());
 
         return new Connection(
-            $this->uuidFactory->fromString($connection->ufo_consumer_id),
+            $this->uuidFactory->fromString($connection->uwkluis_consumer_id),
             new Status($connection->status),
             $connection->granted_scopes ? explode(' ', $connection->granted_scopes) : null
         );
