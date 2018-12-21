@@ -101,6 +101,8 @@ final class Config
      */
     public function setApiHost(string $apiHost): Config
     {
+        $apiHost = $this->clearTrailingSlashesFromHosts($apiHost);
+
         $this->apiHost = $apiHost;
 
         return $this;
@@ -121,8 +123,25 @@ final class Config
      */
     public function setOrganizationHost(string $organizationHost)
     {
+        $organizationHost = $this->clearTrailingSlashesFromHosts($organizationHost);
+
         $this->organizationHost = $organizationHost;
 
         return $this;
+    }
+
+    /**
+     * @param string $host
+     *
+     * @return string
+     */
+    private function clearTrailingSlashesFromHosts(string $host): string
+    {
+        if (substr($host, -1) === '/') {
+            trigger_error('Host should not contain trailing /');
+            $host = rtrim($host, '/');
+        }
+
+        return $host;
     }
 }

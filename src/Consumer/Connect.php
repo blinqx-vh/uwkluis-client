@@ -39,7 +39,7 @@ final class Connect
      * Connect constructor.
      *
      * @param Config               $config
-     * @param ClientInterface         $guzzleClient
+     * @param ClientInterface      $guzzleClient
      * @param UuidFactoryInterface $uuidFactory
      */
     public function __construct(
