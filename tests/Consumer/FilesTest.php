@@ -99,7 +99,7 @@ class FilesTest extends TestCase
                 null
             ));
         try {
-            $response = $this->getFiles($mockGuzzleClient)->upload(
+            $this->getFiles($mockGuzzleClient)->upload(
                 new Token(),
                 'foo',
                 ServerRequest::normalizeFiles([
