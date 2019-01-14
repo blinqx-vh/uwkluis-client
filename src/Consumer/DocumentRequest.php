@@ -74,7 +74,7 @@ class DocumentRequest
     /**
      * @param Token $accessToken
      * @param string $consumerId
-     * @param string $documentId
+     * @param string $fileId
      *
      * @return mixed
      *
@@ -83,7 +83,7 @@ class DocumentRequest
     public function get(
         Token $accessToken,
         string $consumerId,
-        string $documentId
+        string $fileId
     ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
@@ -92,7 +92,7 @@ class DocumentRequest
         try {
             $httpResponse = $this->guzzleClient->request(
                 'get',
-                "{$this->config->getApiHost()}/dossier/file-request/{$documentId}?{$queryString}",
+                "{$this->config->getApiHost()}/dossier/file-request/{$fileId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
@@ -111,7 +111,7 @@ class DocumentRequest
     /**
      * @param Token $accessToken
      * @param string $consumerId
-     * @param string $documentId
+     * @param string $fileId
      * @param string $status
      * @return mixed
      *
@@ -120,7 +120,7 @@ class DocumentRequest
     public function update(
         Token $accessToken,
         string $consumerId,
-        string $documentId,
+        string $fileId,
         string $status
     ) {
         $queryString = http_build_query([
@@ -130,7 +130,7 @@ class DocumentRequest
         try {
             $httpResponse = $this->guzzleClient->request(
                 'post',
-                "{$this->config->getApiHost()}/dossier/file-request/{$documentId}?{$queryString}",
+                "{$this->config->getApiHost()}/dossier/file-request/{$fileId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
