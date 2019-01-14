@@ -55,7 +55,7 @@ class DocumentRequest
         try {
             $httpResponse = $this->guzzleClient->request(
                 'get',
-                "{$this->config->getApiHost()}/files/requests?{$queryString}",
+                "{$this->config->getApiHost()}/dossier/file-request?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
@@ -92,7 +92,7 @@ class DocumentRequest
         try {
             $httpResponse = $this->guzzleClient->request(
                 'get',
-                "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
+                "{$this->config->getApiHost()}/dossier/file-request/{$documentId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
@@ -130,7 +130,7 @@ class DocumentRequest
         try {
             $httpResponse = $this->guzzleClient->request(
                 'post',
-                "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
+                "{$this->config->getApiHost()}/dossier/file-request/{$documentId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
@@ -170,7 +170,7 @@ class DocumentRequest
         try {
             $httpResponse = $this->guzzleClient->request(
                 'post',
-                "{$this->config->getApiHost()}/files/requests?{$queryString}",
+                "{$this->config->getApiHost()}/dossier/file-request?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
