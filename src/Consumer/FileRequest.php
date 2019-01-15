@@ -11,9 +11,9 @@ use Ufo\Client\Organization\Config;
 use Ufo\Client\Traits\ProcessesBadResponses;
 
 /**
- * Class DocumentRequest
+ * Class FileRequest
  */
-class DocumentRequest
+class FileRequest
 {
     use ProcessesBadResponses;
     /** @var ClientInterface */
