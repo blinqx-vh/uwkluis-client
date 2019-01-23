@@ -1,8 +1,9 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
+use Fig\Http\Message\RequestMethodInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
@@ -24,7 +25,7 @@ class DocumentRequest
     /**
      * Files constructor.
      *
-     * @param Config $config
+     * @param Config          $config
      * @param ClientInterface $guzzleClient
      */
     public function __construct(
@@ -37,7 +38,7 @@ class DocumentRequest
 
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
      *
      * @return mixed
@@ -54,12 +55,12 @@ class DocumentRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'get',
+                RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/requests?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             )->getBody()->getContents();
@@ -72,7 +73,7 @@ class DocumentRequest
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
      * @param string $documentId
      *
@@ -91,12 +92,12 @@ class DocumentRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'get',
+                RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             )->getBody()->getContents();
@@ -109,10 +110,11 @@ class DocumentRequest
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
      * @param string $documentId
      * @param string $status
+     *
      * @return mixed
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -129,12 +131,12 @@ class DocumentRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'post',
+                RequestMethodInterface::METHOD_PUT,
                 "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
                 [
-                    RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'status' => $status,
@@ -150,9 +152,9 @@ class DocumentRequest
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
-     * @param array $documentData
+     * @param array  $documentData
      *
      * @return mixed
      *
@@ -169,15 +171,52 @@ class DocumentRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'post',
+                RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/files/requests?{$queryString}",
                 [
-                    RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'body' => json_encode($documentData),
+                    ],
+                ]
+            )->getBody()->getContents();
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return json_decode($httpResponse, true);
+    }
+
+    /**
+     * @param Token  $accessToken
+     * @param string $consumerId
+     * @param string $documentId
+     *
+     * @return mixed
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function delete(
+        Token $accessToken,
+        string $consumerId,
+        string $documentId
+    ) {
+        $queryString = http_build_query([
+            'consumer_id' => $consumerId,
+        ]);
+
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_DELETE,
+                "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             )->getBody()->getContents();
