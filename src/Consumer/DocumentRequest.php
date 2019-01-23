@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
+use Fig\Http\Message\RequestMethodInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
@@ -54,7 +55,7 @@ class DocumentRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'get',
+                RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/requests?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
@@ -91,7 +92,7 @@ class DocumentRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'get',
+                RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
@@ -130,7 +131,7 @@ class DocumentRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'post',
+                RequestMethodInterface::METHOD_PUT,
                 "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
                 [
                     RequestOptions::HEADERS     => [
@@ -170,7 +171,7 @@ class DocumentRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'post',
+                RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/files/requests?{$queryString}",
                 [
                     RequestOptions::HEADERS     => [
@@ -210,8 +211,8 @@ class DocumentRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'post',
-                "{$this->config->getApiHost()}/files/requests/{$documentId}/delete?{$queryString}",
+                RequestMethodInterface::METHOD_DELETE,
+                "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
