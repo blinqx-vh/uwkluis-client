@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
+use Fig\Http\Message\RequestMethodInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
@@ -54,7 +55,7 @@ final class Files
         ]);
         try {
             $httpResponse = $this->guzzleClient->request(
-                'get',
+                RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
@@ -87,7 +88,7 @@ final class Files
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
             $httpResponse = $this->guzzleClient->request(
-                'get',
+                RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/shared?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
@@ -120,7 +121,7 @@ final class Files
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
             $response = $this->guzzleClient->request(
-                'get',
+                RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/{$fileId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
@@ -154,7 +155,7 @@ final class Files
     ) {
         try {
             $httpResponse = $this->guzzleClient->request(
-                'post',
+                RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/files/",
                 [
                     RequestOptions::HEADERS   => [

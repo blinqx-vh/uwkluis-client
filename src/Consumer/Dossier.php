@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
+use Fig\Http\Message\RequestMethodInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
@@ -56,7 +57,7 @@ final class Dossier
         try {
             $httpResponse =
                 $this->guzzleClient->request(
-                    'get',
+                    RequestMethodInterface::METHOD_GET,
                     $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
                         RequestOptions::HEADERS => [
@@ -96,7 +97,7 @@ final class Dossier
         try {
             $httpResponse =
                 $this->guzzleClient->request(
-                    'post',
+                    RequestMethodInterface::METHOD_POST,
                     $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
                         RequestOptions::HEADERS     => [
