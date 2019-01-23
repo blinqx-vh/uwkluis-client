@@ -30,7 +30,8 @@ class DocumentRequest
     public function __construct(
         Config $config,
         ClientInterface $guzzleClient
-    ) {
+    )
+    {
         $this->guzzleClient = $guzzleClient;
         $this->config = $config;
     }
@@ -47,7 +48,8 @@ class DocumentRequest
     public function list(
         Token $accessToken,
         string $consumerId
-    ) {
+    )
+    {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -84,7 +86,8 @@ class DocumentRequest
         Token $accessToken,
         string $consumerId,
         string $documentId
-    ) {
+    )
+    {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -122,7 +125,8 @@ class DocumentRequest
         string $consumerId,
         string $documentId,
         string $status
-    ) {
+    )
+    {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -162,7 +166,8 @@ class DocumentRequest
         Token $accessToken,
         string $consumerId,
         array $documentData
-    ) {
+    )
+    {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -178,6 +183,44 @@ class DocumentRequest
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'body' => json_encode($documentData),
+                    ],
+                ]
+            )->getBody()->getContents();
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return json_decode($httpResponse, true);
+    }
+
+    /**
+     * @param Token $accessToken
+     * @param string $consumerId
+     * @param string $documentId
+     *
+     * @return mixed
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function delete(
+        Token $accessToken,
+        string $consumerId,
+        string $documentId
+    )
+    {
+        $queryString = http_build_query([
+            'consumer_id' => $consumerId,
+        ]);
+
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                'post',
+                "{$this->config->getApiHost()}/files/requests/{$documentId}/delete?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . (string)$accessToken,
                     ],
                 ]
             )->getBody()->getContents();
