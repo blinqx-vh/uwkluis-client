@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
@@ -24,21 +24,20 @@ class DocumentRequest
     /**
      * Files constructor.
      *
-     * @param Config $config
+     * @param Config          $config
      * @param ClientInterface $guzzleClient
      */
     public function __construct(
         Config $config,
         ClientInterface $guzzleClient
-    )
-    {
+    ) {
         $this->guzzleClient = $guzzleClient;
         $this->config = $config;
     }
 
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
      *
      * @return mixed
@@ -48,8 +47,7 @@ class DocumentRequest
     public function list(
         Token $accessToken,
         string $consumerId
-    )
-    {
+    ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -60,8 +58,8 @@ class DocumentRequest
                 "{$this->config->getApiHost()}/files/requests?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             )->getBody()->getContents();
@@ -74,7 +72,7 @@ class DocumentRequest
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
      * @param string $documentId
      *
@@ -86,8 +84,7 @@ class DocumentRequest
         Token $accessToken,
         string $consumerId,
         string $documentId
-    )
-    {
+    ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -98,8 +95,8 @@ class DocumentRequest
                 "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             )->getBody()->getContents();
@@ -112,10 +109,11 @@ class DocumentRequest
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
      * @param string $documentId
      * @param string $status
+     *
      * @return mixed
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -125,8 +123,7 @@ class DocumentRequest
         string $consumerId,
         string $documentId,
         string $status
-    )
-    {
+    ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -136,9 +133,9 @@ class DocumentRequest
                 'post',
                 "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
                 [
-                    RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'status' => $status,
@@ -154,9 +151,9 @@ class DocumentRequest
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
-     * @param array $documentData
+     * @param array  $documentData
      *
      * @return mixed
      *
@@ -166,8 +163,7 @@ class DocumentRequest
         Token $accessToken,
         string $consumerId,
         array $documentData
-    )
-    {
+    ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -177,9 +173,9 @@ class DocumentRequest
                 'post',
                 "{$this->config->getApiHost()}/files/requests?{$queryString}",
                 [
-                    RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'body' => json_encode($documentData),
@@ -195,7 +191,7 @@ class DocumentRequest
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
      * @param string $documentId
      *
@@ -207,8 +203,7 @@ class DocumentRequest
         Token $accessToken,
         string $consumerId,
         string $documentId
-    )
-    {
+    ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -219,8 +214,8 @@ class DocumentRequest
                 "{$this->config->getApiHost()}/files/requests/{$documentId}/delete?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             )->getBody()->getContents();
