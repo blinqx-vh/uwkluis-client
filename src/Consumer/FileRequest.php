@@ -1,8 +1,9 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Ufo\Client\Consumer;
 
+use Fig\Http\Message\RequestMethodInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
@@ -24,7 +25,7 @@ class FileRequest
     /**
      * Files constructor.
      *
-     * @param Config $config
+     * @param Config          $config
      * @param ClientInterface $guzzleClient
      */
     public function __construct(
@@ -37,7 +38,7 @@ class FileRequest
 
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
      *
      * @return mixed
@@ -54,12 +55,12 @@ class FileRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'get',
+                RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/request?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             )->getBody()->getContents();
@@ -72,9 +73,9 @@ class FileRequest
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
-     * @param string $fileId
+     * @param string $fileRequestId
      *
      * @return mixed
      *
@@ -83,7 +84,7 @@ class FileRequest
     public function get(
         Token $accessToken,
         string $consumerId,
-        string $fileId
+        string $fileRequestId
     ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
@@ -91,12 +92,12 @@ class FileRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'get',
-                "{$this->config->getApiHost()}/files/request/{$fileId}?{$queryString}",
+                RequestMethodInterface::METHOD_GET,
+                "{$this->config->getApiHost()}/files/request/{$fileRequestId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             )->getBody()->getContents();
@@ -109,10 +110,11 @@ class FileRequest
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
-     * @param string $fileId
+     * @param string $fileRequestId
      * @param string $status
+     *
      * @return mixed
      *
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -120,7 +122,7 @@ class FileRequest
     public function update(
         Token $accessToken,
         string $consumerId,
-        string $fileId,
+        string $fileRequestId,
         string $status
     ) {
         $queryString = http_build_query([
@@ -129,12 +131,12 @@ class FileRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'post',
-                "{$this->config->getApiHost()}/files/request/{$fileId}?{$queryString}",
+                RequestMethodInterface::METHOD_PUT,
+                "{$this->config->getApiHost()}/files/request/{$fileRequestId}?{$queryString}",
                 [
-                    RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'status' => $status,
@@ -150,9 +152,9 @@ class FileRequest
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
-     * @param array $documentData
+     * @param array  $fileData
      *
      * @return mixed
      *
@@ -161,7 +163,7 @@ class FileRequest
     public function create(
         Token $accessToken,
         string $consumerId,
-        array $documentData
+        array $fileData
     ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
@@ -169,15 +171,52 @@ class FileRequest
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'post',
+                RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/files/request?{$queryString}",
                 [
-                    RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                     RequestOptions::FORM_PARAMS => [
-                        'body' => json_encode($documentData),
+                        'body' => json_encode($fileData),
+                    ],
+                ]
+            )->getBody()->getContents();
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return json_decode($httpResponse, true);
+    }
+
+    /**
+     * @param Token  $accessToken
+     * @param string $consumerId
+     * @param string $fileRequestId
+     *
+     * @return mixed
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function delete(
+        Token $accessToken,
+        string $consumerId,
+        string $fileRequestId
+    ) {
+        $queryString = http_build_query([
+            'consumer_id' => $consumerId,
+        ]);
+
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_DELETE,
+                "{$this->config->getApiHost()}/files/request/{$fileRequestId}?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             )->getBody()->getContents();

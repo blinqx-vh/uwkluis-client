@@ -5,6 +5,7 @@ namespace Ufo\Client\Consumer;
 
 use Assert\Assertion;
 use Exception;
+use Fig\Http\Message\RequestMethodInterface;
 use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
@@ -68,7 +69,7 @@ final class Connect
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'post',
+                RequestMethodInterface::METHOD_POST,
                 $this->config->getApiHost() . '/consumer/invite',
                 [
                     RequestOptions::FORM_PARAMS => [
@@ -124,7 +125,7 @@ final class Connect
 
         try {
             $httpResponse = $this->guzzleClient->request(
-                'post',
+                RequestMethodInterface::METHOD_POST,
                 $this->config->getApiHost() . '/consumer/update-and-reinvite',
                 [
                     RequestOptions::FORM_PARAMS => [
@@ -165,7 +166,7 @@ final class Connect
     ): Connection {
         try {
             $httpResponse = $this->guzzleClient->request(
-                'get',
+                RequestMethodInterface::METHOD_GET,
                 $this->config->getApiHost() . '/consumer/get-connection-status?' . http_build_query(
                     [
                         'consumer_identifier' => $identifier->toString(),
