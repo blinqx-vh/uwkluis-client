@@ -142,8 +142,10 @@ final class Files
      * @param Token                 $accessToken
      * @param string                $consumerId
      * @param UploadedFileInterface $uploadedFile
+     * @param string                $fileName
+     * @param string                $description
      *
-     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function upload(
