@@ -12,9 +12,9 @@ use Ufo\Client\Organization\Config;
 use Ufo\Client\Traits\ProcessesBadResponses;
 
 /**
- * Class DocumentRequest
+ * Class FileRequest
  */
-class DocumentRequest
+class FileRequest
 {
     use ProcessesBadResponses;
     /** @var ClientInterface */
@@ -56,7 +56,7 @@ class DocumentRequest
         try {
             $httpResponse = $this->guzzleClient->request(
                 RequestMethodInterface::METHOD_GET,
-                "{$this->config->getApiHost()}/files/requests?{$queryString}",
+                "{$this->config->getApiHost()}/files/request?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
@@ -75,7 +75,7 @@ class DocumentRequest
     /**
      * @param Token  $accessToken
      * @param string $consumerId
-     * @param string $documentId
+     * @param string $fileRequestId
      *
      * @return mixed
      *
@@ -84,7 +84,7 @@ class DocumentRequest
     public function get(
         Token $accessToken,
         string $consumerId,
-        string $documentId
+        string $fileRequestId
     ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
@@ -93,7 +93,7 @@ class DocumentRequest
         try {
             $httpResponse = $this->guzzleClient->request(
                 RequestMethodInterface::METHOD_GET,
-                "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
+                "{$this->config->getApiHost()}/files/request/{$fileRequestId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
@@ -112,7 +112,7 @@ class DocumentRequest
     /**
      * @param Token  $accessToken
      * @param string $consumerId
-     * @param string $documentId
+     * @param string $fileRequestId
      * @param string $status
      *
      * @return mixed
@@ -122,7 +122,7 @@ class DocumentRequest
     public function update(
         Token $accessToken,
         string $consumerId,
-        string $documentId,
+        string $fileRequestId,
         string $status
     ) {
         $queryString = http_build_query([
@@ -132,7 +132,7 @@ class DocumentRequest
         try {
             $httpResponse = $this->guzzleClient->request(
                 RequestMethodInterface::METHOD_PUT,
-                "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
+                "{$this->config->getApiHost()}/files/request/{$fileRequestId}?{$queryString}",
                 [
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
@@ -154,7 +154,7 @@ class DocumentRequest
     /**
      * @param Token  $accessToken
      * @param string $consumerId
-     * @param array  $documentData
+     * @param array  $fileData
      *
      * @return mixed
      *
@@ -163,7 +163,7 @@ class DocumentRequest
     public function create(
         Token $accessToken,
         string $consumerId,
-        array $documentData
+        array $fileData
     ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
@@ -172,14 +172,14 @@ class DocumentRequest
         try {
             $httpResponse = $this->guzzleClient->request(
                 RequestMethodInterface::METHOD_POST,
-                "{$this->config->getApiHost()}/files/requests?{$queryString}",
+                "{$this->config->getApiHost()}/files/request?{$queryString}",
                 [
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
                         'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                     RequestOptions::FORM_PARAMS => [
-                        'body' => json_encode($documentData),
+                        'body' => json_encode($fileData),
                     ],
                 ]
             )->getBody()->getContents();
@@ -194,7 +194,7 @@ class DocumentRequest
     /**
      * @param Token  $accessToken
      * @param string $consumerId
-     * @param string $documentId
+     * @param string $fileRequestId
      *
      * @return mixed
      *
@@ -203,7 +203,7 @@ class DocumentRequest
     public function delete(
         Token $accessToken,
         string $consumerId,
-        string $documentId
+        string $fileRequestId
     ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
@@ -212,7 +212,7 @@ class DocumentRequest
         try {
             $httpResponse = $this->guzzleClient->request(
                 RequestMethodInterface::METHOD_DELETE,
-                "{$this->config->getApiHost()}/files/requests/{$documentId}?{$queryString}",
+                "{$this->config->getApiHost()}/files/request/{$fileRequestId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
