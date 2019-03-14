@@ -2,6 +2,7 @@
 
 namespace Ufo\Client\Organization;
 
+use PHPUnit\Framework\Error\Notice;
 use PHPUnit\Framework\TestCase;
 
 class ConfigTest extends TestCase
@@ -86,5 +87,25 @@ class ConfigTest extends TestCase
         $this->assertEquals('', $config->getApiHost());
         $config->setApiHost('baz');
         $this->assertEquals('baz', $config->getApiHost());
+    }
+
+    public function testTrailingSlashes()
+    {
+        $config = new Config(
+            'foo',
+            'bar'
+        );
+
+        try {
+            $config->setApiHost('foo.bar/');
+        } catch (\Throwable $e) {
+            $this->assertInstanceOf(Notice::class, $e);
+        }
+
+        $errorReporting = error_reporting();
+        error_reporting(0);
+        $config->setApiHost('foo.bar/');
+        $this->assertEquals('foo.bar', $config->getApiHost());
+        error_reporting($errorReporting);
     }
 }
