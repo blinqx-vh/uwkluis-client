@@ -111,7 +111,7 @@ class FileRequest
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
      * @param string $fileRequestId
      *
@@ -264,5 +264,4 @@ class FileRequest
         /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
-
 }

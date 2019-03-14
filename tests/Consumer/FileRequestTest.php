@@ -6,7 +6,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\Psr7\ServerRequest;
 use Lcobucci\JWT\Token;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +19,6 @@ class FileRequestTest extends TestCase
 {
     /**
      * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function testList()
     {
@@ -119,7 +117,7 @@ class FileRequestTest extends TestCase
         }
     }
 
-     /**
+    /**
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function testDownloadZippedFiles()

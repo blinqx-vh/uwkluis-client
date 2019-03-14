@@ -140,7 +140,7 @@ final class Files
     }
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
      *
      * @return ResponseInterface
@@ -228,9 +228,10 @@ final class Files
 
 
     /**
-     * @param Token $accessToken
+     * @param Token  $accessToken
      * @param string $consumerId
      * @param string $fileId
+     *
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
@@ -238,8 +239,7 @@ final class Files
         Token $accessToken,
         string $consumerId,
         string $fileId
-    )
-    {
+    ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
             $httpResponse = $this->guzzleClient->request(
@@ -247,8 +247,8 @@ final class Files
                 "{$this->config->getApiHost()}/files/{$fileId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             );

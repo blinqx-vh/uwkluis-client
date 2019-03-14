@@ -20,7 +20,6 @@ class FilesTest extends TestCase
 {
     /**
      * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function testList()
     {
@@ -28,7 +27,6 @@ class FilesTest extends TestCase
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Exception
      */
     public function testListShared()
@@ -208,6 +206,8 @@ class FilesTest extends TestCase
     }
 
     /**
+     * @param MockObject $mockGuzzleClient
+     *
      * @return Files
      */
     private function getFiles(MockObject $mockGuzzleClient): Files
