@@ -8,6 +8,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Ufo\Client\Organization\Config;
 use Ufo\Client\Traits\ProcessesBadResponses;
@@ -110,7 +111,7 @@ final class Files
      * @param string $consumerId
      * @param string $fileId
      *
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function download(
@@ -123,6 +124,37 @@ final class Files
             $response = $this->guzzleClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/{$fileId}?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                    ],
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return $response;
+    }
+
+    /**
+     * @param Token $accessToken
+     * @param string $consumerId
+     *
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function downloadZippedFiles(
+        Token $accessToken,
+        string $consumerId
+    ): ResponseInterface {
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
+        try {
+            $response = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_GET,
+                "{$this->config->getApiHost()}/files/zip?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
