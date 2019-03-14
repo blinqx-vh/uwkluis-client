@@ -62,6 +62,29 @@ class FilesTest extends TestCase
     /**
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
+    public function testDelete()
+    {
+        $mockGuzzleClient = $this->getMockGuzzleClient();
+        $this->assertEquals(
+            ['foo'],
+            $this->getFiles($mockGuzzleClient)->delete(new Token(), 'foo', 'bar')
+        );
+        $mockGuzzleClient->method('request')
+            ->willThrowException(new BadResponseException(
+                'foo',
+                new Request('get', 'foo'),
+                null
+            ));
+        try {
+            $this->getFiles($mockGuzzleClient)->delete(new Token(), 'foo', 'bar');
+        } catch (Throwable $e) {
+            $this->assertInstanceOf(InvalidRequestException::class, $e);
+        }
+    }
+
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function testDownloadZippedFiles()
     {
         $mockGuzzleClient = $this->getMockGuzzleClient();
