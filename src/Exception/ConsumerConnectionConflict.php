@@ -17,9 +17,10 @@ final class ConsumerConnectionConflict extends ConsumerConnectionException
     /**
      * ConsumerConnectionConflict constructor.
      *
-     * @param string         $message
-     * @param int            $code
-     * @param Throwable|null $previous
+     * @param string          $message
+     * @param int             $code
+     * @param Throwable|null  $previous
+     * @param Connection|null $conflictingConnection
      */
     public function __construct(
         string $message = "Consumer with this email and phone number is already connected or invited",
