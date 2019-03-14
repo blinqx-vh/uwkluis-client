@@ -8,6 +8,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use Psr\Http\Message\ResponseInterface;
 use Ufo\Client\Organization\Config;
 use Ufo\Client\Traits\ProcessesBadResponses;
 
@@ -107,6 +108,42 @@ class FileRequest
 
         /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
+    }
+
+    /**
+     * @param Token $accessToken
+     * @param string $consumerId
+     * @param string $fileRequestId
+     *
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function downloadZip(
+        Token $accessToken,
+        string $consumerId,
+        string $fileRequestId
+    ): ResponseInterface {
+        $queryString = http_build_query([
+            'consumer_id' => $consumerId,
+        ]);
+
+        try {
+            $response = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_GET,
+                "{$this->config->getApiHost()}/files/request/{$fileRequestId}/zip?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                    ],
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return $response;
     }
 
     /**
