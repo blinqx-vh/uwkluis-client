@@ -35,7 +35,8 @@ final class Message
     public function __construct(
         Config $config,
         ClientInterface $guzzleClient
-    ) {
+    )
+    {
         $this->config = $config;
         $this->guzzleClient = $guzzleClient;
     }
@@ -43,7 +44,7 @@ final class Message
     /**
      * Lists the messages.
      *
-     * @param Token  $accessToken
+     * @param Token $accessToken
      * @param string $consumerId
      *
      * @return array
@@ -52,7 +53,8 @@ final class Message
     public function list(
         Token $accessToken,
         string $consumerId
-    ): array {
+    ): array
+    {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -62,8 +64,8 @@ final class Message
                 "{$this->config->getApiHost()}/messages?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
-                        'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . (string)$accessToken,
                     ],
                 ]
             )->getBody()->getContents();
@@ -87,7 +89,8 @@ final class Message
         Token $token,
         string $consumerId,
         string $messageId
-    ) {
+    )
+    {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
             $response = $this->guzzleClient->request(
@@ -95,8 +98,8 @@ final class Message
                 "{$this->config->getApiHost()}/messages/{$messageId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
-                        'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $token,
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . (string)$token,
                     ],
                 ]
             );
@@ -120,7 +123,8 @@ final class Message
         Token $token,
         string $consumerId,
         array $data
-    ) {
+    )
+    {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -130,9 +134,9 @@ final class Message
                 RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/messages?{$queryString}",
                 [
-                    RequestOptions::HEADERS     => [
-                        'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $token,
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . (string)$token,
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'body' => json_encode($data),
@@ -161,7 +165,8 @@ final class Message
         string $consumerId,
         string $fileId,
         array $data
-    ) {
+    )
+    {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -171,9 +176,9 @@ final class Message
                 RequestMethodInterface::METHOD_PUT,
                 "{$this->config->getApiHost()}/messages/{$fileId}?{$queryString}",
                 [
-                    RequestOptions::HEADERS     => [
-                        'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $token,
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . (string)$token,
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'body' => json_encode($data),
@@ -200,7 +205,8 @@ final class Message
         Token $token,
         string $consumerId,
         string $fileId
-    ) {
+    )
+    {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -211,8 +217,8 @@ final class Message
                 "{$this->config->getApiHost()}/messages/{$fileId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
-                        'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $token,
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . (string)$token,
                     ],
                 ]
             )->getBody()->getContents();
