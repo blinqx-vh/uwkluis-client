@@ -35,8 +35,7 @@ final class Message
     public function __construct(
         Config $config,
         ClientInterface $guzzleClient
-    )
-    {
+    ) {
         $this->config = $config;
         $this->guzzleClient = $guzzleClient;
     }
@@ -53,8 +52,7 @@ final class Message
     public function list(
         Token $accessToken,
         string $consumerId
-    ): array
-    {
+    ): array {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -89,8 +87,7 @@ final class Message
         Token $token,
         string $consumerId,
         string $messageId
-    )
-    {
+    ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
             $response = $this->guzzleClient->request(
@@ -107,8 +104,7 @@ final class Message
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
-        return $response;
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
@@ -123,8 +119,7 @@ final class Message
         Token $token,
         string $consumerId,
         array $data
-    )
-    {
+    ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -165,8 +160,7 @@ final class Message
         string $consumerId,
         string $fileId,
         array $data
-    )
-    {
+    ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
@@ -205,8 +199,7 @@ final class Message
         Token $token,
         string $consumerId,
         string $fileId
-    )
-    {
+    ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
