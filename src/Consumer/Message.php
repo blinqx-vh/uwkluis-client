@@ -150,47 +150,6 @@ final class Message
      * @param Token $token
      * @param string $consumerId
      * @param string $fileId
-     * @param array $data
-     *
-     * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function update(
-        Token $token,
-        string $consumerId,
-        string $fileId,
-        array $data
-    ) {
-        $queryString = http_build_query([
-            'consumer_id' => $consumerId,
-        ]);
-
-        try {
-            $httpResponse = $this->guzzleClient->request(
-                RequestMethodInterface::METHOD_PUT,
-                "{$this->config->getApiHost()}/messages/{$fileId}?{$queryString}",
-                [
-                    RequestOptions::HEADERS => [
-                        'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$token,
-                    ],
-                    RequestOptions::FORM_PARAMS => [
-                        'body' => json_encode($data),
-                    ],
-                ]
-            )->getBody()->getContents();
-        } catch (BadResponseException $e) {
-            $this->processBadResponse($e);
-        }
-
-        /** @noinspection PhpUndefinedVariableInspection */
-        return json_decode($httpResponse, true);
-    }
-
-    /**
-     * @param Token $token
-     * @param string $consumerId
-     * @param string $fileId
      *
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
