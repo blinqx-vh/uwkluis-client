@@ -78,21 +78,20 @@ final class Message
     /**
      * @param Token $token
      * @param string $consumerId
-     * @param string $messageId
-     *
+     * @param string $messageUuid
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function get(
         Token $token,
         string $consumerId,
-        string $messageId
+        string $messageUuid
     ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
             $response = $this->guzzleClient->request(
                 RequestMethodInterface::METHOD_GET,
-                "{$this->config->getApiHost()}/messages/{$messageId}?{$queryString}",
+                "{$this->config->getApiHost()}/messages/{$messageUuid}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
@@ -149,15 +148,14 @@ final class Message
     /**
      * @param Token $token
      * @param string $consumerId
-     * @param string $fileId
-     *
+     * @param string $messageUuid
      * @return mixed
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function delete(
         Token $token,
         string $consumerId,
-        string $fileId
+        string $messageUuid
     ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
@@ -166,7 +164,7 @@ final class Message
         try {
             $httpResponse = $this->guzzleClient->request(
                 RequestMethodInterface::METHOD_DELETE,
-                "{$this->config->getApiHost()}/messages/{$fileId}?{$queryString}",
+                "{$this->config->getApiHost()}/messages/{$messageUuid}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
