@@ -22,6 +22,7 @@ use Ufo\Client\Organization\Config;
 
 class DossierTest extends TestCase
 {
+    use WithMockGuzzleClient;
 
     /**
      * @throws \Exception
@@ -119,23 +120,6 @@ class DossierTest extends TestCase
         ));
         /** @var ValidationException $e */
         $this->assertEquals(['foo'], $e->getValidationErrors());
-    }
-
-    /**
-     * @return MockObject
-     */
-    private function getMockGuzzleClient(): MockObject
-    {
-        $mockGuzzleClient = $this->getMockBuilder(Client::class)->getMock();
-        $mockGuzzleClient->expects($this->any())
-            ->method('request')
-            ->willReturn(new Response(
-                200,
-                [],
-                json_encode(['foo'])
-            ));
-
-        return $mockGuzzleClient;
     }
 
     /**
