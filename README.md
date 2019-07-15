@@ -1,22 +1,22 @@
-# UFO Client
+# UwKluis Client
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
-[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
+[![Coverage Status][ico-coverage]][link-coverage]
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
 
-This package can assist in connecting to the UFO API.
+This package can assist in connecting to the UwKluis API.
 ## Structure
 
 
 ```
 src/
-src/Client
 src/Consumer
 src/Exception
 src/Organization
+src/Traits
 tests/
 ```
 
@@ -54,8 +54,7 @@ route in response.
 /** @var $connect Ufo\Client\Organization\Connect */
 echo '<a href="' . $connect->getAuthorizeUrl() . '">Connect</a>';
 ```
-A user can then request a new consumer connection based on their organization's relation / reference number
-(referred to as organization consumer id) for that consumer. Your client now needs the previously stored access token.
+A user can then have an invitation sent to the consumer based on their phone number and e-mail address. Your client now needs the previously stored access token.
 The resulting response object will contain the organization consumer id and the UFO consumer id (a UUID). Store these
 for future requests.
 ```
@@ -94,7 +93,7 @@ $dossier->updateData(
 ```
 
 ## Webhooks
-The UFO API provides several webhook options, so your client can be notified if a consumer connection changes (for 
+The UwKluis API provides several webhook options, so your client can be notified if a consumer connection changes (for 
 instance when a consumer establishes a connection using their code, or changes the granted scopes) or when a consumer
 dossier changes (either by the consumer or by another client application or organization). Registering webhooks can
 be done after an organization user has established a connection using Oauth2. The 
@@ -113,12 +112,11 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CODE_OF_CONDUCT](CODE_OF_CONDUCT
 
 ## Security
 
-If you discover any security related issues, please email REDACTED instead of using the issue tracker.
+If you discover any security related issues, please email info@hypotheekbond.nl instead of using the issue tracker.
 
 ## Credits
 
-- [THE UFO TEAM][link-author]
-- [All Contributors][link-contributors]
+- [THE UwKluis TEAM][link-author]
 
 ## License
 
@@ -126,14 +124,12 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 [ico-version]: https://img.shields.io/packagist/v/ufo/client.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/ufo/client/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/ufo/client.svg?style=flat-square
+[ico-coverage]: https://scrutinizer-ci.com/gp/ufo-client/badges/coverage.png?b=master&s=a17ac8f96ccf1ce175eb73203702d8398346d7a6
 [ico-code-quality]: https://scrutinizer-ci.com/gp/ufo-client/badges/quality-score.png?b=master&s=6a0bcea240c60e70290bf3857c2966e9c38b29c8
 [ico-downloads]: https://img.shields.io/packagist/dt/ufo/client.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/ufo/client
-[link-travis]: https://travis-ci.org/ufo/client
-[link-scrutinizer]: https://scrutinizer-ci.com/g/ufo/client/code-structure
+[link-coverage]: https://scrutinizer-ci.com/g/ufo/client/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/ufo/client
 [link-downloads]: https://packagist.org/packages/ufo/client
 [link-author]: https://github.com/REDACTED
