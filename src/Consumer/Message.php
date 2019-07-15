@@ -6,8 +6,10 @@ namespace Ufo\Client\Consumer;
 use Fig\Http\Message\RequestMethodInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use Psr\Http\Message\ResponseInterface;
 use Ufo\Client\Organization\Config;
 use Ufo\Client\Traits\ProcessesBadResponses;
 
@@ -47,7 +49,7 @@ final class Message
      * @param string $consumerId
      *
      * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function list(
         Token $accessToken,
@@ -79,8 +81,8 @@ final class Message
      * @param Token $token
      * @param string $consumerId
      * @param string $messageUuid
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return ResponseInterface
+     * @throws GuzzleException
      */
     public function get(
         Token $token,
@@ -103,6 +105,7 @@ final class Message
             $this->processBadResponse($e);
         }
 
+        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($response->getBody()->getContents(), true);
     }
 
@@ -112,7 +115,7 @@ final class Message
      * @param array $data
      *
      * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function create(
         Token $token,
@@ -150,7 +153,7 @@ final class Message
      * @param string $consumerId
      * @param string $messageUuid
      * @return mixed
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function delete(
         Token $token,

@@ -2,9 +2,9 @@
 
 namespace Ufo\Client\Consumer;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
+use Exception;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -12,7 +12,6 @@ use Lcobucci\JWT\Token;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Ramsey\Uuid\Uuid;
 use Throwable;
 use Ufo\Client\Exception\InvalidRequestException;
 use Ufo\Client\Organization\Config;
@@ -22,7 +21,7 @@ class FilesTest extends TestCase
     use ChecksResponseFlow;
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function testList()
     {
@@ -30,7 +29,7 @@ class FilesTest extends TestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function testListShared()
     {
@@ -38,7 +37,7 @@ class FilesTest extends TestCase
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function testDownload()
     {
@@ -61,30 +60,16 @@ class FilesTest extends TestCase
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
+     * @throws Exception
      */
     public function testDelete()
     {
-        $mockGuzzleClient = $this->getMockGuzzleClient();
-        $this->assertEquals(
-            ['foo'],
-            $this->getApiClient($mockGuzzleClient)->delete(new Token(), 'foo', 'bar')
-        );
-        $mockGuzzleClient->method('request')
-            ->willThrowException(new BadResponseException(
-                'foo',
-                new Request('get', 'foo'),
-                null
-            ));
-        try {
-            $this->getApiClient($mockGuzzleClient)->delete(new Token(), 'foo', 'bar');
-        } catch (Throwable $e) {
-            $this->assertInstanceOf(InvalidRequestException::class, $e);
-        }
+        $this->checkResponseFlow('delete');
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function testDownloadZippedFiles()
     {
@@ -107,7 +92,7 @@ class FilesTest extends TestCase
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function testUpload()
     {
@@ -128,10 +113,10 @@ class FilesTest extends TestCase
                 ServerRequest::normalizeFiles([
                     [
                         'tmp_name' => 'bar',
-                        'size'     => 'bar',
-                        'error'    => 'bar',
-                        'name'     => 'bar',
-                        'type'     => 'bar',
+                        'size' => 'bar',
+                        'error' => 'bar',
+                        'name' => 'bar',
+                        'type' => 'bar',
                     ]
                 ])[0],
                 'foo',
@@ -152,10 +137,10 @@ class FilesTest extends TestCase
                 ServerRequest::normalizeFiles([
                     [
                         'tmp_name' => 'bar',
-                        'size'     => 'bar',
-                        'error'    => 'bar',
-                        'name'     => 'bar',
-                        'type'     => 'bar',
+                        'size' => 'bar',
+                        'error' => 'bar',
+                        'name' => 'bar',
+                        'type' => 'bar',
                     ]
                 ])[0],
                 'foo',
@@ -173,14 +158,12 @@ class FilesTest extends TestCase
     public function getApiClient(MockObject $mockGuzzleClient)
     {
         /** @noinspection PhpParamsInspection */
-        $files = new Files(
+        return new Files(
             (new Config(
                 'foo',
                 'bar'
             ))->setOrganizationHost('baz'),
             $mockGuzzleClient
         );
-
-        return $files;
     }
 }
