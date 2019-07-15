@@ -65,7 +65,7 @@ class FilesTest extends TestCase
      */
     public function testDelete()
     {
-        $this->checkResponseFlow('delete');
+        $this->checkResponseFlow('delete', 'foo');
     }
 
     /**

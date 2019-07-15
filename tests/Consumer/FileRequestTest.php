@@ -35,30 +35,15 @@ class FileRequestTest extends TestCase
      */
     public function testGet()
     {
-        $this->checkResponseFlow('get');
+        $this->checkResponseFlow('get', 'foo');
     }
 
     /**
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function testUpdate()
     {
-        $mockGuzzleClient = $this->getMockGuzzleClient();
-        $this->assertEquals(
-            ['foo'],
-            $this->getApiClient($mockGuzzleClient)->update(new Token(), 'foo', 'bar', 'baz')
-        );
-        $mockGuzzleClient->method('request')
-            ->willThrowException(new BadResponseException(
-                'foo',
-                new Request('get', 'foo'),
-                null
-            ));
-        try {
-            $this->getApiClient($mockGuzzleClient)->update(new Token(), 'foo', 'bar', 'baz');
-        } catch (Throwable $e) {
-            $this->assertInstanceOf(InvalidRequestException::class, $e);
-        }
+        $this->checkResponseFlow('update', 'foo', 'bar');
     }
 
     /**
@@ -66,30 +51,15 @@ class FileRequestTest extends TestCase
      */
     public function testDelete()
     {
-        $this->checkResponseFlow('delete');
+        $this->checkResponseFlow('delete', 'foo');
     }
 
     /**
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function testCreate()
     {
-        $mockGuzzleClient = $this->getMockGuzzleClient();
-        $this->assertEquals(
-            ['foo'],
-            $this->getApiClient($mockGuzzleClient)->create(new Token(), 'foo', ['bar'])
-        );
-        $mockGuzzleClient->method('request')
-            ->willThrowException(new BadResponseException(
-                'foo',
-                new Request('get', 'foo'),
-                null
-            ));
-        try {
-            $this->getApiClient($mockGuzzleClient)->create(new Token(), 'foo', ['bar']);
-        } catch (Throwable $e) {
-            $this->assertInstanceOf(InvalidRequestException::class, $e);
-        }
+        $this->checkResponseFlow('create', ['bar']);
     }
 
     /**
