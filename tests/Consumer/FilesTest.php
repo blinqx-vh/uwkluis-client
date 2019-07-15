@@ -92,63 +92,24 @@ class FilesTest extends TestCase
     }
 
     /**
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function testUpload()
     {
-        $mockGuzzleClient = $this->getMockGuzzleClient();
-        $mockGuzzleClient->expects($this->any())
-            ->method('send')
-            ->willReturn(new Response(
-                200,
-                [],
-                json_encode(['foo'])
-            ));
-
-        $this->assertEquals(
-            ['foo'],
-            $this->getApiClient($mockGuzzleClient)->upload(
-                new Token(),
-                'foo',
-                ServerRequest::normalizeFiles([
-                    [
-                        'tmp_name' => 'bar',
-                        'size' => 'bar',
-                        'error' => 'bar',
-                        'name' => 'bar',
-                        'type' => 'bar',
-                    ]
-                ])[0],
-                'foo',
-                'bar'
-            )
+        $this->checkResponseFlow(
+            'upload',
+            ServerRequest::normalizeFiles([
+            [
+                'tmp_name' => 'bar',
+                'size' => 'bar',
+                'error' => 'bar',
+                'name' => 'bar',
+                'type' => 'bar',
+            ]
+            ])[0],
+            'foo',
+            'bar'
         );
-
-        $mockGuzzleClient->method('request')
-            ->willThrowException(new BadResponseException(
-                'foo',
-                new Request('get', 'foo'),
-                null
-            ));
-        try {
-            $this->getApiClient($mockGuzzleClient)->upload(
-                new Token(),
-                'foo',
-                ServerRequest::normalizeFiles([
-                    [
-                        'tmp_name' => 'bar',
-                        'size' => 'bar',
-                        'error' => 'bar',
-                        'name' => 'bar',
-                        'type' => 'bar',
-                    ]
-                ])[0],
-                'foo',
-                'bar'
-            );
-        } catch (Throwable $e) {
-            $this->assertInstanceOf(InvalidRequestException::class, $e);
-        }
     }
 
     /**

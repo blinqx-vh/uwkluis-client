@@ -2,14 +2,14 @@
 
 namespace Ufo\Client\Consumer;
 
+use Exception;
 use Fig\Http\Message\StatusCodeInterface;
-use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Lcobucci\JWT\Token;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
@@ -26,55 +26,26 @@ class DossierTest extends TestCase
     use ChecksResponseFlow;
 
     /**
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws Exception
      */
     public function testUpdateData()
     {
-        $uuid = Uuid::uuid4();
-        $this->assertEquals(['foo'], $this->getApiClient($this->getMockGuzzleClient())->updateData(
-            new Token(),
-            $uuid->toString(),
-            ['1'],
-            1
-        ));
-
-        $mockGuzzleClient = $this->getMockGuzzleClient();
-        $mockGuzzleClient->method('request')
-            ->willThrowException(new BadResponseException(
-                'foo',
-                new Request('get', 'foo'),
-                null
-            ));
-        try {
-            $this->getApiClient($mockGuzzleClient)->updateData(
-                new Token(),
-                $uuid->toString(),
-                ['1'],
-                1
-            );
-        } catch (Throwable $e) {
-            $this->assertInstanceOf(InvalidRequestException::class, $e);
-        }
+        $this->checkResponseFlow('updateData', ['1'], 1);
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Exception
+     * @throws GuzzleException
+     * @throws Exception
      */
     public function testGetData()
     {
+        $this->checkResponseFlow('getData', 1);
         $uuid = Uuid::uuid4();
-
-        $this->assertEquals(['foo'], $this->getApiClient($this->getMockGuzzleClient())->getData(
-            new Token(),
-            $uuid->toString(),
-            '1'
-        ));
-
-
-        $this->checkBadFlow(null, $uuid, new InvalidRequestException('An unknown error has occurred'));
-
+        $this->checkBadFlow(
+            null,
+            $uuid,
+            new InvalidRequestException('An unknown error has occurred')
+        );
         $this->checkBadFlow(
             new Response(
                 StatusCodeInterface::STATUS_FORBIDDEN,
@@ -125,11 +96,11 @@ class DossierTest extends TestCase
 
     /**
      * @param ResponseInterface $response
-     * @param UuidInterface     $uuid
-     * @param Throwable         $expectedException
+     * @param UuidInterface $uuid
+     * @param Throwable $expectedException
      *
-     * @return \Exception|Throwable
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return Exception|Throwable
+     * @throws GuzzleException
      */
     private function checkBadFlow($response, UuidInterface $uuid, Throwable $expectedException)
     {
