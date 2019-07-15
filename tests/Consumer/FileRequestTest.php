@@ -3,6 +3,7 @@
 namespace Ufo\Client\Consumer;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -17,7 +18,7 @@ use Ufo\Client\Organization\Config;
 
 class FileRequestTest extends TestCase
 {
-    use WithMockGuzzleClient;
+    use ChecksResponseFlow;
 
     /**
      * @throws \Exception
@@ -35,7 +36,7 @@ class FileRequestTest extends TestCase
         $mockGuzzleClient = $this->getMockGuzzleClient();
         $this->assertEquals(
             ['foo'],
-            $this->getFileRequest($mockGuzzleClient)->get(new Token(), 'foo', 'bar')
+            $this->getApiClient($mockGuzzleClient)->get(new Token(), 'foo', 'bar')
         );
         $mockGuzzleClient->method('request')
             ->willThrowException(new BadResponseException(
@@ -44,7 +45,7 @@ class FileRequestTest extends TestCase
                 null
             ));
         try {
-            $this->getFileRequest($mockGuzzleClient)->get(new Token(), 'foo', 'bar');
+            $this->getApiClient($mockGuzzleClient)->get(new Token(), 'foo', 'bar');
         } catch (Throwable $e) {
             $this->assertInstanceOf(InvalidRequestException::class, $e);
         }
@@ -58,7 +59,7 @@ class FileRequestTest extends TestCase
         $mockGuzzleClient = $this->getMockGuzzleClient();
         $this->assertEquals(
             ['foo'],
-            $this->getFileRequest($mockGuzzleClient)->update(new Token(), 'foo', 'bar', 'baz')
+            $this->getApiClient($mockGuzzleClient)->update(new Token(), 'foo', 'bar', 'baz')
         );
         $mockGuzzleClient->method('request')
             ->willThrowException(new BadResponseException(
@@ -67,7 +68,7 @@ class FileRequestTest extends TestCase
                 null
             ));
         try {
-            $this->getFileRequest($mockGuzzleClient)->update(new Token(), 'foo', 'bar', 'baz');
+            $this->getApiClient($mockGuzzleClient)->update(new Token(), 'foo', 'bar', 'baz');
         } catch (Throwable $e) {
             $this->assertInstanceOf(InvalidRequestException::class, $e);
         }
@@ -81,7 +82,7 @@ class FileRequestTest extends TestCase
         $mockGuzzleClient = $this->getMockGuzzleClient();
         $this->assertEquals(
             ['foo'],
-            $this->getFileRequest($mockGuzzleClient)->delete(new Token(), 'foo', 'bar')
+            $this->getApiClient($mockGuzzleClient)->delete(new Token(), 'foo', 'bar')
         );
         $mockGuzzleClient->method('request')
             ->willThrowException(new BadResponseException(
@@ -90,7 +91,7 @@ class FileRequestTest extends TestCase
                 null
             ));
         try {
-            $this->getFileRequest($mockGuzzleClient)->delete(new Token(), 'foo', 'bar');
+            $this->getApiClient($mockGuzzleClient)->delete(new Token(), 'foo', 'bar');
         } catch (Throwable $e) {
             $this->assertInstanceOf(InvalidRequestException::class, $e);
         }
@@ -104,7 +105,7 @@ class FileRequestTest extends TestCase
         $mockGuzzleClient = $this->getMockGuzzleClient();
         $this->assertEquals(
             ['foo'],
-            $this->getFileRequest($mockGuzzleClient)->create(new Token(), 'foo', ['bar'])
+            $this->getApiClient($mockGuzzleClient)->create(new Token(), 'foo', ['bar'])
         );
         $mockGuzzleClient->method('request')
             ->willThrowException(new BadResponseException(
@@ -113,7 +114,7 @@ class FileRequestTest extends TestCase
                 null
             ));
         try {
-            $this->getFileRequest($mockGuzzleClient)->create(new Token(), 'foo', ['bar']);
+            $this->getApiClient($mockGuzzleClient)->create(new Token(), 'foo', ['bar']);
         } catch (Throwable $e) {
             $this->assertInstanceOf(InvalidRequestException::class, $e);
         }
@@ -127,7 +128,7 @@ class FileRequestTest extends TestCase
         $mockGuzzleClient = $this->getMockGuzzleClient();
         $this->assertInstanceOf(
             ResponseInterface::class,
-            $this->getFileRequest($mockGuzzleClient)->downloadZip(new Token(), 'foo', 'bar')
+            $this->getApiClient($mockGuzzleClient)->downloadZip(new Token(), 'foo', 'bar')
         );
         $mockGuzzleClient->method('request')
             ->willThrowException(new BadResponseException(
@@ -136,7 +137,7 @@ class FileRequestTest extends TestCase
                 null
             ));
         try {
-            $this->getFileRequest($mockGuzzleClient)->downloadZip(new Token(), 'foo', 'bar');
+            $this->getApiClient($mockGuzzleClient)->downloadZip(new Token(), 'foo', 'bar');
         } catch (Throwable $e) {
             $this->assertInstanceOf(InvalidRequestException::class, $e);
         }
@@ -151,7 +152,7 @@ class FileRequestTest extends TestCase
     {
         $uuid = Uuid::uuid4();
         $mockGuzzleClient = $this->getMockGuzzleClient();
-        $fileRequest = $this->getFileRequest($mockGuzzleClient);
+        $fileRequest = $this->getApiClient($mockGuzzleClient);
 
         $this->assertEquals(['foo'], call_user_func([$fileRequest, $function], new Token(), $uuid->toString()));
         $mockGuzzleClient->method('request')
@@ -167,22 +168,20 @@ class FileRequestTest extends TestCase
         }
     }
 
+
     /**
-     * @param MockObject $mockGuzzleClient
-     *
+     * @param ClientInterface $client
      * @return FileRequest
      */
-    private function getFileRequest(MockObject $mockGuzzleClient): FileRequest
+    public function getApiClient(ClientInterface $client)
     {
         /** @noinspection PhpParamsInspection */
-        $fileRequest = new FileRequest(
+        return new FileRequest(
             (new Config(
                 'foo',
                 'bar'
             ))->setOrganizationHost('baz'),
-            $mockGuzzleClient
+            $client
         );
-
-        return $fileRequest;
     }
 }

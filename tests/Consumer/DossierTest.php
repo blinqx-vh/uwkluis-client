@@ -4,6 +4,7 @@ namespace Ufo\Client\Consumer;
 
 use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -22,7 +23,7 @@ use Ufo\Client\Organization\Config;
 
 class DossierTest extends TestCase
 {
-    use WithMockGuzzleClient;
+    use ChecksResponseFlow;
 
     /**
      * @throws \Exception
@@ -31,7 +32,7 @@ class DossierTest extends TestCase
     public function testUpdateData()
     {
         $uuid = Uuid::uuid4();
-        $this->assertEquals(['foo'], $this->getDossier($this->getMockGuzzleClient())->updateData(
+        $this->assertEquals(['foo'], $this->getApiClient($this->getMockGuzzleClient())->updateData(
             new Token(),
             $uuid->toString(),
             ['1'],
@@ -46,7 +47,7 @@ class DossierTest extends TestCase
                 null
             ));
         try {
-            $this->getDossier($mockGuzzleClient)->updateData(
+            $this->getApiClient($mockGuzzleClient)->updateData(
                 new Token(),
                 $uuid->toString(),
                 ['1'],
@@ -65,7 +66,7 @@ class DossierTest extends TestCase
     {
         $uuid = Uuid::uuid4();
 
-        $this->assertEquals(['foo'], $this->getDossier($this->getMockGuzzleClient())->getData(
+        $this->assertEquals(['foo'], $this->getApiClient($this->getMockGuzzleClient())->getData(
             new Token(),
             $uuid->toString(),
             '1'
@@ -123,23 +124,6 @@ class DossierTest extends TestCase
     }
 
     /**
-     * @param $mockGuzzleClient
-     *
-     * @return Dossier
-     */
-    private function getDossier(MockObject $mockGuzzleClient): Dossier
-    {
-        /** @noinspection PhpParamsInspection */
-        return new Dossier(
-            (new Config(
-                'foo',
-                'bar'
-            ))->setOrganizationHost('baz'),
-            $mockGuzzleClient
-        );
-    }
-
-    /**
      * @param ResponseInterface $response
      * @param UuidInterface     $uuid
      * @param Throwable         $expectedException
@@ -157,7 +141,7 @@ class DossierTest extends TestCase
                 $response
             ));
         try {
-            $this->getDossier($mockGuzzleClient)->getData(
+            $this->getApiClient($mockGuzzleClient)->getData(
                 new Token(),
                 $uuid->toString(),
                 '1'
@@ -170,5 +154,21 @@ class DossierTest extends TestCase
 
         /** @noinspection PhpUndefinedVariableInspection */
         return $e;
+    }
+
+    /**
+     * @param ClientInterface $client
+     * @return Dossier
+     */
+    public function getApiClient(ClientInterface $client)
+    {
+        /** @noinspection PhpParamsInspection */
+        return new Dossier(
+            (new Config(
+                'foo',
+                'bar'
+            ))->setOrganizationHost('baz'),
+            $client
+        );
     }
 }
