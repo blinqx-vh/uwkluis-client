@@ -135,9 +135,7 @@ final class Message
                         'Accept' => 'application/json',
                         'Authorization' => 'Bearer ' . (string)$token,
                     ],
-                    RequestOptions::FORM_PARAMS => [
-                        'body' => json_encode($data),
-                    ],
+                    RequestOptions::MULTIPART => $data
                 ]
             )->getBody()->getContents();
         } catch (BadResponseException $e) {
