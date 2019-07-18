@@ -7,7 +7,9 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 
-This package can assist in connecting to the UwKluis API.
+This package can assist in connecting to the [UwKluis API](https://api.uwkluis.nl). An [OpenAPI](https://www.openapis.org/) 
+compatible schema and [Swagger](https://swagger.io/) -generated documentation about the individual endpoints can be 
+found at the root of this domain. 
 ## Structure
 
 
@@ -60,15 +62,29 @@ for future requests.
 ```
 $organizationConsumerId = 'JOHNSON_AMSTERDAM_001';
 $consumerConnect = new \Ufo\Client\Consumer\Connect($config, $guzzleClient);
-$connection = $consumerConnect->getConnection($accessToken, $organizationConsumerId);
+$connection = $consumerConnect->inviteConsumer('johnson@example.org', '0612345678');
 $uwKluisConsumerId = $connection->getUwKluisConsumerId();
 ```
-If the user's organization already has a connection, it will also contain the granted scopes. If it  hasn't established 
-a connection with that consumer before, it will instead contain a connection code. Both the organization consumer id
-and the connection code need to be communicated with the consumer, who can then use those to either create a new UFO 
-account and connect it to that organization, or connect an already existing account. From that point onwards, your
-client software can retrieve (and possibly edit) consumer dossier data using the UFO consumer id.
- 
+If the user's organization already has a connection, the request will fail, throwing a 
+`\Ufo\Client\Exception\ConsumerConnectionConflict`, which contains the conflicting connection. This can be extracted via
+`\Ufo\Client\Exception\ConsumerConnectionConflict::getConflictingConnection()`.
+ Information about an existing connection, such as one returned by the aforementioned exception, can be retrieved using:
+```
+ /** @var $consumerConnect \Ufo\Client\Consumer\Connect */
+ /** @var $token \Lcobucci\JWT\Token */
+ /** @var $uwKluisConsumerId \Ramsey\Uuid\UuidInterface */
+ /** @var $connection \Ufo\Client\Consumer\Connect */
+$connection = $consumerConnect->getConnectionStatus($token, $uwKluisConsumerId);
+``` 
+ If an invitation has been sent to a consumer, but they are unable to accept it because either the phonenumber or the
+ e-mail address are incorrect, or they are unable to find the invitation, one can send a new invitation using the existing
+ connection ID:
+ ```
+/** @var $consumerConnect \Ufo\Client\Consumer\Connect */
+/** @var $token \Lcobucci\JWT\Token */
+/** @var $uwKluisConsumerId \Ramsey\Uuid\UuidInterface */
+$consumerConnect->updateAndReinviteConsumer($token, $uwKluisConsumerId, 'newEmail@example.org', '0612345678');
+ ``` 
 First request the current consumer dossier, using the organization's access token, the organization consumer id and
 the desired consumer dossier json schema version:
 ```
@@ -94,7 +110,7 @@ $dossier->updateData(
 
 ## Webhooks
 The UwKluis API provides several webhook options, so your client can be notified if a consumer connection changes (for 
-instance when a consumer establishes a connection using their code, or changes the granted scopes) or when a consumer
+instance when a consumer establishes a connection, or changes the granted scopes) or when a consumer
 dossier changes (either by the consumer or by another client application or organization). Registering webhooks can
 be done after an organization user has established a connection using Oauth2. The 
 [ufo/webhook-client](https://packagist.org/packages/ufo/webhook-client) package can help implementing webhooks in your 
