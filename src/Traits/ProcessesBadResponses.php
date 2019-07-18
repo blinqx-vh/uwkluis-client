@@ -42,7 +42,7 @@ trait ProcessesBadResponses
             }
 
             if ($e->getCode() === StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY) {
-                throw  (new ValidationException('Validation failed', $e->getCode(), $e))
+                throw (new ValidationException('Validation failed', $e->getCode(), $e))
                     ->setValidationErrors(json_decode($exceptionResponse['message']));
             }
         }

@@ -192,31 +192,44 @@ final class Connect
      */
     private function processError(array $data)
     {
-        $message = '';
         if ($data['error'] === 'invalid_scope') {
-            if (isset($data['message'])) {
-                $message .= $data['message'];
-            }
-            if (isset($data['hint'])) {
-                $message .= ' - ' . $data['hint'];
-            }
-            throw new InvalidScopesException($message);
+            $this->processInvalidScope($data);
         }
 
         if ($data['error'] === 'invalid_request') {
-            if (isset($data['message'])) {
-                $message .= $data['message'];
-                if ($message === 'The refresh token is invalid.') {
-                    throw new RefreshTokenInvalidException($message);
-                }
-            }
-            if (isset($data['hint']) && $data['hint'] === 'Authorization code has expired') {
-                $message .= ' - ' . $data['hint'];
-                throw new AuthCodeExpiredException($message);
-            }
-            throw new InvalidRequestException($message);
+            $this->processInvalidRequest($data);
         }
 
         throw new InvalidRequestException('An unknown error has occurred.');
+    }
+
+    /**
+     * @param array $data
+     */
+    private function processInvalidScope(array $data)
+    {
+        $message = '';
+        if (isset($data['message'])) {
+            $message .= $data['message'];
+        }
+        if (isset($data['hint'])) {
+            $message .= ' - ' . $data['hint'];
+        }
+        throw new InvalidScopesException($message);
+    }
+
+    /**
+     * @param array $data
+     */
+    private function processInvalidRequest(array $data)
+    {
+        if (isset($data['message']) && $data['message'] === 'The refresh token is invalid.') {
+            throw new RefreshTokenInvalidException();
+        }
+        if (isset($data['hint']) && $data['hint'] === 'Authorization code has expired') {
+            throw new AuthCodeExpiredException($data['message']);
+        }
+
+        throw new InvalidRequestException($data['message'] ?? '');
     }
 }
