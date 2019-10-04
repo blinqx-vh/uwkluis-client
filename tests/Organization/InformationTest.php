@@ -21,7 +21,7 @@ class InformationTest extends TestCase
         $guzzleClientMock->expects($this->any())
             ->method('request')
             ->willReturn(
-                new Response(200, [], json_encode(['email' => 'example@example.com', 'name' => 'example b.v.']))
+                new Response(200, [], json_encode(['organization_name' => 'organization', 'email' => 'example@example.com', 'name' => 'example b.v.']))
             );
         /** @noinspection PhpParamsInspection */
         $information = new Information(new Config(
@@ -32,7 +32,7 @@ class InformationTest extends TestCase
             ['baz', 'quu', 'quuz']
         ), $guzzleClientMock);
         $this->assertEquals(
-            ['email' => 'example@example.com', 'name' => 'example b.v.'],
+            ['organization_name' => 'organization', 'email' => 'example@example.com', 'name' => 'example b.v.'],
             $information->getOrganizationInformation()
         );
     }
