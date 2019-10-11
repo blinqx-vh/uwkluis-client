@@ -5,6 +5,7 @@ namespace Ufo\Client\Organization;
 
 use Fig\Http\Message\RequestMethodInterface;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 
@@ -38,7 +39,7 @@ final class Information
      * @param Token $accessToken
      *
      * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function whoAmI(Token $accessToken): array
     {
