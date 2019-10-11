@@ -5,8 +5,10 @@ namespace Ufo\Client\Organization;
 
 use DateInterval;
 use DateTime;
+use Exception;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Parser;
 use Psr\Http\Message\RequestInterface;
@@ -71,8 +73,8 @@ final class Connect
      * @param RequestInterface $request
      *
      * @return AccessTokenResponse
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws Exception
+     * @throws GuzzleException
      */
     public function processResponse(RequestInterface $request): AccessTokenResponse
     {
@@ -95,8 +97,8 @@ final class Connect
      * @param string $refreshToken
      *
      * @return AccessTokenResponse
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws Exception
+     * @throws GuzzleException
      */
     public function refreshAccessToken(string $refreshToken): AccessTokenResponse
     {
@@ -128,8 +130,8 @@ final class Connect
      * @param string $code
      *
      * @return AccessTokenResponse
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws Exception
+     * @throws GuzzleException
      */
     private function requestAccessToken(string $code): AccessTokenResponse
     {
@@ -161,7 +163,7 @@ final class Connect
      * @param $response
      *
      * @return AccessTokenResponse
-     * @throws \Exception
+     * @throws Exception
      */
     private function processTokenResponse(ResponseInterface $response): AccessTokenResponse
     {

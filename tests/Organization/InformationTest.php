@@ -4,6 +4,7 @@ namespace Ufo\Client\Organization;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
+use Lcobucci\JWT\Token;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,7 +15,7 @@ class InformationTest extends TestCase
     /**
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function testGetScopes()
+    public function testWhoAmI()
     {
         $guzzleClientMock = $this->getMockBuilder(Client::class)
             ->getMock();
@@ -33,7 +34,7 @@ class InformationTest extends TestCase
         ), $guzzleClientMock);
         $this->assertEquals(
             ['organization_name' => 'organization', 'email' => 'example@example.com', 'name' => 'example b.v.'],
-            $information->getOrganizationInformation()
+            $information->whoAmI(new Token())
         );
     }
 }

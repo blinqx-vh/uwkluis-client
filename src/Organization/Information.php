@@ -3,7 +3,11 @@ declare(strict_types=1);
 
 namespace Ufo\Client\Organization;
 
+use Fig\Http\Message\RequestMethodInterface;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\RequestOptions;
+use Lcobucci\JWT\Token;
 
 /**
  * Class Information
@@ -13,35 +17,41 @@ final class Information
     /** @var Config */
     private $config;
     /** @var ClientInterface */
-    private $client;
+    private $guzzleClient;
 
     /**
      * Information constructor.
      *
-     * @param Config $config
-     * @param ClientInterface $client
+     * @param Config          $config
+     * @param ClientInterface $guzzleClient
      */
     public function __construct(
         Config $config,
-        ClientInterface $client
+        ClientInterface $guzzleClient
     ) {
-        $this->config = $config;
-        $this->client = $client;
+        $this->config       = $config;
+        $this->guzzleClient = $guzzleClient;
     }
 
     /**
      * returns an associative array with organization information.
      *
+     * @param Token $accessToken
+     *
      * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
-    public function getOrganizationInformation(): array
+    public function whoAmI(Token $accessToken): array
     {
-        $response = $this->client
-            ->request('get', $this->config->getApiHost() . '/information')
-            ->getBody()
-            ->getContents();
-
-        return json_decode($response, true);
+        return json_decode((string) $this->guzzleClient->request(
+            RequestMethodInterface::METHOD_GET,
+            $this->config->getApiHost() . '/whoami',
+            [
+                RequestOptions::HEADERS     => [
+                    'Accept'        => 'application/json',
+                    'Authorization' => 'Bearer ' . (string) $accessToken,
+                ],
+            ]
+        )->getBody()->getContents(), true);
     }
 }
