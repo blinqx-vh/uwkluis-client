@@ -142,6 +142,39 @@ final class Files
     /**
      * @param Token  $accessToken
      * @param string $consumerId
+     * @param string $fileId
+     *
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function downloadByOrganizationMessageAttachmentUuid(
+        Token $accessToken,
+        string $consumerId,
+        string $attachmentUuid
+    ) {
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
+        try {
+            $response = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_GET,
+                "{$this->config->getApiHost()}/files/attachment/{$attachmentUuid}?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                    ],
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return $response;
+    }
+
+    /**
+     * @param Token  $accessToken
+     * @param string $consumerId
      *
      * @return ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
