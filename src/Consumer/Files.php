@@ -142,7 +142,7 @@ final class Files
     /**
      * @param Token  $accessToken
      * @param string $consumerId
-     * @param string $fileId
+     * @param string $attachmentUuid
      *
      * @return ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
