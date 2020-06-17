@@ -41,10 +41,10 @@ final class Group
      * @param Token $accessToken
      * @param string $groupId
      *
-     * @return array
+     * @return array|null
      * @throws GuzzleException
      */
-    public function list(Token $accessToken, string $groupId): array
+    public function list(Token $accessToken, string $groupId)
     {
         try {
             $httpResponse = $this->guzzleClient->request(
@@ -70,10 +70,10 @@ final class Group
      * @param string $groupId
      * @param string $consumerId
      *
-     * @return array
+     * @return array|null
      * @throws GuzzleException
      */
-    public function add(Token $accessToken, string $groupId, string $consumerId): array
+    public function add(Token $accessToken, string $groupId, string $consumerId)
     {
         try {
             $httpResponse = $this->guzzleClient->request(
@@ -99,10 +99,10 @@ final class Group
      * @param string $groupId
      * @param string $consumerId
      *
-     * @return array
+     * @return array|null
      * @throws GuzzleException
      */
-    public function remove(Token $accessToken, string $groupId, string $consumerId): array
+    public function remove(Token $accessToken, string $groupId, string $consumerId)
     {
         try {
             $httpResponse = $this->guzzleClient->request(
