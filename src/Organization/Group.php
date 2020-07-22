@@ -77,7 +77,7 @@ final class Group
         try {
             $httpResponse = $this->guzzleClient->request(
                 RequestMethodInterface::METHOD_GET,
-                $this->config->getApiHost() . '/groups/for-consumer' . $consumerId,
+                $this->config->getApiHost() . '/groups/for-consumer/' . $consumerId,
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
