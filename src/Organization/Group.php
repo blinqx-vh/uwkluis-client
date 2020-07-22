@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Ufo\Client\Organization;
@@ -26,14 +27,14 @@ final class Group
     /**
      * Information constructor.
      *
-     * @param Config          $config
+     * @param Config $config
      * @param ClientInterface $guzzleClient
      */
     public function __construct(
         Config $config,
         ClientInterface $guzzleClient
     ) {
-        $this->config       = $config;
+        $this->config = $config;
         $this->guzzleClient = $guzzleClient;
     }
 
@@ -53,7 +54,34 @@ final class Group
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                    ],
+                ]
+            )->getBody()->getContents();
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return json_decode($httpResponse, true);
+    }
+
+    /**
+     * @param Token $accessToken
+     * @param string $consumerId
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function listForConsumer(Token $accessToken, string $consumerId)
+    {
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_GET,
+                $this->config->getApiHost() . '/groups/for-consumer' . $consumerId,
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . (string)$accessToken,
                     ],
                 ]
             )->getBody()->getContents();
@@ -82,7 +110,7 @@ final class Group
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . (string)$accessToken,
                     ],
                 ]
             )->getBody()->getContents();
@@ -111,7 +139,7 @@ final class Group
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . (string)$accessToken,
                     ],
                 ]
             )->getBody()->getContents();
