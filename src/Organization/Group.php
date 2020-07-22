@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Ufo\Client\Organization;
@@ -67,6 +68,33 @@ final class Group
 
     /**
      * @param Token $accessToken
+     * @param string $consumerId
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function listForConsumer(Token $accessToken, string $consumerId)
+    {
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_GET,
+                $this->config->getApiHost() . '/groups/for-consumer' . $consumerId,
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                    ],
+                ]
+            )->getBody()->getContents();
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return json_decode($httpResponse, true);
+    }
+
+    /**
+     * @param Token $accessToken
      * @param string $groupId
      * @param string $consumerId
      *
@@ -82,7 +110,7 @@ final class Group
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . (string)$accessToken,
                     ],
                 ]
             )->getBody()->getContents();
@@ -111,7 +139,7 @@ final class Group
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . (string)$accessToken,
                     ],
                 ]
             )->getBody()->getContents();

@@ -20,6 +20,14 @@ class GroupTest extends TestCase
     /**
      * @throws \Exception
      */
+    public function testListForConsumer()
+    {
+        $this->checkResponseFlow('listForConsumer');
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testAdd()
     {
         $this->checkResponseFlow('add', 'foo', 'bar', 'baz');
