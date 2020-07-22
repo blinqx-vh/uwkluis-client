@@ -27,14 +27,14 @@ final class Group
     /**
      * Information constructor.
      *
-     * @param Config $config
+     * @param Config          $config
      * @param ClientInterface $guzzleClient
      */
     public function __construct(
         Config $config,
         ClientInterface $guzzleClient
     ) {
-        $this->config = $config;
+        $this->config       = $config;
         $this->guzzleClient = $guzzleClient;
     }
 
@@ -54,7 +54,7 @@ final class Group
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
                 ]
             )->getBody()->getContents();
