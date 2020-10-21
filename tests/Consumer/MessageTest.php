@@ -1,9 +1,9 @@
 <?php
 
-namespace Ufo\Client\Consumer;
+namespace UwKluis\Client\Consumer;
 
 use PHPUnit\Framework\TestCase;
-use Ufo\Client\Organization\Config;
+use UwKluis\Client\Organization\Config;
 
 class MessageTest extends TestCase
 {

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Ufo\Client\Consumer;
+namespace UwKluis\Client\Consumer;
 
 use Assert\Assertion;
 use Exception;
@@ -13,10 +13,10 @@ use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
-use Ufo\Client\Exception\ConsumerConnectionConflict;
-use Ufo\Client\Exception\ConsumerConnectionException;
-use Ufo\Client\Exception\OrganizationConnectionException;
-use Ufo\Client\Organization\Config;
+use UwKluis\Client\Exception\ConsumerConnectionConflict;
+use UwKluis\Client\Exception\ConsumerConnectionException;
+use UwKluis\Client\Exception\OrganizationConnectionException;
+use UwKluis\Client\Organization\Config;
 use UwKluis\Enums\ConsumerConnection\Status;
 
 /**
