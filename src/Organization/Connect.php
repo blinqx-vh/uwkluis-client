@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Ufo\Client\Organization;
+namespace UwKluis\Client\Organization;
 
 use DateInterval;
 use DateTime;
@@ -14,10 +14,10 @@ use Lcobucci\JWT\Parser;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
-use Ufo\Client\Exception\AuthCodeExpiredException;
-use Ufo\Client\Exception\InvalidRequestException;
-use Ufo\Client\Exception\InvalidScopesException;
-use Ufo\Client\Exception\RefreshTokenInvalidException;
+use UwKluis\Client\Exception\AuthCodeExpiredException;
+use UwKluis\Client\Exception\InvalidRequestException;
+use UwKluis\Client\Exception\InvalidScopesException;
+use UwKluis\Client\Exception\RefreshTokenInvalidException;
 
 /**
  * Class Connect

@@ -2,7 +2,7 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/ufo/client).
+We accept contributions via Pull Requests on [Bitbucket](https://bitbucket.org/hypotheekbond/uwkluis-client).
 
 
 ## Pull Requests

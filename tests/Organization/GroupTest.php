@@ -1,9 +1,9 @@
 <?php
 
-namespace Ufo\Client\Organization;
+namespace UwKluis\Client\Organization;
 
 use PHPUnit\Framework\TestCase;
-use Ufo\Client\Consumer\ChecksResponseFlow;
+use UwKluis\Client\Consumer\ChecksResponseFlow;
 
 class GroupTest extends TestCase
 {

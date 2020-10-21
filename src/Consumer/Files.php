@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Ufo\Client\Consumer;
+namespace UwKluis\Client\Consumer;
 
 use Fig\Http\Message\RequestMethodInterface;
 use GuzzleHttp\ClientInterface;
@@ -10,8 +10,8 @@ use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UploadedFileInterface;
-use Ufo\Client\Organization\Config;
-use Ufo\Client\Traits\ProcessesBadResponses;
+use UwKluis\Client\Organization\Config;
+use UwKluis\Client\Traits\ProcessesBadResponses;
 
 /**
  * Class Files

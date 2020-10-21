@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 
-namespace Ufo\Client\Consumer;
+namespace UwKluis\Client\Consumer;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -13,7 +13,7 @@ use Lcobucci\JWT\Token;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
 use Throwable;
-use Ufo\Client\Exception\InvalidRequestException;
+use UwKluis\Client\Exception\InvalidRequestException;
 
 trait ChecksResponseFlow
 {

@@ -2,7 +2,7 @@
 declare(strict_types = 1);
 
 
-namespace Ufo\Client\Organization;
+namespace UwKluis\Client\Organization;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
@@ -10,10 +10,10 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Ufo\Client\Exception\AuthCodeExpiredException;
-use Ufo\Client\Exception\InvalidRequestException;
-use Ufo\Client\Exception\InvalidScopesException;
-use Ufo\Client\Exception\RefreshTokenInvalidException;
+use UwKluis\Client\Exception\AuthCodeExpiredException;
+use UwKluis\Client\Exception\InvalidRequestException;
+use UwKluis\Client\Exception\InvalidScopesException;
+use UwKluis\Client\Exception\RefreshTokenInvalidException;
 
 class ConnectTest extends TestCase
 {

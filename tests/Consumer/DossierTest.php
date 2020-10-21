@@ -1,6 +1,6 @@
 <?php
 
-namespace Ufo\Client\Consumer;
+namespace UwKluis\Client\Consumer;
 
 use Exception;
 use Fig\Http\Message\StatusCodeInterface;
@@ -15,11 +15,11 @@ use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Throwable;
-use Ufo\Client\Exception\ConsumerConnectionException;
-use Ufo\Client\Exception\InvalidRequestException;
-use Ufo\Client\Exception\OrganizationConnectionException;
-use Ufo\Client\Exception\ValidationException;
-use Ufo\Client\Organization\Config;
+use UwKluis\Client\Exception\ConsumerConnectionException;
+use UwKluis\Client\Exception\InvalidRequestException;
+use UwKluis\Client\Exception\OrganizationConnectionException;
+use UwKluis\Client\Exception\ValidationException;
+use UwKluis\Client\Organization\Config;
 
 class DossierTest extends TestCase
 {

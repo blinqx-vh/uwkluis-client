@@ -1,6 +1,6 @@
 <?php
 
-namespace Ufo\Client\Organization;
+namespace UwKluis\Client\Organization;
 
 use PHPUnit\Framework\Error\Notice;
 use PHPUnit\Framework\TestCase;

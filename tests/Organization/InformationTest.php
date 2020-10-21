@@ -1,6 +1,6 @@
 <?php
 
-namespace Ufo\Client\Organization;
+namespace UwKluis\Client\Organization;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;

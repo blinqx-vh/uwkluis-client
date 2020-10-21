@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Ufo\Client\Consumer;
+namespace UwKluis\Client\Consumer;
 
 use Ramsey\Uuid\UuidInterface;
 use UwKluis\Enums\ConsumerConnection\Status;

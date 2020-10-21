@@ -1,15 +1,15 @@
 <?php
 declare(strict_types = 1);
 
-namespace Ufo\Client\Consumer;
+namespace UwKluis\Client\Consumer;
 
 use Fig\Http\Message\RequestMethodInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
-use Ufo\Client\Organization\Config;
-use Ufo\Client\Traits\ProcessesBadResponses;
+use UwKluis\Client\Organization\Config;
+use UwKluis\Client\Traits\ProcessesBadResponses;
 
 /**
  * Class Dossier
