@@ -1,6 +1,6 @@
 <?php
 
-namespace Ufo\Client\Consumer;
+namespace UwKluis\Client\Consumer;
 
 use Exception;
 use GuzzleHttp\Exception\BadResponseException;
@@ -13,8 +13,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
-use Ufo\Client\Exception\InvalidRequestException;
-use Ufo\Client\Organization\Config;
+use UwKluis\Client\Exception\InvalidRequestException;
+use UwKluis\Client\Organization\Config;
 
 class FilesTest extends TestCase
 {

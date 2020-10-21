@@ -1,6 +1,6 @@
 <?php
 
-namespace Ufo\Client\Organization;
+namespace UwKluis\Client\Organization;
 
 use Lcobucci\JWT\Token;
 use PHPUnit\Framework\TestCase;

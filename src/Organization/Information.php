@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Ufo\Client\Organization;
+namespace UwKluis\Client\Organization;
 
 use Fig\Http\Message\RequestMethodInterface;
 use GuzzleHttp\ClientInterface;

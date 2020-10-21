@@ -1,10 +1,10 @@
 <?php
 declare(strict_types = 1);
 
-namespace Ufo\Client\Exception;
+namespace UwKluis\Client\Exception;
 
 use Throwable;
-use Ufo\Client\Consumer\Connection;
+use UwKluis\Client\Consumer\Connection;
 
 /**
  * Class ConsumerConnectionConflict

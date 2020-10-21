@@ -1,6 +1,6 @@
 <?php
 
-namespace Ufo\Client\Consumer;
+namespace UwKluis\Client\Consumer;
 
 use Exception;
 use GuzzleHttp\Client;
@@ -15,8 +15,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
 use Throwable;
-use Ufo\Client\Exception\InvalidRequestException;
-use Ufo\Client\Organization\Config;
+use UwKluis\Client\Exception\InvalidRequestException;
+use UwKluis\Client\Organization\Config;
 
 class FileRequestTest extends TestCase
 {

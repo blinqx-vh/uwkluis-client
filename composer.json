@@ -1,5 +1,5 @@
 {
-  "name": "ufo/client",
+  "name": "uwkluis/client",
   "description": "Client package for the UwKluis APIs",
   "license": "MIT",
   "type": "library",
@@ -21,12 +21,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Ufo\\Client\\": "src/"
+      "UwKluis\\Client\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Ufo\\Client\\": "tests/"
+      "UwKluis\\Client\\": "tests/"
     }
   },
   "scripts": {
