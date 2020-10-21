@@ -132,9 +132,9 @@ If you discover any security related issues, please email info@hypotheekbond.nl 
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/ufo/client.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/uwkluis/client.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/ufo/client.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/uwkluis/client.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/uwkluis/client
 [link-downloads]: https://packagist.org/packages/uwkluis/client
