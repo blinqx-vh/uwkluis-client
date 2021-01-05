@@ -79,6 +79,7 @@ final class Dossier
      * @param string $consumerId
      * @param array  $dossierData
      * @param int    $responseDataVersion
+     * @param bool   $presave
      *
      * @return array
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -87,10 +88,12 @@ final class Dossier
         Token $accessToken,
         string $consumerId,
         array $dossierData,
-        int $responseDataVersion
+        int $responseDataVersion,
+        bool $presave = false
     ): array {
         $queryString = [
             'consumer_id' => $consumerId,
+            'presave'     => $presave ? 1 : 0,
             'version'     => $responseDataVersion,
         ];
         $queryString = http_build_query($queryString);
