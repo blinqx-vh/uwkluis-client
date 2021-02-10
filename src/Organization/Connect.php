@@ -175,10 +175,10 @@ final class Connect
             $this->processError($data);
         }
         if ($statusCode < 400
-            && isset($data['expires_in'], $data['access_token'], $data['refresh_token'])) {
+            && isset($data['expires_in'], $data['access_token'])) {
             $expires = (new DateTime())->add(new DateInterval('PT' . $data['expires_in'] . 'S'));
             $accessToken = (new Parser())->parse($data['access_token']);
-            $refreshToken = $data['refresh_token'];
+            $refreshToken = isset($data['refresh_token']) ? $data['refresh_token'] : null;
 
             return new AccessTokenResponse(
                 $accessToken,
