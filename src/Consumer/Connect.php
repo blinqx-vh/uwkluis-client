@@ -214,4 +214,37 @@ final class Connect
     {
         return $this->config->getOrganizationHost() . '/consumers/';
     }
+
+    /**
+     * @param Token $accessToken
+     *
+     * @param UuidInterface $identifier
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+
+    public function disconnect(
+        Token $accessToken,
+        UuidInterface $identifier
+    ): void
+    {
+        try {
+            $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_POST,
+                $this->config->getApiHost() . '/consumer/disconnect?' . http_build_query(
+                    [
+                        'consumer_id' => $identifier->toString(),
+                    ]
+                ),
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken,
+                    ],
+                ]
+            );
+        } catch (Exception $e) {
+            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
+        }
+    }
 }
