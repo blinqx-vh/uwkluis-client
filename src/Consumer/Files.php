@@ -142,6 +142,44 @@ final class Files
     /**
      * @param Token  $accessToken
      * @param string $consumerId
+     * @param string $documentTypeIds
+     *
+     * @return ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function downloadByDocumentTypeIds(
+        Token $accessToken,
+        string $consumerId,
+        string $documentTypeIds
+    ) {
+        $queryString = http_build_query(
+            [
+                'consumer_id' => $consumerId,
+                'document_type_ids' => $documentTypeIds
+            ]
+        );
+        try {
+            $response = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_GET,
+                "{$this->config->getApiHost()}/files/document-types?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                    ],
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return $response;
+    }
+
+    /**
+     * @param Token  $accessToken
+     * @param string $consumerId
      * @param string $attachmentUuid
      *
      * @return ResponseInterface
