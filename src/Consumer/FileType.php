@@ -104,4 +104,41 @@ final class FileType
         /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse->getBody()->getContents(), true);
     }
+
+    /**
+     * @param Token  $accessToken
+     * @param string $consumerId
+     * @param string $documentTypeId
+     * @param string $description
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function editDescription(
+        Token $accessToken,
+        string $consumerId,
+        string $documentTypeId,
+        string $description
+    ) {
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_PUT,
+                "{$this->config->getApiHost()}/document-types/{$documentTypeId}/edit-description?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken,
+                    ],
+                    RequestOptions::FORM_PARAMS => [
+                        'description' => $description,
+                    ],
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+        /** @noinspection PhpUndefinedVariableInspection */
+        return json_decode($httpResponse->getBody()->getContents(), true);
+    }
 }
