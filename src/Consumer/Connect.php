@@ -15,7 +15,9 @@ use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
 use UwKluis\Client\Exception\ConsumerConnectionConflict;
 use UwKluis\Client\Exception\ConsumerConnectionException;
+use UwKluis\Client\Exception\InvalidPhoneNumberException;
 use UwKluis\Client\Exception\OrganizationConnectionException;
+use UwKluis\Client\Helpers\Sms;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Enums\ConsumerConnection\Status;
 
@@ -24,48 +26,49 @@ use UwKluis\Enums\ConsumerConnection\Status;
  */
 final class Connect
 {
-    /**
-     * Phone number validation regex
-     */
-    const PHONE_NUMBER_REGEX = '/^((((00|\+)31|0)6){1}[1-9]{1}[0-9]{7})$/';
-
     /** @var ClientInterface */
     private $guzzleClient;
     /** @var Config */
     private $config;
     /** @var UuidFactoryInterface */
     private $uuidFactory;
+    /** @var Sms */
+    private $smsHelper;
 
     /**
      * Connect constructor.
      *
-     * @param Config               $config
-     * @param ClientInterface      $guzzleClient
+     * @param Config $config
+     * @param ClientInterface $guzzleClient
      * @param UuidFactoryInterface $uuidFactory
+     * @param Sms $smsHelper
      */
     public function __construct(
         Config $config,
         ClientInterface $guzzleClient,
-        UuidFactoryInterface $uuidFactory
+        UuidFactoryInterface $uuidFactory,
+        Sms $smsHelper
     ) {
         $this->guzzleClient = $guzzleClient;
         $this->config = $config;
         $this->uuidFactory = $uuidFactory;
+        $this->smsHelper = $smsHelper;
     }
 
     /**
-     * @param Token  $accessToken
+     * @param Token $accessToken
      * @param string $email
      * @param string $phoneNumber
      *
      * @return Connection
      * @throws \Assert\AssertionFailedException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws InvalidPhoneNumberException
      */
     public function inviteConsumer(Token $accessToken, string $email, string $phoneNumber): Connection
     {
         Assertion::email($email);
-        Assertion::regex($phoneNumber, self::PHONE_NUMBER_REGEX);
+        $sanitizedNumber = $this->smsHelper->sanitizeAndInternationalizePhoneNumber($phoneNumber);
 
         try {
             $httpResponse = $this->guzzleClient->request(
@@ -74,7 +77,7 @@ final class Connect
                 [
                     RequestOptions::FORM_PARAMS => [
                         'email'        => $email,
-                        'phone_number' => $phoneNumber,
+                        'phone_number' => $sanitizedNumber,
                     ],
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
@@ -105,14 +108,15 @@ final class Connect
     }
 
     /**
-     * @param Token         $accessToken
+     * @param Token $accessToken
      * @param UuidInterface $identifier
-     * @param string        $email
-     * @param string        $phoneNumber
+     * @param string $email
+     * @param string $phoneNumber
      *
      * @return Connection
      * @throws \Assert\AssertionFailedException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws InvalidPhoneNumberException
      */
     public function updateAndReinviteConsumer(
         Token $accessToken,
@@ -121,7 +125,7 @@ final class Connect
         string $phoneNumber
     ): Connection {
         Assertion::email($email);
-        Assertion::regex($phoneNumber, self::PHONE_NUMBER_REGEX);
+        $sanitizedNumber = $this->smsHelper->sanitizeAndInternationalizePhoneNumber($phoneNumber);
 
         try {
             $httpResponse = $this->guzzleClient->request(
@@ -130,7 +134,7 @@ final class Connect
                 [
                     RequestOptions::FORM_PARAMS => [
                         'email'               => $email,
-                        'phone_number'        => $phoneNumber,
+                        'phone_number'        => $sanitizedNumber,
                         'consumer_identifier' => $identifier->toString(),
                     ],
                     RequestOptions::HEADERS     => [
