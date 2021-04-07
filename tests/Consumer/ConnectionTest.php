@@ -1,6 +1,6 @@
 <?php
 
-namespace Ufo\Client\Consumer;
+namespace UwKluis\Client\Consumer;
 
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Ufo\Client\Exception;
+namespace UwKluis\Client\Exception;
 
 /**
  * Class RefreshTokenInvalidException

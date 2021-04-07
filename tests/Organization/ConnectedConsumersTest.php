@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Class InformationTest
  */
-class InformationTest extends TestCase
+class ConnectedConsumersTest extends TestCase
 {
     /**
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -22,10 +22,10 @@ class InformationTest extends TestCase
         $guzzleClientMock->expects($this->any())
             ->method('request')
             ->willReturn(
-                new Response(200, [], json_encode(['organization_name' => 'organization', 'email' => 'example@example.com', 'name' => 'example b.v.']))
+                new Response(200, [], json_encode(['email' => 'example@example.com', 'phone_number' => '0611111111', 'ufo_consumer_external_id' => '4e939746-43ed-47a6-8b97-2bff52fa6492']))
             );
         /** @noinspection PhpParamsInspection */
-        $information = new Information(new Config(
+        $connectedConsumers = new ConnectedConsumers(new Config(
             'foo',
             'https://example.org/test/',
             1,
@@ -33,8 +33,8 @@ class InformationTest extends TestCase
             ['baz', 'quu', 'quuz']
         ), $guzzleClientMock);
         $this->assertEquals(
-            ['organization_name' => 'organization', 'email' => 'example@example.com', 'name' => 'example b.v.'],
-            $information->whoAmI(new Token())
+            ['email' => 'example@example.com', 'phone_number' => '0611111111', 'ufo_consumer_external_id' => '4e939746-43ed-47a6-8b97-2bff52fa6492'],
+            $connectedConsumers->connectedConsumers(new Token())
         );
     }
 }

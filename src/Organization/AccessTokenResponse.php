@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Ufo\Client\Organization;
+namespace UwKluis\Client\Organization;
 
 use DateTime;
 use Lcobucci\JWT\Token;
@@ -13,7 +13,7 @@ final class AccessTokenResponse
 {
     /** @var Token */
     private $accessToken;
-    /** @var string */
+    /** @var string|null */
     private $refreshToken;
     /** @var DateTime */
     private $expiration;
@@ -22,12 +22,12 @@ final class AccessTokenResponse
      * AccessTokenResponse constructor.
      *
      * @param Token    $accessToken
-     * @param string   $refreshToken
+     * @param string|null   $refreshToken
      * @param DateTime $expiration
      */
     public function __construct(
         Token $accessToken,
-        string $refreshToken,
+        $refreshToken,
         DateTime $expiration
     ) {
         $this->accessToken = $accessToken;
@@ -44,9 +44,9 @@ final class AccessTokenResponse
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRefreshToken(): string
+    public function getRefreshToken()
     {
         return $this->refreshToken;
     }

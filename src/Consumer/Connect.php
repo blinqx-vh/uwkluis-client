@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace Ufo\Client\Consumer;
+namespace UwKluis\Client\Consumer;
 
 use Assert\Assertion;
 use Exception;
@@ -13,10 +13,10 @@ use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
-use Ufo\Client\Exception\ConsumerConnectionConflict;
-use Ufo\Client\Exception\ConsumerConnectionException;
-use Ufo\Client\Exception\OrganizationConnectionException;
-use Ufo\Client\Organization\Config;
+use UwKluis\Client\Exception\ConsumerConnectionConflict;
+use UwKluis\Client\Exception\ConsumerConnectionException;
+use UwKluis\Client\Exception\OrganizationConnectionException;
+use UwKluis\Client\Organization\Config;
 use UwKluis\Enums\ConsumerConnection\Status;
 
 /**
@@ -213,5 +213,38 @@ final class Connect
     public function getOrganizationConsumersUrl(): string
     {
         return $this->config->getOrganizationHost() . '/consumers/';
+    }
+
+    /**
+     * @param Token $accessToken
+     *
+     * @param UuidInterface $identifier
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+
+    public function disconnect(
+        Token $accessToken,
+        UuidInterface $identifier
+    ): void
+    {
+        try {
+            $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_POST,
+                $this->config->getApiHost() . '/consumer/disconnect?' . http_build_query(
+                    [
+                        'consumer_id' => $identifier->toString(),
+                    ]
+                ),
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken,
+                    ],
+                ]
+            );
+        } catch (Exception $e) {
+            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
+        }
     }
 }
