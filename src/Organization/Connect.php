@@ -15,6 +15,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use UwKluis\Client\Exception\AuthCodeExpiredException;
+use UwKluis\Client\Exception\InvalidOauthClientException;
 use UwKluis\Client\Exception\InvalidRequestException;
 use UwKluis\Client\Exception\InvalidScopesException;
 use UwKluis\Client\Exception\RefreshTokenInvalidException;
@@ -202,7 +203,11 @@ final class Connect
             $this->processInvalidRequest($data);
         }
 
-        throw new InvalidRequestException('An unknown error has occurred.');
+        if ($data['error'] === 'invalid_client') {
+            throw new InvalidOauthClientException('Oauth client is not valid');
+        }
+
+        throw new InvalidRequestException('An unknown error has occurred. ('.$data['error'].')');
     }
 
     /**
