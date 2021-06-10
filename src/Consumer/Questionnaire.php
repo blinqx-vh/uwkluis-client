@@ -9,6 +9,7 @@ use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use Psr\Http\Message\ResponseInterface;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
@@ -110,14 +111,14 @@ final class Questionnaire
      * @param Token $token
      * @param string $consumerId
      * @param string $questionnaireId
-     * @return array
+     * @return ResponseInterface
      * @throws GuzzleException
      */
     public function get(
         Token $token,
         string $consumerId,
         string $questionnaireId
-    ): array
+    ): ResponseInterface
     {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
@@ -135,8 +136,7 @@ final class Questionnaire
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
-        return json_decode($response->getBody()->getContents(), true);
+        return $response;
     }
 
     /**
