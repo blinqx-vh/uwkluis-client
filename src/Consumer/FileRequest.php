@@ -294,9 +294,7 @@ class FileRequest
                         'Accept'        => 'application/json',
                         'Authorization' => 'Bearer ' . (string) $accessToken,
                     ],
-                    RequestOptions::FORM_PARAMS => [
-                        'body' => json_encode($documentTypeData),
-                    ],
+                    RequestOptions::FORM_PARAMS => $documentTypeData,
                 ]
             )->getBody()->getContents();
         } catch (BadResponseException $e) {
