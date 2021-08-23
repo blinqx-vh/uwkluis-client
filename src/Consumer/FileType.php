@@ -141,4 +141,37 @@ final class FileType
         /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse->getBody()->getContents(), true);
     }
+
+    /**
+     * @param Token  $accessToken
+     * @param string $consumerId
+     * @param string $documentTypeId
+     *
+     * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function delete(
+        Token $accessToken,
+        string $consumerId,
+        string $fileRequestId,
+        string $documentTypeId
+    ) {
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_DELETE,
+                "{$this->config->getApiHost()}/files/request/{$fileRequestId}/document-type/{$documentTypeId}?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken,
+                    ]
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+        /** @noinspection PhpUndefinedVariableInspection */
+        return json_decode($httpResponse->getBody()->getContents(), true);
+    }
 }
