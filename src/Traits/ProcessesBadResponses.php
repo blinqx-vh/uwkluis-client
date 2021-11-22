@@ -42,7 +42,7 @@ trait ProcessesBadResponses
             }
 
             if ($e->getCode() === StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY) {
-                $errors = json_decode($exceptionResponse['message']);
+                $errors = json_decode($exceptionResponse['message'], true);
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     $errors = [$exceptionResponse['message']];
                 }
