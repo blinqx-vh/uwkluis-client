@@ -49,7 +49,7 @@ final class Information
             [
                 RequestOptions::HEADERS     => [
                     'Accept'        => 'application/json',
-                    'Authorization' => 'Bearer ' . (string) $accessToken,
+                    'Authorization' => 'Bearer ' . $accessToken->toString(),
                 ],
             ]
         )->getBody()->getContents(), true);

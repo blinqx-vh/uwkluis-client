@@ -61,7 +61,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             )->getBody()->getContents();
@@ -98,7 +98,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             )->getBody()->getContents();
@@ -134,7 +134,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             );
@@ -173,7 +173,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'status' => $status,
@@ -213,7 +213,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'body' => json_encode($fileData),
@@ -253,48 +253,8 @@ class FileRequest
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
-                ]
-            )->getBody()->getContents();
-        } catch (BadResponseException $e) {
-            $this->processBadResponse($e);
-        }
-
-        /** @noinspection PhpUndefinedVariableInspection */
-        return json_decode($httpResponse, true);
-    }
-
-    /**
-     * @param Token $accessToken
-     * @param string $consumerId
-     * @param string $fileRequestId
-     * @param array $documentTypeData
-     *
-     * @return mixed
-     *
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function addDocumentType(
-        Token $accessToken,
-        string $consumerId,
-        string $fileRequestId,
-        array $documentTypeData
-    ) {
-        $queryString = http_build_query([
-            'consumer_id' => $consumerId,
-        ]);
-
-        try {
-            $httpResponse = $this->guzzleClient->request(
-                RequestMethodInterface::METHOD_POST,
-                "{$this->config->getApiHost()}/files/request/{$fileRequestId}/document-type?{$queryString}",
-                [
-                    RequestOptions::HEADERS     => [
-                        'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
-                    ],
-                    RequestOptions::FORM_PARAMS => $documentTypeData,
                 ]
             )->getBody()->getContents();
         } catch (BadResponseException $e) {

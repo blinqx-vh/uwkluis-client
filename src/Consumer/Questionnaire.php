@@ -59,7 +59,7 @@ final class Questionnaire
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             )->getBody()->getContents();
@@ -95,7 +95,7 @@ final class Questionnaire
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             )->getBody()->getContents();
@@ -115,7 +115,7 @@ final class Questionnaire
      * @throws GuzzleException
      */
     public function get(
-        Token $token,
+        Token $accessToken,
         string $consumerId,
         string $questionnaireId
     ): ResponseInterface
@@ -128,7 +128,7 @@ final class Questionnaire
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$token,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             );
@@ -148,7 +148,7 @@ final class Questionnaire
      * @throws GuzzleException
      */
     public function start(
-        Token $token,
+        Token $accessToken,
         string $consumerId,
         array $data
     ): array
@@ -160,7 +160,7 @@ final class Questionnaire
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$token,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                     RequestOptions::FORM_PARAMS => $data,
                 ]
