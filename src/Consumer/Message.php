@@ -180,4 +180,41 @@ final class Message
         /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
+
+    /**
+     * @param Token $token
+     * @param string $consumerId
+     * @param string $messageUuid
+     * @param string $attachmentUuid
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function deleteAttachment(
+        Token $accessToken,
+        string $consumerId,
+        string $messageUuid,
+        string $attachmentUuid
+    ) {
+        $queryString = http_build_query([
+            'consumer_id' => $consumerId,
+        ]);
+
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_DELETE,
+                "{$this->config->getApiHost()}/messages/{$messageUuid}/attachment/{$attachmentUuid}?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ],
+                ]
+            )->getBody()->getContents();
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return json_decode($httpResponse, true);
+    }
 }

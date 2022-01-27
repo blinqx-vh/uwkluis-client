@@ -258,10 +258,11 @@ final class Files
         string $fileName,
         string $description
     ) {
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
             $httpResponse = $this->guzzleClient->request(
                 RequestMethodInterface::METHOD_POST,
-                "{$this->config->getApiHost()}/files/",
+                "{$this->config->getApiHost()}/files?{$queryString}",
                 [
                     RequestOptions::HEADERS   => [
                         'Accept'        => 'application/json',
@@ -281,10 +282,6 @@ final class Files
                         [
                             'name'     => 'description',
                             'contents' => $description,
-                        ],
-                        [
-                            'name'     => 'consumer_id',
-                            'contents' => $consumerId,
                         ],
                     ],
                 ]
