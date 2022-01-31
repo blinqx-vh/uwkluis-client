@@ -61,7 +61,7 @@ final class Files
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             )->getBody()->getContents();
@@ -94,7 +94,7 @@ final class Files
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             )->getBody()->getContents();
@@ -127,7 +127,7 @@ final class Files
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             );
@@ -165,7 +165,7 @@ final class Files
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             );
@@ -198,7 +198,7 @@ final class Files
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             );
@@ -229,7 +229,7 @@ final class Files
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             );
@@ -266,7 +266,7 @@ final class Files
                 [
                     RequestOptions::HEADERS   => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                     RequestOptions::MULTIPART => [
                         [
@@ -316,7 +316,7 @@ final class Files
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             );

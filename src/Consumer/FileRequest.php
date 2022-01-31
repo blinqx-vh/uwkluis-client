@@ -61,7 +61,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             )->getBody()->getContents();
@@ -98,7 +98,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             )->getBody()->getContents();
@@ -134,7 +134,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             );
@@ -173,7 +173,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'status' => $status,
@@ -213,7 +213,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'body' => json_encode($fileData),
@@ -253,7 +253,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toSting(),
                     ],
                 ]
             )->getBody()->getContents();
@@ -292,7 +292,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . (string) $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                     RequestOptions::FORM_PARAMS => $documentTypeData,
                 ]

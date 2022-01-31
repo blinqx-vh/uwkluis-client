@@ -9,7 +9,7 @@
     "beberlei/assert": "^3.2",
     "fig/http-message-util": "^1.1",
     "guzzlehttp/guzzle": "^6.3",
-    "lcobucci/jwt": "^3.2",
+    "lcobucci/jwt": "^4.1",
     "psr/http-message": "^1.0",
     "ramsey/uuid": "^3.7",
     "uwkluis/enums": "^0.1.8"

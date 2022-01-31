@@ -65,7 +65,7 @@ final class Message
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             )->getBody()->getContents();
@@ -78,14 +78,14 @@ final class Message
     }
 
     /**
-     * @param Token $token
+     * @param Token $accessToken
      * @param string $consumerId
      * @param string $messageUuid
      * @return ResponseInterface
      * @throws GuzzleException
      */
     public function get(
-        Token $token,
+        Token $accessToken,
         string $consumerId,
         string $messageUuid
     ) {
@@ -97,7 +97,7 @@ final class Message
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$token,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             );
@@ -110,7 +110,7 @@ final class Message
     }
 
     /**
-     * @param Token $token
+     * @param Token $accessToken
      * @param string $consumerId
      * @param array $data
      *
@@ -118,7 +118,7 @@ final class Message
      * @throws GuzzleException
      */
     public function create(
-        Token $token,
+        Token $accessToken,
         string $consumerId,
         array $data
     ) {
@@ -133,7 +133,7 @@ final class Message
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$token,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                     RequestOptions::MULTIPART => $data,
                 ]
@@ -147,14 +147,14 @@ final class Message
     }
 
     /**
-     * @param Token $token
+     * @param Token $accessToken
      * @param string $consumerId
      * @param string $messageUuid
      * @return mixed
      * @throws GuzzleException
      */
     public function delete(
-        Token $token,
+        Token $accessToken,
         string $consumerId,
         string $messageUuid
     ) {
@@ -169,7 +169,7 @@ final class Message
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$token,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             )->getBody()->getContents();
@@ -190,7 +190,7 @@ final class Message
      * @throws GuzzleException
      */
     public function deleteAttachment(
-        Token $token,
+        Token $accessToken,
         string $consumerId,
         string $messageUuid,
         string $attachmentUuid
@@ -206,7 +206,7 @@ final class Message
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
-                        'Authorization' => 'Bearer ' . (string)$token,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             )->getBody()->getContents();
