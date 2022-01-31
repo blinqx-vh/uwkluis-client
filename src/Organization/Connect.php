@@ -10,7 +10,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
-use Lcobucci\JWT\Parser;
+use Lcobucci\JWT\Configuration;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
@@ -178,7 +178,7 @@ final class Connect
         if ($statusCode < 400
             && isset($data['expires_in'], $data['access_token'])) {
             $expires = (new DateTime())->add(new DateInterval('PT' . $data['expires_in'] . 'S'));
-            $accessToken = (new Parser())->parse($data['access_token']);
+            $accessToken = Configuration::forUnsecuredSigner()->parser()->parse($data['access_token']);
             $refreshToken = isset($data['refresh_token']) ? $data['refresh_token'] : null;
 
             return new AccessTokenResponse(

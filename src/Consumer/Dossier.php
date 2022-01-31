@@ -62,7 +62,7 @@ final class Dossier
                     [
                         RequestOptions::HEADERS => [
                             'Accept'        => 'application/json',
-                            'Authorization' => 'Bearer ' . (string) $accessToken,
+                            'Authorization' => 'Bearer ' . $accessToken->toString(),
                         ],
                     ]
                 )->getBody()->getContents();
@@ -105,7 +105,7 @@ final class Dossier
                     [
                         RequestOptions::HEADERS     => [
                             'Accept'        => 'application/json',
-                            'Authorization' => 'Bearer ' . (string) $accessToken,
+                            'Authorization' => 'Bearer ' . $accessToken->toString(),
                         ],
                         RequestOptions::FORM_PARAMS => [
                             'dossier' => json_encode($dossierData),

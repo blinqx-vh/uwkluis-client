@@ -57,7 +57,7 @@ final class FileType
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             );
@@ -91,7 +91,7 @@ final class FileType
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'reason' => $reason,
@@ -128,7 +128,7 @@ final class FileType
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                     RequestOptions::FORM_PARAMS => [
                         'description' => $description,
@@ -164,7 +164,7 @@ final class FileType
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . $accessToken,
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ]
                 ]
             );
