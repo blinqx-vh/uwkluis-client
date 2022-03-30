@@ -10,6 +10,7 @@ class AccessTokenResponseTest extends TestCase
 
     public function testGetRefreshToken()
     {
+        /** @var Token $accessToken */
         $accessToken = $this->createMock(Token::class);
         $response = new AccessTokenResponse(
             $accessToken,
@@ -21,8 +22,10 @@ class AccessTokenResponseTest extends TestCase
 
     public function testGetAccessToken()
     {
+        /** @var Token $token */
+        $token = $this->createMock(Token::class);
         $response = new AccessTokenResponse(
-            new Token(),
+            $token,
             'foo',
             new \DateTime()
         );
@@ -31,10 +34,11 @@ class AccessTokenResponseTest extends TestCase
 
     public function testGetExpiration()
     {
-
+        /** @var Token $token */
+        $token = $this->createMock(Token::class);
         $expiration = new \DateTime();
         $response = new AccessTokenResponse(
-            new Token(),
+            $token,
             'foo',
             $expiration
         );
