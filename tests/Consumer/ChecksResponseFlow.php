@@ -28,10 +28,11 @@ trait ChecksResponseFlow
         $uuid = Uuid::uuid4();
         $mockGuzzleClient = $this->getMockGuzzleClient();
         $apiClient = $this->getApiClient($mockGuzzleClient);
+        $token = $this->createMock(Token::class);
 
         $this->assertEquals(
             ['foo'],
-            call_user_func([$apiClient, $function], new Token(), $uuid->toString(), ...$arguments)
+            call_user_func([$apiClient, $function], $token, $uuid->toString(), ...$arguments)
         );
         $mockGuzzleClient->method('request')
             ->willThrowException(new BadResponseException(
@@ -40,7 +41,7 @@ trait ChecksResponseFlow
                 null
             ));
         try {
-            call_user_func([$apiClient, $function], new Token(), $uuid->toString(), ...$arguments);
+            call_user_func([$apiClient, $function], $token, $uuid->toString(), ...$arguments);
         } catch (Throwable $e) {
             $this->assertInstanceOf(InvalidRequestException::class, $e);
         }
