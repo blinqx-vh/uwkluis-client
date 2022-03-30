@@ -17,8 +17,10 @@ class ConnectedConsumersTest extends TestCase
      */
     public function testWhoAmI()
     {
-        $guzzleClientMock = $this->getMockBuilder(Client::class)
-            ->getMock();
+        /** @var Token $token */
+        $token = $this->createMock(Token::class);
+        /** @var Client $guzzleClientMock */
+        $guzzleClientMock = $this->createMock(Client::class);
         $guzzleClientMock->expects($this->any())
             ->method('request')
             ->willReturn(
@@ -34,7 +36,7 @@ class ConnectedConsumersTest extends TestCase
         ), $guzzleClientMock);
         $this->assertEquals(
             ['email' => 'example@example.com', 'phone_number' => '0611111111', 'ufo_consumer_external_id' => '4e939746-43ed-47a6-8b97-2bff52fa6492'],
-            $connectedConsumers->connectedConsumers(new Token())
+            $connectedConsumers->connectedConsumers($token)
         );
     }
 }

@@ -10,7 +10,7 @@ class AccessTokenResponseTest extends TestCase
 
     public function testGetRefreshToken()
     {
-        $accessToken = new Token();
+        $accessToken = $this->createMock(Token::class);
         $response = new AccessTokenResponse(
             $accessToken,
             'foo',
