@@ -32,10 +32,7 @@ final class ConsumerConnectionConflict extends ConsumerConnectionException
         parent::__construct($message, $code, $previous);
     }
 
-    /**
-     * @return Connection
-     */
-    public function getConflictingConnection(): Connection
+    public function getConflictingConnection(): ?Connection
     {
         return $this->conflictingConnection;
     }
