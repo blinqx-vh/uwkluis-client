@@ -90,11 +90,13 @@ final class Connect
                 throw new OrganizationConnectionException('Organization connection failed', $e->getCode(), $e);
             } elseif ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_CONFLICT) {
                 $response = json_decode($e->getResponse()->getBody()->getContents());
+
+                $consumerUuid = $response->data->uwkluis_consumer_id;
                 throw new ConsumerConnectionConflict(
                     $response->message,
                     $e->getCode(),
                     $e,
-                    new Connection($this->uuidFactory->fromString($response->data->uwkluis_consumer_id))
+                    $consumerUuid ? new Connection($this->uuidFactory->fromString()) : null
                 );
             }
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
