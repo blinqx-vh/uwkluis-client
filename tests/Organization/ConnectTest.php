@@ -20,14 +20,9 @@ class ConnectTest extends TestCase
 
     public function testGetUrls()
     {
-        /** @noinspection PhpParamsInspection */
-        $connect = new Connect(new Config(
-            'foo',
-            'https://example.org/test/',
-            1,
-            'bar',
-            ['baz', 'quu', 'quuz']
-        ), $this->getMockBuilder(Client::class)->getMock());
+        /** @var Client $guzzleClientMock */
+        $guzzleClientMock = $this->createMock(Client::class);
+        $connect = $this->getConnect($guzzleClientMock);
 
         $this->assertEquals('/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fexample.org%2Ftest%2F'
             . '&scope=baz+quu+quuz&response_type=code', $connect->getAuthorizeUrl());
@@ -40,8 +35,8 @@ class ConnectTest extends TestCase
      */
     public function testProcessResponse()
     {
-        $guzzleClientMock = $this->getMockBuilder(Client::class)
-            ->getMock();
+        /** @var Client $guzzleClientMock */
+        $guzzleClientMock = $this->createMock(Client::class);
         $guzzleClientMock->expects($this->any())
             ->method('request')
             ->willReturn(
@@ -76,14 +71,8 @@ class ConnectTest extends TestCase
                     'refresh_token' => 'baz',
                 ]))
             );
-        /** @noinspection PhpParamsInspection */
-        $connect = new Connect(new Config(
-            'foo',
-            'https://example.org/test/',
-            1,
-            'bar',
-            ['baz', 'quu', 'quuz']
-        ), $guzzleClientMock);
+
+        $connect = $this->getConnect($guzzleClientMock);
 
         try {
             $connect->processResponse(new Request('get', 'foo?code=baz'));
@@ -125,12 +114,11 @@ class ConnectTest extends TestCase
             $connect->processResponse(new Request('get', 'foo?code=baz'));
         } catch (\Throwable $e) {
             $this->assertInstanceOf(InvalidRequestException::class, $e);
-            $this->assertEquals('An unknown error has occurred.', $e->getMessage());
+            $this->assertEquals('An unknown error has occurred. (foo)', $e->getMessage());
         }
         $goodResponse = $connect->processResponse(new Request('get', 'foo?code=baz'));
         $this->assertInstanceOf(AccessTokenResponse::class, $goodResponse);
 
-        /** @noinspection PhpParamsInspection */
         $guzzleClientMock->expects($this->any())
             ->method('request')
             ->willThrowException(
@@ -153,18 +141,8 @@ class ConnectTest extends TestCase
      */
     public function testRefreshAccessToken()
     {
-        $guzzleClientMock = $this->getMockBuilder(Client::class)
-            ->getMock();
-
-        /** @noinspection PhpParamsInspection */
-        $connect = new Connect(new Config(
-            'foo',
-            'https://example.org/test/',
-            1,
-            'bar',
-            ['baz', 'quu', 'quuz']
-        ), $guzzleClientMock);
-
+        /** @var Client $guzzleClientMock */
+        $guzzleClientMock = $this->createMock(Client::class);
         $guzzleClientMock->expects($this->any())
             ->method('request')
             ->willReturn(
@@ -177,9 +155,10 @@ class ConnectTest extends TestCase
                 ]))
             );
 
+        $connect = $this->getConnect($guzzleClientMock);
         $response = $connect->refreshAccessToken('foo');
         $this->assertInstanceOf(AccessTokenResponse::class, $response);
-         /** @noinspection PhpParamsInspection */
+
         $guzzleClientMock->expects($this->any())
             ->method('request')
             ->willThrowException(
@@ -189,11 +168,26 @@ class ConnectTest extends TestCase
                     new Response()
                 ))
             );
+
         try {
             $connect->refreshAccessToken('foo');
         } catch (\Throwable $e) {
             $this->assertInstanceOf(InvalidRequestException::class, $e);
             $this->assertEquals('An unknown error has occurred.', $e->getMessage());
         }
+    }
+
+    private function getConnect(Client $guzzleClientMock): Connect
+    {
+        return new Connect(
+            new Config(
+                'foo',
+                'https://example.org/test/',
+                1,
+                'bar',
+                ['baz', 'quu', 'quuz']
+            ),
+            $guzzleClientMock
+        );
     }
 }
