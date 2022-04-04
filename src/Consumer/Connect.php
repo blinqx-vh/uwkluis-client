@@ -96,7 +96,7 @@ final class Connect
                     $response->message,
                     $e->getCode(),
                     $e,
-                    $consumerUuid ? new Connection($this->uuidFactory->fromString()) : null
+                    $consumerUuid ? new Connection($this->uuidFactory->fromString($consumerUuid)) : null
                 );
             }
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
