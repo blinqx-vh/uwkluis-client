@@ -17,8 +17,10 @@ class InformationTest extends TestCase
      */
     public function testWhoAmI()
     {
-        $guzzleClientMock = $this->getMockBuilder(Client::class)
-            ->getMock();
+        /** @var Token $token */
+        $token = $this->createMock(Token::class);
+        /** @var Client $guzzleClientMock */
+        $guzzleClientMock = $this->createMock(Client::class);
         $guzzleClientMock->expects($this->any())
             ->method('request')
             ->willReturn(
@@ -34,7 +36,7 @@ class InformationTest extends TestCase
         ), $guzzleClientMock);
         $this->assertEquals(
             ['organization_name' => 'organization', 'email' => 'example@example.com', 'name' => 'example b.v.'],
-            $information->whoAmI(new Token())
+            $information->whoAmI($token)
         );
     }
 }
