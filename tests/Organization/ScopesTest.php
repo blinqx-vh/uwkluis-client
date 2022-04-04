@@ -14,8 +14,8 @@ class ScopesTest extends TestCase
      */
     public function testGetScopes()
     {
-        $guzzleClientMock = $this->getMockBuilder(Client::class)
-            ->getMock();
+        /** @var Client $guzzleClientMock */
+        $guzzleClientMock = $this->createMock(Client::class);
         $guzzleClientMock->expects($this->any())
             ->method('request')
             ->willReturn(
