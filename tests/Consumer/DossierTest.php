@@ -104,6 +104,8 @@ class DossierTest extends TestCase
      */
     private function checkBadFlow($response, UuidInterface $uuid, Throwable $expectedException)
     {
+        /** @var Token $token */
+        $token = $this->createMock(Token::class);
         $mockGuzzleClient = $this->getMockGuzzleClient();
         $mockGuzzleClient->method('request')
             ->willThrowException(new BadResponseException(
@@ -113,7 +115,7 @@ class DossierTest extends TestCase
             ));
         try {
             $this->getApiClient($mockGuzzleClient)->getData(
-                new Token(),
+                $token,
                 $uuid->toString(),
                 '1'
             );

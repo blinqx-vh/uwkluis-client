@@ -253,7 +253,7 @@ class FileRequest
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . $accessToken->toSting(),
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
                     ],
                 ]
             )->getBody()->getContents();

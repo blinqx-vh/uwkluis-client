@@ -48,12 +48,11 @@ trait ChecksResponseFlow
     }
 
     /**
-     * @return MockObject|ClientInterface
+     * @return Client
      */
-    private function getMockGuzzleClient(): MockObject
+    private function getMockGuzzleClient(): Client
     {
-        /** @var MockObject $mockGuzzleClient */
-        $mockGuzzleClient = $this->getMockBuilder(Client::class)->getMock();
+        $mockGuzzleClient = $this->createMock(Client::class);
         $mockGuzzleClient->expects($this->any())
             ->method('request')
             ->willReturn(new Response(
