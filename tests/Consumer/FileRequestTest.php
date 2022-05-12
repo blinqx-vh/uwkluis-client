@@ -3,17 +3,13 @@
 namespace UwKluis\Client\Consumer;
 
 use Exception;
-use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
 use Lcobucci\JWT\Token;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
-use Ramsey\Uuid\Uuid;
 use Throwable;
 use UwKluis\Client\Exception\InvalidRequestException;
 use UwKluis\Client\Organization\Config;
@@ -67,10 +63,12 @@ class FileRequestTest extends TestCase
      */
     public function testDownloadZippedFiles()
     {
+        /** @var Token $token */
+        $token = $this->createMock(Token::class);
         $mockGuzzleClient = $this->getMockGuzzleClient();
         $this->assertInstanceOf(
             ResponseInterface::class,
-            $this->getApiClient($mockGuzzleClient)->downloadZip(new Token(), 'foo', 'bar')
+            $this->getApiClient($mockGuzzleClient)->downloadZip($token, 'foo', 'bar')
         );
         $mockGuzzleClient->method('request')
             ->willThrowException(new BadResponseException(
@@ -79,7 +77,7 @@ class FileRequestTest extends TestCase
                 null
             ));
         try {
-            $this->getApiClient($mockGuzzleClient)->downloadZip(new Token(), 'foo', 'bar');
+            $this->getApiClient($mockGuzzleClient)->downloadZip($token, 'foo', 'bar');
         } catch (Throwable $e) {
             $this->assertInstanceOf(InvalidRequestException::class, $e);
         }

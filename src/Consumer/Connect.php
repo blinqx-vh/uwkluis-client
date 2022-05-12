@@ -109,6 +109,33 @@ final class Connect
         );
     }
 
+    public function revokeInvite(Token $accessToken, string $consumerUuid): void
+    {
+        try {
+            $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_POST,
+                $this->config->getApiHost() . '/consumer/revoke-invite?' . http_build_query(
+                    [
+                        'consumer_id' => $consumerUuid,
+                    ]
+                ),
+                [
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ],
+                ]
+            );
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
+                throw new OrganizationConnectionException('Organization connection failed', $e->getCode(), $e);
+            }
+            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
+        } catch (Exception $e) {
+            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
+        }
+    }
+
     /**
      * @param Token $accessToken
      * @param UuidInterface $identifier

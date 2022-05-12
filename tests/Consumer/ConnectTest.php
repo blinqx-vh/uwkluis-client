@@ -15,28 +15,21 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactory;
 use UwKluis\Client\Exception\ConsumerConnectionConflict;
 use UwKluis\Client\Exception\ConsumerConnectionException;
+use UwKluis\Client\Exception\InvalidPhoneNumberException;
 use UwKluis\Client\Exception\OrganizationConnectionException;
+use UwKluis\Client\Helpers\Sms;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Enums\ConsumerConnection\Status;
 
 class ConnectTest extends TestCase
 {
 
-    /**
-     *
-     */
     public function testGetOrganizationConsumersUrl()
     {
-        $mockGuzzleClient = $this->getMockBuilder(Client::class)->getMock();
-        /** @noinspection PhpParamsInspection */
-        $connect = new Connect(
-            (new Config(
-                'foo',
-                'bar'
-            ))->setOrganizationHost('baz'),
-            $mockGuzzleClient,
-            new UuidFactory()
-        );
+        /** @var Client $mockGuzzleClient */
+        $mockGuzzleClient = $this->createMock(Client::class);
+        $connect = $this->getConnect($mockGuzzleClient);
+
         $this->assertEquals('baz/consumers/', $connect->getOrganizationConsumersUrl());
     }
 
@@ -45,17 +38,11 @@ class ConnectTest extends TestCase
      */
     public function testGetOrganizationConsumerDossierUrl()
     {
-        $mockGuzzleClient = $this->getMockBuilder(Client::class)->getMock();
-        /** @noinspection PhpParamsInspection */
-        $connect = new Connect(
-            (new Config(
-                'foo',
-                'bar'
-            ))->setOrganizationHost('baz'),
-            $mockGuzzleClient,
-            new UuidFactory()
-        );
+        /** @var Client $mockGuzzleClient */
+        $mockGuzzleClient = $this->createMock(Client::class);
+        $connect = $this->getConnect($mockGuzzleClient);
         $uuid = Uuid::uuid4();
+
         $this->assertEquals('baz/consumers/' . $uuid->toString(), $connect->getOrganizationConsumerDossierUrl(
             $uuid
         ));
@@ -67,7 +54,10 @@ class ConnectTest extends TestCase
      */
     public function testGetConnectionStatus()
     {
-        $mockGuzzleClient = $this->getMockBuilder(Client::class)->getMock();
+        /** @var Client $mockGuzzleClient */
+        $mockGuzzleClient = $this->createMock(Client::class);
+        /** @var Token $token */
+        $token = $this->createMock(Token::class);
         $uuid = Uuid::uuid4();
         $mockGuzzleClient->expects($this->any())
             ->method('request')
@@ -81,20 +71,14 @@ class ConnectTest extends TestCase
                 ])
             ));
 
-        /** @noinspection PhpParamsInspection */
-        $connect = new Connect(
-            (new Config(
-                'foo',
-                'bar'
-            ))->setOrganizationHost('baz'),
-            $mockGuzzleClient,
-            new UuidFactory()
-        );
+        $connect = $this->getConnect($mockGuzzleClient);
+
         $this->assertEquals(new Connection(
             $uuid,
             new Status(Status::NEW),
             ['foo', 'bar']
-        ), $connect->getConnectionStatus(new Token(), $uuid));
+        ), $connect->getConnectionStatus($token, $uuid));
+
         $mockGuzzleClient->method('request')
             ->willThrowException(
                 new ClientException(
@@ -103,12 +87,14 @@ class ConnectTest extends TestCase
                     new Response()
                 )
             );
+
         try {
-            $connect->getConnectionStatus(new Token(), $uuid);
+            $connect->getConnectionStatus($token, $uuid);
         } catch (\Throwable $e) {
             $this->assertInstanceOf(ConsumerConnectionException::class, $e);
             $this->assertEquals('Consumer connection failed', $e->getMessage());
         }
+
         $mockGuzzleClient->method('request')
             ->willThrowException(
                 new ClientException(
@@ -117,20 +103,23 @@ class ConnectTest extends TestCase
                     new Response(StatusCodeInterface::STATUS_UNAUTHORIZED)
                 )
             );
+
         try {
-            $connect->getConnectionStatus(new Token(), $uuid);
+            $connect->getConnectionStatus($token, $uuid);
         } catch (\Throwable $e) {
             $this->assertInstanceOf(OrganizationConnectionException::class, $e);
             $this->assertEquals('Organization connection failed', $e->getMessage());
         }
+
         $mockGuzzleClient->method('request')
             ->willThrowException(
                 new Exception(
                     'foo'
                 )
             );
+
         try {
-            $connect->getConnectionStatus(new Token(), $uuid);
+            $connect->getConnectionStatus($token, $uuid);
         } catch (\Throwable $e) {
             $this->assertInstanceOf(ConsumerConnectionException::class, $e);
             $this->assertEquals('Consumer connection failed', $e->getMessage());
@@ -144,10 +133,14 @@ class ConnectTest extends TestCase
      */
     public function testInviteConsumer()
     {
-        $mockGuzzleClient = $this->getMockBuilder(Client::class)->getMock();
+        /** @var Client $mockGuzzleClient */
+        $mockGuzzleClient = $this->createMock(Client::class);
+        /** @var Token $token */
+        $token = $this->createMock(Token::class);
         $response = new \stdClass();
         $uuid = Uuid::uuid4();
         $response->uwkluis_consumer_id = $uuid;
+
         $mockGuzzleClient->expects($this->any())
             ->method('request')
             ->willReturn(new Response(
@@ -156,26 +149,17 @@ class ConnectTest extends TestCase
                 json_encode($response)
             ));
 
-        /** @noinspection PhpParamsInspection */
-        $connect = new Connect(
-            (new Config(
-                'foo',
-                'bar'
-            ))->setOrganizationHost('baz'),
-            $mockGuzzleClient,
-            new UuidFactory()
-        );
-
+        $connect = $this->getConnect($mockGuzzleClient);
 
         $this->assertEquals(new Connection($uuid), $connect->inviteConsumer(
-            new Token(),
+            $token,
             'foo@example.org',
             '0612345678'
         ));
 
         try {
             $connect->inviteConsumer(
-                new Token(),
+                $token,
                 'foo',
                 '0612345678'
             );
@@ -183,15 +167,16 @@ class ConnectTest extends TestCase
             $this->assertInstanceOf(InvalidArgumentException::class, $e);
             $this->assertEquals('Value "foo" was expected to be a valid e-mail address.', $e->getMessage());
         }
+
         try {
             $connect->inviteConsumer(
-                new Token(),
+                $token,
                 'foo@example.org',
                 '0612345'
             );
         } catch (\Throwable $e) {
-            $this->assertInstanceOf(InvalidArgumentException::class, $e);
-            $this->assertEquals('Value "0612345" does not match expression.', $e->getMessage());
+            $this->assertInstanceOf(InvalidPhoneNumberException::class, $e);
+            $this->assertEquals('Invalid phone number: 0612345', $e->getMessage());
         }
 
         $mockGuzzleClient
@@ -201,9 +186,10 @@ class ConnectTest extends TestCase
                 new Request('get', 'foo'),
                 new Response(StatusCodeInterface::STATUS_OK)
             ));
+
         try {
             $connect->inviteConsumer(
-                new Token(),
+                $token,
                 'foo@example.org',
                 '0612345678'
             );
@@ -211,6 +197,7 @@ class ConnectTest extends TestCase
             $this->assertInstanceOf(ConsumerConnectionException::class, $e);
             $this->assertEquals('Consumer connection failed', $e->getMessage());
         }
+
         $mockGuzzleClient
             ->method('request')
             ->willThrowException(new ClientException(
@@ -218,9 +205,10 @@ class ConnectTest extends TestCase
                 new Request('get', 'foo'),
                 new Response(StatusCodeInterface::STATUS_UNAUTHORIZED)
             ));
+
         try {
             $connect->inviteConsumer(
-                new Token(),
+                $token,
                 'foo@example.org',
                 '0612345678'
             );
@@ -228,6 +216,7 @@ class ConnectTest extends TestCase
             $this->assertInstanceOf(OrganizationConnectionException::class, $e);
             $this->assertEquals('Organization connection failed', $e->getMessage());
         }
+
         $mockGuzzleClient
             ->method('request')
             ->willThrowException(new ClientException(
@@ -244,9 +233,10 @@ class ConnectTest extends TestCase
                     ])
                 )
             ));
+
         try {
             $connect->inviteConsumer(
-                new Token(),
+                $token,
                 'foo@example.org',
                 '0612345678'
             );
@@ -259,14 +249,16 @@ class ConnectTest extends TestCase
             );
             $this->assertEquals(new Connection($uuid), $e->getConflictingConnection());
         }
+
         $mockGuzzleClient
             ->method('request')
             ->willThrowException(new Exception(
                 'foo'
             ));
+
         try {
             $connect->inviteConsumer(
-                new Token(),
+                $token,
                 'foo@example.org',
                 '0612345678'
             );
@@ -283,10 +275,14 @@ class ConnectTest extends TestCase
      */
     public function testUpdateAndReinviteConsumer()
     {
-        $mockGuzzleClient = $this->getMockBuilder(Client::class)->getMock();
+        /** @var Client $mockGuzzleClient */
+        $mockGuzzleClient = $this->createMock(Client::class);
+        /** @var Token $token */
+        $token = $this->createMock(Token::class);
         $response = new \stdClass();
         $uuid = Uuid::uuid4();
         $response->uwkluis_consumer_id = $uuid;
+
         $mockGuzzleClient->expects($this->any())
             ->method('request')
             ->willReturn(new Response(
@@ -295,21 +291,12 @@ class ConnectTest extends TestCase
                 json_encode($response)
             ));
 
-        /** @noinspection PhpParamsInspection */
-        $connect = new Connect(
-            (new Config(
-                'foo',
-                'bar'
-            ))->setOrganizationHost('baz'),
-            $mockGuzzleClient,
-            new UuidFactory()
-        );
-
+        $connect = $this->getConnect($mockGuzzleClient);
 
         $this->assertEquals(
             new Connection($uuid),
             $connect->updateAndReinviteConsumer(
-                new Token(),
+                $token,
                 $uuid,
                 'foo@example.org',
                 '0612345678'
@@ -324,9 +311,10 @@ class ConnectTest extends TestCase
                     new Response()
                 )
             );
+
         try {
             $connect->updateAndReinviteConsumer(
-                new Token(),
+                $token,
                 $uuid,
                 'foo@example.org',
                 '0612345678'
@@ -335,6 +323,7 @@ class ConnectTest extends TestCase
             $this->assertInstanceOf(ConsumerConnectionException::class, $e);
             $this->assertEquals('Consumer connection failed', $e->getMessage());
         }
+
         $mockGuzzleClient->method('request')
             ->willThrowException(
                 new ClientException(
@@ -343,9 +332,10 @@ class ConnectTest extends TestCase
                     new Response(StatusCodeInterface::STATUS_UNAUTHORIZED)
                 )
             );
+
         try {
             $connect->updateAndReinviteConsumer(
-                new Token(),
+                $token,
                 $uuid,
                 'foo@example.org',
                 '0612345678'
@@ -354,15 +344,17 @@ class ConnectTest extends TestCase
             $this->assertInstanceOf(OrganizationConnectionException::class, $e);
             $this->assertEquals('Organization connection failed', $e->getMessage());
         }
+
         $mockGuzzleClient->method('request')
             ->willThrowException(
                 new Exception(
                     'foo'
                 )
             );
+
         try {
             $connect->updateAndReinviteConsumer(
-                new Token(),
+                $token,
                 $uuid,
                 'foo@example.org',
                 '0612345678'
@@ -371,5 +363,18 @@ class ConnectTest extends TestCase
             $this->assertInstanceOf(ConsumerConnectionException::class, $e);
             $this->assertEquals('Consumer connection failed', $e->getMessage());
         }
+    }
+
+    private function getConnect(Client $mockGuzzleClient): Connect
+    {
+        return new Connect(
+            (new Config(
+                'foo',
+                'bar'
+            ))->setOrganizationHost('baz'),
+            $mockGuzzleClient,
+            new UuidFactory(),
+            new Sms()
+        );
     }
 }
