@@ -60,6 +60,33 @@ class SignRequest
         return json_decode($httpResponse, true);
     }
 
+    public function delete(
+        Token $accessToken,
+        string $consumerId,
+        int $signRequestId
+    ): bool {
+        $queryString = http_build_query([
+            'consumer_id' => $consumerId,
+        ]);
+
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_DELETE,
+                "{$this->config->getApiHost()}/sign-request/{$signRequestId}?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ],
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        return $httpResponse->getStatusCode() === 200;
+    }
+
     public function new(
         Token $accessToken,
         string $consumerId,
