@@ -59,4 +59,40 @@ class SignRequest
         /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
+
+    public function new(
+        Token $accessToken,
+        string $consumerId,
+        string $name,
+        string $description,
+        string $document,
+        string $signType
+    ): bool {
+        $queryString = http_build_query([
+            'consumer_id' => $consumerId,
+        ]);
+
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_POST,
+                "{$this->config->getApiHost()}/sign-request/?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ],
+                    RequestOptions::FORM_PARAMS => [
+                        'name' => $name,
+                        'description' => $description,
+                        'document' => $document,
+                        'sign_type' => $signType
+                    ]
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        return $httpResponse->getStatusCode() === 201;
+    }
 }
