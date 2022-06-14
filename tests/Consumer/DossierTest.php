@@ -13,6 +13,7 @@ use Lcobucci\JWT\Token;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidInterface;
 use Throwable;
 use UwKluis\Client\Exception\ConsumerConnectionException;
@@ -40,11 +41,15 @@ class DossierTest extends TestCase
     public function testGetData()
     {
         $this->checkResponseFlow('getData', 1);
-        $uuid = Uuid::uuid4();
+        $uuid = (new UuidFactory())->fromString(Uuid::uuid4());
         $this->checkBadFlow(
-            null,
+            new Response(
+                StatusCodeInterface::STATUS_IM_A_TEAPOT,
+                [],
+                'An unknown error has occurred'
+            ),
             $uuid,
-            new InvalidRequestException('An unknown error has occurred')
+            new InvalidRequestException('An unknown error has occurred', StatusCodeInterface::STATUS_IM_A_TEAPOT)
         );
         $this->checkBadFlow(
             new Response(
@@ -102,7 +107,7 @@ class DossierTest extends TestCase
      * @return Exception|Throwable
      * @throws GuzzleException
      */
-    private function checkBadFlow($response, UuidInterface $uuid, Throwable $expectedException)
+    private function checkBadFlow(ResponseInterface $response, UuidInterface $uuid, Throwable $expectedException)
     {
         /** @var Token $token */
         $token = $this->createMock(Token::class);
