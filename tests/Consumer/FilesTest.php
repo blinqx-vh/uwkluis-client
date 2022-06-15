@@ -3,6 +3,7 @@
 namespace UwKluis\Client\Consumer;
 
 use Exception;
+use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -51,7 +52,11 @@ class FilesTest extends TestCase
             ->willThrowException(new BadResponseException(
                 'foo',
                 new Request('get', 'foo'),
-                null
+                new Response(
+                    StatusCodeInterface::STATUS_IM_A_TEAPOT,
+                    [],
+                    'foo'
+                )
             ));
         try {
             $this->getApiClient($mockGuzzleClient)->download($token, 'foo', 'bar');
@@ -85,7 +90,11 @@ class FilesTest extends TestCase
             ->willThrowException(new BadResponseException(
                 'foo',
                 new Request('get', 'foo'),
-                null
+                new Response(
+                    StatusCodeInterface::STATUS_IM_A_TEAPOT,
+                    [],
+                    'foo'
+                )
             ));
         try {
             $this->getApiClient($mockGuzzleClient)->downloadZippedFiles($token, 'foo');

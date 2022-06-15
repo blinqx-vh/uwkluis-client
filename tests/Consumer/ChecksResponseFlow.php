@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UwKluis\Client\Consumer;
 
+use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
@@ -12,6 +13,7 @@ use GuzzleHttp\Psr7\Response;
 use Lcobucci\JWT\Token;
 use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidFactory;
 use Throwable;
 use UwKluis\Client\Exception\InvalidRequestException;
 
@@ -25,7 +27,7 @@ trait ChecksResponseFlow
      */
     private function checkResponseFlow($function, ...$arguments)
     {
-        $uuid = Uuid::uuid4();
+        $uuid = (new UuidFactory())->fromString(Uuid::uuid4()->toString());
         $mockGuzzleClient = $this->getMockGuzzleClient();
         $apiClient = $this->getApiClient($mockGuzzleClient);
         $token = $this->createMock(Token::class);
@@ -34,11 +36,16 @@ trait ChecksResponseFlow
             ['foo'],
             call_user_func([$apiClient, $function], $token, $uuid->toString(), ...$arguments)
         );
-        $mockGuzzleClient->method('request')
+        $mockGuzzleClient
+            ->method('request')
             ->willThrowException(new BadResponseException(
                 'foo',
                 new Request('get', 'foo'),
-                null
+                new Response(
+                    StatusCodeInterface::STATUS_IM_A_TEAPOT,
+                    [],
+                    'foobar'
+                )
             ));
         try {
             call_user_func([$apiClient, $function], $token, $uuid->toString(), ...$arguments);
@@ -48,12 +55,12 @@ trait ChecksResponseFlow
     }
 
     /**
-     * @return Client
+     * @return Client|MockObject
      */
     private function getMockGuzzleClient(): Client
     {
         $mockGuzzleClient = $this->createMock(Client::class);
-        $mockGuzzleClient->expects($this->any())
+        $mockGuzzleClient
             ->method('request')
             ->willReturn(new Response(
                 200,

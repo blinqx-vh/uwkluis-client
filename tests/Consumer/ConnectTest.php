@@ -58,7 +58,7 @@ class ConnectTest extends TestCase
         $mockGuzzleClient = $this->createMock(Client::class);
         /** @var Token $token */
         $token = $this->createMock(Token::class);
-        $uuid = Uuid::uuid4();
+        $uuid = (new UuidFactory())->fromString(Uuid::uuid4());
         $mockGuzzleClient->expects($this->any())
             ->method('request')
             ->willReturn(new Response(
@@ -138,7 +138,7 @@ class ConnectTest extends TestCase
         /** @var Token $token */
         $token = $this->createMock(Token::class);
         $response = new \stdClass();
-        $uuid = Uuid::uuid4();
+        $uuid = (new UuidFactory())->fromString(Uuid::uuid4());
         $response->uwkluis_consumer_id = $uuid;
 
         $mockGuzzleClient->expects($this->any())
@@ -280,7 +280,7 @@ class ConnectTest extends TestCase
         /** @var Token $token */
         $token = $this->createMock(Token::class);
         $response = new \stdClass();
-        $uuid = Uuid::uuid4();
+        $uuid = (new UuidFactory())->fromString(Uuid::uuid4()->toString());
         $response->uwkluis_consumer_id = $uuid;
 
         $mockGuzzleClient->expects($this->any())
