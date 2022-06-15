@@ -3,10 +3,12 @@
 namespace UwKluis\Client\Consumer;
 
 use Exception;
+use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Lcobucci\JWT\Token;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
@@ -66,15 +68,15 @@ class FileRequestTest extends TestCase
         /** @var Token $token */
         $token = $this->createMock(Token::class);
         $mockGuzzleClient = $this->getMockGuzzleClient();
-        $this->assertInstanceOf(
-            ResponseInterface::class,
-            $this->getApiClient($mockGuzzleClient)->downloadZip($token, 'foo', 'bar')
-        );
         $mockGuzzleClient->method('request')
             ->willThrowException(new BadResponseException(
                 'foo',
                 new Request('get', 'foo'),
-                null
+                new Response(
+                    StatusCodeInterface::STATUS_IM_A_TEAPOT,
+                    [],
+                    'foo'
+                )
             ));
         try {
             $this->getApiClient($mockGuzzleClient)->downloadZip($token, 'foo', 'bar');
