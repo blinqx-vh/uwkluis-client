@@ -93,7 +93,8 @@ class SignRequest
         string $name,
         string $description,
         string $document,
-        string $signType
+        string $signType,
+        ?string $authMethod = null
     ): bool {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
@@ -112,7 +113,8 @@ class SignRequest
                         'name' => $name,
                         'description' => $description,
                         'document' => $document,
-                        'sign_type' => $signType
+                        'sign_type' => $signType,
+                        'auth_method' => $authMethod,
                     ]
                 ]
             );
