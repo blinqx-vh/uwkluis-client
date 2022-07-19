@@ -63,7 +63,7 @@ class SignRequest
     /**
      * @param Token  $accessToken
      * @param string $consumerId
-     * @param string $fileRequestId
+     * @param string $signRequestId
      *
      * @return mixed
      *
@@ -72,7 +72,7 @@ class SignRequest
     public function get(
         Token $accessToken,
         string $consumerId,
-        string $fileRequestId
+        string $signRequestId
     ) {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
@@ -81,7 +81,7 @@ class SignRequest
         try {
             $httpResponse = $this->guzzleClient->request(
                 RequestMethodInterface::METHOD_GET,
-                "{$this->config->getApiHost()}/files/request/{$fileRequestId}?{$queryString}",
+                "{$this->config->getApiHost()}/sign-request/{$signRequestId}?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept'        => 'application/json',
