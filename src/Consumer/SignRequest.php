@@ -60,6 +60,43 @@ class SignRequest
         return json_decode($httpResponse, true);
     }
 
+    /**
+     * @param Token  $accessToken
+     * @param string $consumerId
+     * @param string $fileRequestId
+     *
+     * @return mixed
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function get(
+        Token $accessToken,
+        string $consumerId,
+        string $fileRequestId
+    ) {
+        $queryString = http_build_query([
+            'consumer_id' => $consumerId,
+        ]);
+
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_GET,
+                "{$this->config->getApiHost()}/files/request/{$fileRequestId}?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ],
+                ]
+            )->getBody()->getContents();
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return json_decode($httpResponse, true);
+    }
+
     public function delete(
         Token $accessToken,
         string $consumerId,
