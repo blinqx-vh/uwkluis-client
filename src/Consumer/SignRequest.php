@@ -154,11 +154,11 @@ class SignRequest
                         'auth_method' => $authMethod,
                     ]
                 ]
-            );
+            )->getBody()->getContents();
         } catch (BadResponseException $e) {
             $this->processBadResponse($e);
         }
 
-        return $httpResponse->getStatusCode() === 201;
+        return json_decode($httpResponse, true);
     }
 }
