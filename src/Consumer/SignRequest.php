@@ -132,7 +132,7 @@ class SignRequest
         string $document,
         string $signType,
         ?string $authMethod = null
-    ): bool {
+    ): array {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
         ]);
