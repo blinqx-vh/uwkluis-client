@@ -156,7 +156,7 @@ final class Questionnaire
         try {
             $httpResponse = $this->guzzleClient->request(
                 RequestMethodInterface::METHOD_GET,
-                "{$this->config->getApiHost()}/questionnaires/details/{$questionnaireId}?{$queryString}",
+                "{$this->config->getApiHost()}/questionnaires/{$questionnaireId}/details?{$queryString}",
                 [
                     RequestOptions::HEADERS => [
                         'Accept' => 'application/json',
