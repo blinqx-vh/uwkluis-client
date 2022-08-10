@@ -140,6 +140,38 @@ final class Questionnaire
     }
 
     /**
+     * @param Token $accessToken
+     * @param string $consumerId
+     * @param string $questionnaireId
+     * @return array
+     * @throws GuzzleException
+     */
+    public function details(
+        Token $accessToken,
+        string $consumerId,
+        string $questionnaireId
+    ): array {
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
+
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_GET,
+                "{$this->config->getApiHost()}/questionnaires/details/{$questionnaireId}?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ],
+                ]
+            )->getBody()->getContents();
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        return json_decode($httpResponse, true);
+    }
+
+    /**
      * @param Token $token
      * @param string $consumerId
      * @param array $data
