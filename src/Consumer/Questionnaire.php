@@ -172,6 +172,38 @@ final class Questionnaire
     }
 
     /**
+     * @param Token $accessToken
+     * @param string $consumerId
+     * @param string $questionnaireId
+     * @return bool
+     * @throws GuzzleException
+     */
+    public function delete(
+        Token $accessToken,
+        string $consumerId,
+        string $questionnaireId
+    ): bool {
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
+
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_DELETE,
+                "{$this->config->getApiHost()}/questionnaires/{$questionnaireId}?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ],
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        return $httpResponse->getStatusCode() === 204;
+    }
+
+    /**
      * @param Token $token
      * @param string $consumerId
      * @param array $data
