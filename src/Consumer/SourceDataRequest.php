@@ -8,6 +8,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use Psr\Http\Message\ResponseInterface;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
@@ -137,5 +138,29 @@ class SourceDataRequest
         }
 
         return json_decode($httpResponse, true);
+    }
+
+    public function pdf(
+        Token $accessToken,
+        string $consumerId,
+        string $sourceDataRequestId
+    ): ResponseInterface {
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
+        try {
+            $response = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_GET,
+                "{$this->config->getApiHost()}/source-data-request/{$sourceDataRequestId}/pdf?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ],
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        return $response;
     }
 }
