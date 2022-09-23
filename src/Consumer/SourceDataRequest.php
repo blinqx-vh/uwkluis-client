@@ -82,7 +82,7 @@ class SourceDataRequest
     public function delete(
         Token $accessToken,
         string $consumerId,
-        int $sourceDataRequestId
+        string $sourceDataRequestId
     ): bool {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
