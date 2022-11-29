@@ -5,6 +5,7 @@ namespace UwKluis\Client\Consumer;
 use Exception;
 use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
@@ -128,7 +129,7 @@ class FilesTest extends TestCase
      * @param Client $mockGuzzleClient
      * @return Files
      */
-    public function getApiClient(Client $mockGuzzleClient): Files
+    public function getApiClient(ClientInterface $mockGuzzleClient)
     {
         return new Files(
             (new Config(

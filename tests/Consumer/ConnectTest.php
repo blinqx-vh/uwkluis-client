@@ -6,6 +6,7 @@ use Assert\InvalidArgumentException;
 use Exception;
 use Fig\Http\Message\StatusCodeInterface;
 use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -365,7 +366,7 @@ class ConnectTest extends TestCase
         }
     }
 
-    private function getConnect(Client $mockGuzzleClient): Connect
+    private function getConnect(ClientInterface $mockGuzzleClient)
     {
         return new Connect(
             (new Config(
