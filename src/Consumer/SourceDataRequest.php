@@ -110,8 +110,8 @@ class SourceDataRequest
         Token $accessToken,
         string $consumerId,
         string $title,
-        string $description,
-        string $sourceType
+        string $sourceType,
+        ?string $description = null
     ): array {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
