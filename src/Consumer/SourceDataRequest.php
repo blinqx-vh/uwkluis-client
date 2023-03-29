@@ -163,4 +163,28 @@ class SourceDataRequest
 
         return $response;
     }
+
+    public function zip(
+        Token $accessToken,
+        string $consumerId,
+        string $sourceDataRequestId
+    ): ResponseInterface {
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
+        try {
+            $response = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_GET,
+                "{$this->config->getApiHost()}/source-data-request/{$sourceDataRequestId}/zip?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ],
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        return $response;
+    }
 }
