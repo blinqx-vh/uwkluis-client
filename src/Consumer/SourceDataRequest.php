@@ -111,7 +111,8 @@ class SourceDataRequest
         string $consumerId,
         string $title,
         string $sourceType,
-        ?string $description = null
+        ?string $description = null,
+        ?string $assignedPerson = null
     ): array {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
@@ -130,6 +131,7 @@ class SourceDataRequest
                         'title' => $title,
                         'description' => $description,
                         'source_type' => $sourceType,
+                        'assigned_person' => $assignedPerson,
                     ]
                 ]
             )->getBody()->getContents();
