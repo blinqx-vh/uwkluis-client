@@ -128,9 +128,9 @@ class SignRequest
         Token $accessToken,
         string $consumerId,
         string $name,
-        string $description,
         string $document,
         string $signType,
+        ?string $description = null,
         ?string $authMethod = null,
         ?string $assignedPerson = null
     ): array {
