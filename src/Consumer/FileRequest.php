@@ -152,10 +152,12 @@ class FileRequest
     public function downloadDocumentType(
         Token $accessToken,
         string $consumerId,
-        string $documentTypeId
+        string $documentTypeId,
+        bool $additionalFiles = false
     ): ResponseInterface {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
+            'additional_files' => $additionalFiles,
         ]);
 
         try {
