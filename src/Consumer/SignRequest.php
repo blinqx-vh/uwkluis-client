@@ -132,7 +132,8 @@ class SignRequest
         string $signType,
         ?string $description = null,
         ?string $authMethod = null,
-        ?string $assignedPerson = null
+        ?string $assignedPerson = null,
+        ?array $additionalSigners = null
     ): array {
         $queryString = http_build_query([
             'consumer_id' => $consumerId,
@@ -154,6 +155,7 @@ class SignRequest
                         'sign_type' => $signType,
                         'auth_method' => $authMethod,
                         'assigned_person' => $assignedPerson,
+                        'additional_signers' => $additionalSigners,
                     ]
                 ]
             )->getBody()->getContents();
