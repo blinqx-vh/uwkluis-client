@@ -5,6 +5,9 @@ namespace UwKluis\Client\Helpers;
 
 use UwKluis\Client\Exception\InvalidPhoneNumberException;
 
+/**
+ * @deprecated Use something like giggsey/libphonenumber-for-php instead
+ */
 final class Sms
 {
     /**

@@ -17,7 +17,6 @@ use UwKluis\Client\Exception\ConsumerConnectionConflict;
 use UwKluis\Client\Exception\ConsumerConnectionException;
 use UwKluis\Client\Exception\InvalidPhoneNumberException;
 use UwKluis\Client\Exception\OrganizationConnectionException;
-use UwKluis\Client\Helpers\Sms;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Enums\ConsumerConnection\Status;
 
@@ -32,8 +31,6 @@ final class Connect
     private $config;
     /** @var UuidFactoryInterface */
     private $uuidFactory;
-    /** @var Sms */
-    private $smsHelper;
 
     /**
      * Connect constructor.
@@ -41,18 +38,15 @@ final class Connect
      * @param Config $config
      * @param ClientInterface $guzzleClient
      * @param UuidFactoryInterface $uuidFactory
-     * @param Sms $smsHelper
      */
     public function __construct(
         Config $config,
         ClientInterface $guzzleClient,
-        UuidFactoryInterface $uuidFactory,
-        Sms $smsHelper
+        UuidFactoryInterface $uuidFactory
     ) {
         $this->guzzleClient = $guzzleClient;
         $this->config = $config;
         $this->uuidFactory = $uuidFactory;
-        $this->smsHelper = $smsHelper;
     }
 
     /**
@@ -68,7 +62,6 @@ final class Connect
     public function inviteConsumer(Token $accessToken, string $email, string $phoneNumber): Connection
     {
         Assertion::email($email);
-        $sanitizedNumber = $this->smsHelper->sanitizeAndInternationalizePhoneNumber($phoneNumber);
 
         try {
             $httpResponse = $this->guzzleClient->request(
@@ -77,7 +70,7 @@ final class Connect
                 [
                     RequestOptions::FORM_PARAMS => [
                         'email'        => $email,
-                        'phone_number' => $sanitizedNumber,
+                        'phone_number' => $phoneNumber,
                     ],
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
@@ -154,7 +147,6 @@ final class Connect
         string $phoneNumber
     ): Connection {
         Assertion::email($email);
-        $sanitizedNumber = $this->smsHelper->sanitizeAndInternationalizePhoneNumber($phoneNumber);
 
         try {
             $httpResponse = $this->guzzleClient->request(
@@ -163,7 +155,7 @@ final class Connect
                 [
                     RequestOptions::FORM_PARAMS => [
                         'email'               => $email,
-                        'phone_number'        => $sanitizedNumber,
+                        'phone_number'        => $phoneNumber,
                         'consumer_identifier' => $identifier->toString(),
                     ],
                     RequestOptions::HEADERS     => [
