@@ -312,38 +312,4 @@ final class Connect
 
         return new Email($responseContent->email);
     }
-
-    /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function getEmail(
-        Token $accessToken,
-        UuidInterface $identifier
-    ): Email {
-        try {
-            $httpResponse = $this->guzzleClient->request(
-                RequestMethodInterface::METHOD_GET,
-                $this->config->getApiHost() . '/consumer/email?' . http_build_query(
-                    ['consumer_identifier' => $identifier->toString()]
-                ),
-                [
-                    RequestOptions::HEADERS => [
-                        'Accept'        => 'application/json',
-                        'Authorization' => 'Bearer ' . $accessToken->toString(),
-                    ],
-                ]
-            );
-        } catch (ClientException $e) {
-            if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
-                throw new OrganizationConnectionException('Organization connection failed', $e->getCode(), $e);
-            }
-            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
-        } catch (Exception $e) {
-            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
-        }
-
-        $responseContent = json_decode($httpResponse->getBody()->getContents());
-
-        return new Email($responseContent->email);
-    }
 }
