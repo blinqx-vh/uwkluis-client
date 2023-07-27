@@ -17,6 +17,9 @@ final class Connection
     private $grantedScopes;
     /** @var Status */
     private $status;
+    /** @var string */
+    private $inviteLink;
+
 
     /**
      * Connection constructor.
@@ -27,12 +30,14 @@ final class Connection
      */
     public function __construct(
         UuidInterface $uwKluisConsumerId,
-        Status $status = null,
-        array $grantedScopes = null
+        ?Status $status = null,
+        ?array $grantedScopes = null,
+        ?string $inviteLink = null
     ) {
         $this->uwKluisConsumerId = $uwKluisConsumerId;
         $this->status = $status;
         $this->grantedScopes = $grantedScopes;
+        $this->inviteLink = $inviteLink;
     }
 
 
@@ -58,5 +63,13 @@ final class Connection
     public function getGrantedScopes()
     {
         return $this->grantedScopes;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getInviteLink()
+    {
+        return $this->inviteLink;
     }
 }

@@ -64,7 +64,10 @@ final class Connect
         Token $accessToken,
         string $email,
         string $phoneNumber,
-        bool $disablePhoneNumberVerification = false
+        bool $disablePhoneNumberVerification = false,
+        bool $returnInviteLink = false,
+        ?string $language = null,
+        bool $businessAccount = false
     ): Connection {
         Assertion::email($email);
 
@@ -77,6 +80,9 @@ final class Connect
                         'email'                             => $email,
                         'phone_number'                      => $phoneNumber,
                         'disable_phone_number_verification' => $disablePhoneNumberVerification,
+                        'language'                          => $language,
+                        'return_invite_link'                => $returnInviteLink,
+                        'business_account'                  => $businessAccount,
                     ],
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
@@ -103,9 +109,41 @@ final class Connect
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
         }
 
+        $data = json_decode($httpResponse->getBody()->getContents());
+
         return new Connection(
-            $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->uwkluis_consumer_id)
+            $this->uuidFactory->fromString($data->uwkluis_consumer_id),
+            null,
+            null,
+            $data->invite_link ?? null
         );
+    }
+
+    public function revokeInvite(Token $accessToken, string $consumerUuid): void
+    {
+        try {
+            $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_POST,
+                $this->config->getApiHost() . '/consumer/revoke-invite?' . http_build_query(
+                    [
+                        'consumer_id' => $consumerUuid,
+                    ]
+                ),
+                [
+                    RequestOptions::HEADERS     => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ],
+                ]
+            );
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
+                throw new OrganizationConnectionException('Organization connection failed', $e->getCode(), $e);
+            }
+            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
+        } catch (Exception $e) {
+            throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
+        }
     }
 
     public function revokeInvite(Token $accessToken, string $consumerUuid): void
@@ -150,7 +188,9 @@ final class Connect
         Token $accessToken,
         UuidInterface $identifier,
         string $email,
-        string $phoneNumber
+        string $phoneNumber,
+        bool $returnInviteLink = false,
+        ?string $language = null
     ): Connection {
         Assertion::email($email);
 
@@ -163,6 +203,8 @@ final class Connect
                         'email'               => $email,
                         'phone_number'        => $phoneNumber,
                         'consumer_identifier' => $identifier->toString(),
+                        'language'            => $language,
+                        'return_invite_link'  => $returnInviteLink,
                     ],
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
@@ -179,8 +221,13 @@ final class Connect
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
         }
 
+        $data = json_decode($httpResponse->getBody()->getContents());
+
         return new Connection(
-            $this->uuidFactory->fromString(json_decode($httpResponse->getBody()->getContents())->uwkluis_consumer_id)
+            $this->uuidFactory->fromString($data->uwkluis_consumer_id),
+            null,
+            null,
+            $data->invite_link ?? null
         );
     }
 
