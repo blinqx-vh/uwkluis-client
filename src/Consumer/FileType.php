@@ -220,4 +220,30 @@ final class FileType
 
         return json_decode($httpResponse->getBody()->getContents(), true);
     }
+
+    public function deleteFile(
+        Token $accessToken,
+        string $consumerId,
+        string $fileRequestId,
+        string $documentTypeId,
+        string $fileId
+    ) {
+        $queryString = http_build_query(['consumer_id' => $consumerId]);
+        try {
+            $httpResponse = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_DELETE,
+                "{$this->config->getApiHost()}/files/request/{$fileRequestId}/document-type/{$documentTypeId}/file/{$fileId}?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ]
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        return json_decode($httpResponse->getBody()->getContents(), true);
+    }
 }
