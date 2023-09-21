@@ -67,7 +67,8 @@ final class Connect
         bool $disablePhoneNumberVerification = false,
         bool $returnInviteLink = false,
         ?string $language = null,
-        bool $businessAccount = false
+        bool $businessAccount = false,
+        ?string $eblinqxUuid = null
     ): Connection {
         Assertion::email($email);
 
@@ -83,6 +84,7 @@ final class Connect
                         'language'                          => $language,
                         'return_invite_link'                => $returnInviteLink,
                         'business_account'                  => $businessAccount,
+                        'eblinqx_uuid'                      => $eblinqxUuid,
                     ],
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
@@ -163,7 +165,8 @@ final class Connect
         string $email,
         string $phoneNumber,
         bool $returnInviteLink = false,
-        ?string $language = null
+        ?string $language = null,
+        ?string $eblinqxUuid = null
     ): Connection {
         Assertion::email($email);
 
@@ -178,6 +181,7 @@ final class Connect
                         'consumer_identifier' => $identifier->toString(),
                         'language'            => $language,
                         'return_invite_link'  => $returnInviteLink,
+                        'eblinqx_uuid'        => $eblinqxUuid,
                     ],
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
@@ -244,7 +248,9 @@ final class Connect
         return new Connection(
             $this->uuidFactory->fromString($connection->uwkluis_consumer_id),
             new Status($connection->status),
-            $connection->granted_scopes ? explode(' ', $connection->granted_scopes) : null
+            $connection->granted_scopes ? explode(' ', $connection->granted_scopes) : null,
+            null,
+            $connection->eblinqx_uuid ?? null
         );
     }
 

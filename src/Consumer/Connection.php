@@ -32,12 +32,14 @@ final class Connection
         UuidInterface $uwKluisConsumerId,
         ?Status $status = null,
         ?array $grantedScopes = null,
-        ?string $inviteLink = null
+        ?string $inviteLink = null,
+        ?string $eblinqxUuid = null
     ) {
         $this->uwKluisConsumerId = $uwKluisConsumerId;
         $this->status = $status;
         $this->grantedScopes = $grantedScopes;
         $this->inviteLink = $inviteLink;
+        $this->eblinqxUuid = $eblinqxUuid;
     }
 
 
@@ -71,5 +73,13 @@ final class Connection
     public function getInviteLink()
     {
         return $this->inviteLink;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEblinqxUuid()
+    {
+        return $this->eblinqxUuid;
     }
 }
