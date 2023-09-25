@@ -189,4 +189,36 @@ class SourceDataRequest
 
         return $response;
     }
+
+    public function ocktoHbx(
+        Token $accessToken,
+        string $consumerId,
+        string $sourceDataRequestId,
+        string $type,
+        string $variant
+    ): ResponseInterface {
+        $queryString = http_build_query(
+            [
+                'consumer_id' => $consumerId,
+                'type'        => $type,
+                'variant'     => $variant,
+            ]
+        );
+        try {
+            $response = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_GET,
+                "{$this->config->getApiHost()}/source-data-request/{$sourceDataRequestId}/ockto-hbx?{$queryString}",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ],
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        return $response;
+    }
 }
