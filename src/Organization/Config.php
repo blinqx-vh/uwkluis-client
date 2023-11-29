@@ -6,7 +6,7 @@ namespace UwKluis\Client\Organization;
 /**
  * Class Config
  */
-final class Config
+class Config
 {
     /** @var int */
     private $clientId;
