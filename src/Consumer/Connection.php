@@ -19,6 +19,10 @@ final class Connection
     private $status;
     /** @var string */
     private $inviteLink;
+    /** @var string */
+    private $eblinqxUuid;
+    /** @var string */
+    private $verificationCode;
 
 
     /**
@@ -33,13 +37,15 @@ final class Connection
         ?Status $status = null,
         ?array $grantedScopes = null,
         ?string $inviteLink = null,
-        ?string $eblinqxUuid = null
+        ?string $eblinqxUuid = null,
+        ?string $verificationCode = null
     ) {
         $this->uwKluisConsumerId = $uwKluisConsumerId;
         $this->status = $status;
         $this->grantedScopes = $grantedScopes;
         $this->inviteLink = $inviteLink;
         $this->eblinqxUuid = $eblinqxUuid;
+        $this->verificationCode = $verificationCode;
     }
 
 
@@ -81,5 +87,13 @@ final class Connection
     public function getEblinqxUuid()
     {
         return $this->eblinqxUuid;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getVerificationCode()
+    {
+        return $this->verificationCode;
     }
 }

@@ -64,7 +64,7 @@ final class Connect
         Token $accessToken,
         string $email,
         string $phoneNumber,
-        bool $disablePhoneNumberVerification = false,
+        bool $manualVerification = false,
         bool $returnInviteLink = false,
         ?string $language = null,
         bool $businessAccount = false,
@@ -80,7 +80,7 @@ final class Connect
                     RequestOptions::FORM_PARAMS => [
                         'email'                             => $email,
                         'phone_number'                      => $phoneNumber,
-                        'disable_phone_number_verification' => $disablePhoneNumberVerification,
+                        'manual_verification'               => $manualVerification,
                         'language'                          => $language,
                         'return_invite_link'                => $returnInviteLink,
                         'business_account'                  => $businessAccount,
@@ -117,7 +117,9 @@ final class Connect
             $this->uuidFactory->fromString($data->uwkluis_consumer_id),
             null,
             null,
-            $data->invite_link ?? null
+            $data->invite_link ?? null,
+            null,
+            $data->verification_code ?? null
         );
     }
 
@@ -166,7 +168,8 @@ final class Connect
         string $phoneNumber,
         bool $returnInviteLink = false,
         ?string $language = null,
-        ?string $eblinqxUuid = null
+        ?string $eblinqxUuid = null,
+        bool $manualVerification = false
     ): Connection {
         Assertion::email($email);
 
@@ -178,6 +181,7 @@ final class Connect
                     RequestOptions::FORM_PARAMS => [
                         'email'               => $email,
                         'phone_number'        => $phoneNumber,
+                        'manual_verification' => $manualVerification,
                         'consumer_identifier' => $identifier->toString(),
                         'language'            => $language,
                         'return_invite_link'  => $returnInviteLink,
@@ -204,7 +208,9 @@ final class Connect
             $this->uuidFactory->fromString($data->uwkluis_consumer_id),
             null,
             null,
-            $data->invite_link ?? null
+            $data->invite_link ?? null,
+            null,
+            $data->verification_code ?? null
         );
     }
 
