@@ -149,6 +149,38 @@ class FileRequest
     /**
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
+    public function downloadDocumentRequest(
+        Token $accessToken,
+        string $consumerId,
+        string $fileRequestId,
+        bool $additionalFiles = false
+    ): ResponseInterface {
+        try {
+            $response = $this->guzzleClient->request(
+                RequestMethodInterface::METHOD_GET,
+                "{$this->config->getApiHost()}/files/request/{$fileRequestId}/zip/merged-pdf",
+                [
+                    RequestOptions::HEADERS => [
+                        'Accept'        => 'application/json',
+                        'Authorization' => 'Bearer ' . $accessToken->toString(),
+                    ],
+                    RequestOptions::QUERY => [
+                        'consumer_id'      => $consumerId,
+                        'additional_files' => $additionalFiles,
+                    ]
+                ]
+            );
+        } catch (BadResponseException $e) {
+            $this->processBadResponse($e);
+        }
+
+        /** @noinspection PhpUndefinedVariableInspection */
+        return $response;
+    }
+
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function downloadDocumentType(
         Token $accessToken,
         string $consumerId,
