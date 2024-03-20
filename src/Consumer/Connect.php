@@ -68,7 +68,8 @@ final class Connect
         bool $returnInviteLink = false,
         ?string $language = null,
         bool $businessAccount = false,
-        ?string $eblinqxUuid = null
+        ?string $eblinqxUuid = null,
+        ?string $dossierName = null
     ): Connection {
         Assertion::email($email);
 
@@ -85,6 +86,7 @@ final class Connect
                         'return_invite_link'                => $returnInviteLink,
                         'business_account'                  => $businessAccount,
                         'eblinqx_uuid'                      => $eblinqxUuid,
+                        'dossier_name'                      => $dossierName,
                     ],
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
