@@ -69,7 +69,11 @@ final class Connect
         ?string $language = null,
         bool $businessAccount = false,
         ?string $eblinqxUuid = null,
-        ?string $dossierName = null
+        ?string $dossierName = null,
+        ?string $initials = null,
+        ?string $firstName = null,
+        ?string $addition = null,
+        ?string $lastName = null
     ): Connection {
         Assertion::email($email);
 
@@ -87,6 +91,10 @@ final class Connect
                         'business_account'                  => $businessAccount,
                         'eblinqx_uuid'                      => $eblinqxUuid,
                         'dossier_name'                      => $dossierName,
+                        'initials'                          => $initials,
+                        'first_name'                        => $firstName,
+                        'addition'                          => $addition,
+                        'last_name'                         => $lastName,
                     ],
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
@@ -171,7 +179,11 @@ final class Connect
         bool $returnInviteLink = false,
         ?string $language = null,
         ?string $eblinqxUuid = null,
-        bool $manualVerification = false
+        bool $manualVerification = false,
+        ?string $initials = null,
+        ?string $firstName = null,
+        ?string $addition = null,
+        ?string $lastName = null
     ): Connection {
         Assertion::email($email);
 
@@ -188,6 +200,10 @@ final class Connect
                         'language'            => $language,
                         'return_invite_link'  => $returnInviteLink,
                         'eblinqx_uuid'        => $eblinqxUuid,
+                        'initials'            => $initials,
+                        'first_name'          => $firstName,
+                        'addition'            => $addition,
+                        'last_name'           => $lastName,
                     ],
                     RequestOptions::HEADERS     => [
                         'Accept'        => 'application/json',
