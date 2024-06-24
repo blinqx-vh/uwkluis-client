@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace UwKluis\Client\Organization;
 
 use Fig\Http\Message\RequestMethodInterface;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
 /**
@@ -19,23 +19,10 @@ final class Group
 {
     use ProcessesBadResponses;
 
-    /** @var Config */
-    private $config;
-    /** @var ClientInterface */
-    private $guzzleClient;
-
-    /**
-     * Information constructor.
-     *
-     * @param Config          $config
-     * @param ClientInterface $guzzleClient
-     */
     public function __construct(
-        Config $config,
-        ClientInterface $guzzleClient
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     ) {
-        $this->config       = $config;
-        $this->guzzleClient = $guzzleClient;
     }
 
     /**
@@ -48,7 +35,7 @@ final class Group
     public function list(Token $accessToken, string $groupId)
     {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 $this->config->getApiHost() . '/groups/' . $groupId,
                 [
@@ -62,7 +49,6 @@ final class Group
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -75,7 +61,7 @@ final class Group
     public function listForConsumer(Token $accessToken, string $consumerId)
     {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 $this->config->getApiHost() . '/groups/for-consumer/' . $consumerId,
                 [
@@ -89,7 +75,6 @@ final class Group
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -104,7 +89,7 @@ final class Group
     public function add(Token $accessToken, string $groupId, string $consumerId)
     {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 $this->config->getApiHost() . '/groups/' . $groupId . '/consumer/' . $consumerId,
                 [
@@ -118,7 +103,6 @@ final class Group
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -133,7 +117,7 @@ final class Group
     public function remove(Token $accessToken, string $groupId, string $consumerId)
     {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_DELETE,
                 $this->config->getApiHost() . '/groups/' . $groupId . '/consumer/' . $consumerId,
                 [
@@ -147,7 +131,6 @@ final class Group
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 }

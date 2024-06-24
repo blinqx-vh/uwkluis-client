@@ -4,12 +4,12 @@ declare(strict_types=1);
 namespace UwKluis\Client\Consumer;
 
 use Fig\Http\Message\RequestMethodInterface;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Psr\Http\Message\ResponseInterface;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
@@ -20,26 +20,11 @@ final class Message
 {
     use ProcessesBadResponses;
 
-    /**
-     * @var Config
-     */
-    private $config;
-    /**
-     * @var ClientInterface
-     */
-    private $guzzleClient;
 
-    /**
-     * Message constructor.
-     * @param Config $config
-     * @param ClientInterface $guzzleClient
-     */
     public function __construct(
-        Config $config,
-        ClientInterface $guzzleClient
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     ) {
-        $this->config = $config;
-        $this->guzzleClient = $guzzleClient;
     }
 
     /**
@@ -59,7 +44,7 @@ final class Message
             'consumer_id' => $consumerId,
         ]);
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/messages?{$queryString}",
                 [
@@ -73,7 +58,6 @@ final class Message
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -91,7 +75,7 @@ final class Message
     ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/messages/{$messageUuid}?{$queryString}",
                 [
@@ -105,7 +89,6 @@ final class Message
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($response->getBody()->getContents(), true);
     }
 
@@ -127,7 +110,7 @@ final class Message
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/messages?{$queryString}",
                 [
@@ -142,7 +125,6 @@ final class Message
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -163,7 +145,7 @@ final class Message
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_DELETE,
                 "{$this->config->getApiHost()}/messages/{$messageUuid}?{$queryString}",
                 [
@@ -177,7 +159,6 @@ final class Message
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -200,7 +181,7 @@ final class Message
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_DELETE,
                 "{$this->config->getApiHost()}/messages/{$messageUuid}/attachment/{$attachmentUuid}?{$queryString}",
                 [
@@ -214,7 +195,6 @@ final class Message
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 }

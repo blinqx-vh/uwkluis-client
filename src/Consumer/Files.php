@@ -4,12 +4,12 @@ declare(strict_types = 1);
 namespace UwKluis\Client\Consumer;
 
 use Fig\Http\Message\RequestMethodInterface;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
@@ -19,23 +19,11 @@ use UwKluis\Client\Traits\ProcessesBadResponses;
 final class Files
 {
     use ProcessesBadResponses;
-    /** @var ClientInterface */
-    private $guzzleClient;
-    /** @var Config */
-    private $config;
 
-    /**
-     * Files constructor.
-     *
-     * @param Config          $config
-     * @param ClientInterface $guzzleClient
-     */
     public function __construct(
-        Config $config,
-        ClientInterface $guzzleClient
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     ) {
-        $this->guzzleClient = $guzzleClient;
-        $this->config = $config;
     }
 
     /**
@@ -55,7 +43,7 @@ final class Files
             'consumer_id' => $consumerId,
         ]);
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files?{$queryString}",
                 [
@@ -69,7 +57,6 @@ final class Files
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -88,7 +75,7 @@ final class Files
     ): array {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/shared?{$queryString}",
                 [
@@ -102,7 +89,6 @@ final class Files
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -121,7 +107,7 @@ final class Files
     ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/{$fileId}?{$queryString}",
                 [
@@ -135,7 +121,6 @@ final class Files
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return $response;
     }
 
@@ -159,7 +144,7 @@ final class Files
             ]
         );
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/document-types?{$queryString}",
                 [
@@ -173,7 +158,6 @@ final class Files
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return $response;
     }
 
@@ -192,7 +176,7 @@ final class Files
     ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/attachment/{$attachmentUuid}?{$queryString}",
                 [
@@ -206,7 +190,6 @@ final class Files
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return $response;
     }
 
@@ -223,7 +206,7 @@ final class Files
     ): ResponseInterface {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/zip?{$queryString}",
                 [
@@ -237,7 +220,6 @@ final class Files
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return $response;
     }
 
@@ -260,7 +242,7 @@ final class Files
     ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/files?{$queryString}",
                 [
@@ -290,7 +272,6 @@ final class Files
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse->getBody()->getContents(), true);
     }
 
@@ -310,7 +291,7 @@ final class Files
     ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_DELETE,
                 "{$this->config->getApiHost()}/files/{$fileId}?{$queryString}",
                 [
@@ -324,7 +305,6 @@ final class Files
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse->getBody()->getContents(), true);
     }
 }

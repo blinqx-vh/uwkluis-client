@@ -6,7 +6,6 @@ namespace UwKluis\Client\Organization;
 use DateInterval;
 use DateTime;
 use Exception;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
@@ -14,6 +13,7 @@ use Lcobucci\JWT\Configuration;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Exception\AuthCodeExpiredException;
 use UwKluis\Client\Exception\InvalidOauthClientException;
 use UwKluis\Client\Exception\InvalidRequestException;
@@ -25,23 +25,10 @@ use UwKluis\Client\Exception\RefreshTokenInvalidException;
  */
 final class Connect
 {
-    /** @var ClientInterface */
-    private $guzzleClient;
-    /** @var Config */
-    private $config;
-
-    /**
-     * Connect constructor.
-     *
-     * @param Config          $config
-     * @param ClientInterface $guzzleClient
-     */
     public function __construct(
-        Config $config,
-        ClientInterface $guzzleClient
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     ) {
-        $this->config = $config;
-        $this->guzzleClient = $guzzleClient;
     }
 
     /**
@@ -104,7 +91,7 @@ final class Connect
     public function refreshAccessToken(string $refreshToken): AccessTokenResponse
     {
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 'post',
                 $this->config->getOrganizationHost() . '/oauth/token',
                 [
@@ -137,7 +124,7 @@ final class Connect
     private function requestAccessToken(string $code): AccessTokenResponse
     {
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 'post',
                 $this->config->getOrganizationHost() . '/oauth/token',
                 [

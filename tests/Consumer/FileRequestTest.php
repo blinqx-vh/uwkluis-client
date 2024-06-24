@@ -12,6 +12,7 @@ use Lcobucci\JWT\Token;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Exception\InvalidRequestException;
 use UwKluis\Client\Organization\Config;
 
@@ -85,13 +86,8 @@ class FileRequestTest extends TestCase
     }
 
 
-    /**
-     * @param ClientInterface $client
-     * @return FileRequest
-     */
-    public function getApiClient(ClientInterface $client)
+    public function getApiClient(UwkluisClientInterface $client): FileRequest
     {
-        /** @noinspection PhpParamsInspection */
         return new FileRequest(
             (new Config(
                 'foo',

@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace UwKluis\Client\Consumer;
 
 use Fig\Http\Message\RequestMethodInterface;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
@@ -15,35 +15,18 @@ class SingleSignOn
 {
     use ProcessesBadResponses;
 
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var ClientInterface
-     */
-    private $guzzleClient;
-
-    /**
-     * Message constructor.
-     * @param Config $config
-     * @param ClientInterface $guzzleClient
-     */
     public function __construct(
-        Config          $config,
-        ClientInterface $guzzleClient
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     )
     {
-        $this->config = $config;
-        $this->guzzleClient = $guzzleClient;
     }
 
     public function login(Token $accessToken, string $consumerId, string $reason)
     {
         try {
             $httpResponse =
-                $this->guzzleClient->request(
+                $this->uwkluisClient->request(
                     RequestMethodInterface::METHOD_POST,
                     $this->config->getApiHost() . '/sso',
                     [

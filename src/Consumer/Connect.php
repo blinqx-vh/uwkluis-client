@@ -4,18 +4,19 @@ declare(strict_types = 1);
 namespace UwKluis\Client\Consumer;
 
 use Assert\Assertion;
+use Assert\AssertionFailedException;
 use Exception;
 use Fig\Http\Message\RequestMethodInterface;
 use Fig\Http\Message\StatusCodeInterface;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Ramsey\Uuid\UuidFactoryInterface;
 use Ramsey\Uuid\UuidInterface;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Exception\ConsumerConnectionConflict;
 use UwKluis\Client\Exception\ConsumerConnectionException;
-use UwKluis\Client\Exception\InvalidPhoneNumberException;
 use UwKluis\Client\Exception\OrganizationConnectionException;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Enums\ConsumerConnection\Status;
@@ -25,28 +26,11 @@ use UwKluis\Enums\ConsumerConnection\Status;
  */
 final class Connect
 {
-    /** @var ClientInterface */
-    private $guzzleClient;
-    /** @var Config */
-    private $config;
-    /** @var UuidFactoryInterface */
-    private $uuidFactory;
-
-    /**
-     * Connect constructor.
-     *
-     * @param Config $config
-     * @param ClientInterface $guzzleClient
-     * @param UuidFactoryInterface $uuidFactory
-     */
     public function __construct(
-        Config $config,
-        ClientInterface $guzzleClient,
-        UuidFactoryInterface $uuidFactory
+        private readonly Config                 $config,
+        private readonly UwkluisClientInterface $uwkluisClient,
+        private readonly UuidFactoryInterface   $uuidFactory
     ) {
-        $this->guzzleClient = $guzzleClient;
-        $this->config = $config;
-        $this->uuidFactory = $uuidFactory;
     }
 
     /**
@@ -56,9 +40,8 @@ final class Connect
      * @param bool $disablePhoneNumberVerification
      *
      * @return Connection
-     * @throws \Assert\AssertionFailedException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws InvalidPhoneNumberException
+     * @throws AssertionFailedException
+     * @throws GuzzleException
      */
     public function inviteConsumer(
         Token $accessToken,
@@ -78,7 +61,7 @@ final class Connect
         Assertion::email($email);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 $this->config->getApiHost() . '/consumer/invite',
                 [
@@ -105,7 +88,9 @@ final class Connect
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_UNAUTHORIZED) {
                 throw new OrganizationConnectionException('Organization connection failed', $e->getCode(), $e);
-            } elseif ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_CONFLICT) {
+            }
+
+            if ($e->getResponse()->getStatusCode() === StatusCodeInterface::STATUS_CONFLICT) {
                 $response = json_decode($e->getResponse()->getBody()->getContents());
 
                 $consumerUuid = $response->data->uwkluis_consumer_id;
@@ -116,6 +101,7 @@ final class Connect
                     $consumerUuid ? new Connection($this->uuidFactory->fromString($consumerUuid)) : null
                 );
             }
+
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
         } catch (Exception $e) {
             throw new ConsumerConnectionException('Consumer connection failed', $e->getCode(), $e);
@@ -136,7 +122,7 @@ final class Connect
     public function revokeInvite(Token $accessToken, string $consumerUuid): void
     {
         try {
-            $this->guzzleClient->request(
+            $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 $this->config->getApiHost() . '/consumer/revoke-invite?' . http_build_query(
                     [
@@ -167,9 +153,8 @@ final class Connect
      * @param string $phoneNumber
      *
      * @return Connection
-     * @throws \Assert\AssertionFailedException
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws InvalidPhoneNumberException
+     * @throws AssertionFailedException
+     * @throws GuzzleException
      */
     public function updateAndReinviteConsumer(
         Token $accessToken,
@@ -188,7 +173,7 @@ final class Connect
         Assertion::email($email);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 $this->config->getApiHost() . '/consumer/update-and-reinvite',
                 [
@@ -237,14 +222,14 @@ final class Connect
      * @param UuidInterface $identifier
      *
      * @return Connection
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function getConnectionStatus(
         Token $accessToken,
         UuidInterface $identifier
     ): Connection {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 $this->config->getApiHost() . '/consumer/get-connection-status?' . http_build_query(
                     [
@@ -301,7 +286,7 @@ final class Connect
      *
      * @param UuidInterface $identifier
      *
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
 
     public function disconnect(
@@ -310,7 +295,7 @@ final class Connect
     ): void
     {
         try {
-            $this->guzzleClient->request(
+            $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 $this->config->getApiHost() . '/consumer/disconnect?' . http_build_query(
                     [
@@ -330,14 +315,14 @@ final class Connect
     }
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function getEmail(
         Token $accessToken,
         UuidInterface $identifier
     ): Email {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 $this->config->getApiHost() . '/consumer/email?' . http_build_query(
                     ['consumer_identifier' => $identifier->toString()]

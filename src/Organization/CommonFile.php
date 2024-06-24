@@ -5,34 +5,27 @@ namespace UwKluis\Client\Organization;
 
 use Fig\Http\Message\RequestMethodInterface;
 use Fig\Http\Message\StatusCodeInterface;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Psr\Http\Message\UploadedFileInterface;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
 final class CommonFile
 {
     use ProcessesBadResponses;
 
-    /** @var Config */
-    private $config;
-    /** @var ClientInterface */
-    private $guzzleClient;
-
     public function __construct(
-        Config $config,
-        ClientInterface $guzzleClient
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     ) {
-        $this->config       = $config;
-        $this->guzzleClient = $guzzleClient;
     }
 
     public function list(Token $accessToken): array
     {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 $this->config->getApiHost() . '/common-file',
                 [
@@ -52,7 +45,7 @@ final class CommonFile
     public function delete(Token $accessToken, string $fileId): bool
     {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_DELETE,
                 "{$this->config->getApiHost()}/common-file/$fileId",
                 [
@@ -75,7 +68,7 @@ final class CommonFile
         ?string $description = null
     ): array {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/common-file",
                 [

@@ -10,6 +10,8 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
+use UwKluis\Client\Client\UwkluisClient;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Exception\AuthCodeExpiredException;
 use UwKluis\Client\Exception\InvalidRequestException;
 use UwKluis\Client\Exception\InvalidScopesException;
@@ -21,7 +23,7 @@ class ConnectTest extends TestCase
     public function testGetUrls()
     {
         /** @var Client $guzzleClientMock */
-        $guzzleClientMock = $this->createMock(Client::class);
+        $guzzleClientMock = $this->createMock(UwkluisClient::class);
         $connect = $this->getConnect($guzzleClientMock);
 
         $this->assertEquals('/oauth/authorize?client_id=1&redirect_uri=https%3A%2F%2Fexample.org%2Ftest%2F'
@@ -36,7 +38,7 @@ class ConnectTest extends TestCase
     public function testProcessResponse()
     {
         /** @var Client $guzzleClientMock */
-        $guzzleClientMock = $this->createMock(Client::class);
+        $guzzleClientMock = $this->createMock(UwkluisClient::class);
         $guzzleClientMock->expects($this->any())
             ->method('request')
             ->willReturn(
@@ -142,7 +144,7 @@ class ConnectTest extends TestCase
     public function testRefreshAccessToken()
     {
         /** @var Client $guzzleClientMock */
-        $guzzleClientMock = $this->createMock(Client::class);
+        $guzzleClientMock = $this->createMock(UwkluisClient::class);
         $guzzleClientMock->expects($this->any())
             ->method('request')
             ->willReturn(
@@ -177,7 +179,7 @@ class ConnectTest extends TestCase
         }
     }
 
-    private function getConnect(Client $guzzleClientMock): Connect
+    private function getConnect(UwkluisClientInterface $guzzleClientMock): Connect
     {
         return new Connect(
             new Config(

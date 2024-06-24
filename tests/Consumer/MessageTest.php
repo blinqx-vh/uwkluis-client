@@ -4,6 +4,7 @@ namespace UwKluis\Client\Consumer;
 
 use GuzzleHttp\ClientInterface;
 use PHPUnit\Framework\TestCase;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Organization\Config;
 
 class MessageTest extends TestCase
@@ -47,7 +48,7 @@ class MessageTest extends TestCase
      * @param $client
      * @return Message
      */
-    private function getApiClient(ClientInterface $client)
+    private function getApiClient(UwkluisClientInterface $client)
     {
         return new Message(
             (new Config(

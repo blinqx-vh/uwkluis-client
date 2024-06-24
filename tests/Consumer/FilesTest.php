@@ -9,11 +9,13 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use Lcobucci\JWT\Token;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Exception\InvalidRequestException;
 use UwKluis\Client\Organization\Config;
 
@@ -129,7 +131,7 @@ class FilesTest extends TestCase
      * @param Client $mockGuzzleClient
      * @return Files
      */
-    public function getApiClient(ClientInterface $mockGuzzleClient)
+    public function getApiClient(UwkluisClientInterface $mockGuzzleClient)
     {
         return new Files(
             (new Config(

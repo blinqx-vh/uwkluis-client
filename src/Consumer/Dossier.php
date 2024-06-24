@@ -4,10 +4,10 @@ declare(strict_types = 1);
 namespace UwKluis\Client\Consumer;
 
 use Fig\Http\Message\RequestMethodInterface;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
@@ -17,23 +17,11 @@ use UwKluis\Client\Traits\ProcessesBadResponses;
 final class Dossier
 {
     use ProcessesBadResponses;
-    /** @var ClientInterface */
-    private $guzzleClient;
-    /** @var Config */
-    private $config;
 
-    /**
-     * Dossier constructor.
-     *
-     * @param Config          $config
-     * @param ClientInterface $guzzleClient
-     */
     public function __construct(
-        Config $config,
-        ClientInterface $guzzleClient
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     ) {
-        $this->guzzleClient = $guzzleClient;
-        $this->config = $config;
     }
 
     /**
@@ -56,7 +44,7 @@ final class Dossier
         $queryString = http_build_query($query);
         try {
             $httpResponse =
-                $this->guzzleClient->request(
+                $this->uwkluisClient->request(
                     RequestMethodInterface::METHOD_GET,
                     $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
@@ -70,7 +58,6 @@ final class Dossier
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -99,7 +86,7 @@ final class Dossier
         $queryString = http_build_query($queryString);
         try {
             $httpResponse =
-                $this->guzzleClient->request(
+                $this->uwkluisClient->request(
                     RequestMethodInterface::METHOD_POST,
                     $this->config->getApiHost() . '/dossier?' . $queryString,
                     [
@@ -116,7 +103,6 @@ final class Dossier
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 }

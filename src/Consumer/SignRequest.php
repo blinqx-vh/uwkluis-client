@@ -4,33 +4,21 @@ declare(strict_types = 1);
 namespace UwKluis\Client\Consumer;
 
 use Fig\Http\Message\RequestMethodInterface;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
 class SignRequest
 {
     use ProcessesBadResponses;
-    /** @var ClientInterface */
-    private $guzzleClient;
-    /** @var Config */
-    private $config;
 
-    /**
-     * Files constructor.
-     *
-     * @param Config          $config
-     * @param ClientInterface $guzzleClient
-     */
     public function __construct(
-        Config $config,
-        ClientInterface $guzzleClient
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     ) {
-        $this->guzzleClient = $guzzleClient;
-        $this->config = $config;
     }
 
     public function list(
@@ -42,7 +30,7 @@ class SignRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/sign-request?{$queryString}",
                 [
@@ -56,7 +44,6 @@ class SignRequest
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -79,7 +66,7 @@ class SignRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/sign-request/{$signRequestId}?{$queryString}",
                 [
@@ -93,7 +80,6 @@ class SignRequest
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -107,7 +93,7 @@ class SignRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_DELETE,
                 "{$this->config->getApiHost()}/sign-request/{$signRequestId}?{$queryString}",
                 [
@@ -140,7 +126,7 @@ class SignRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/sign-request/?{$queryString}",
                 [

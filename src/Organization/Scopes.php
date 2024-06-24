@@ -3,30 +3,17 @@ declare(strict_types = 1);
 
 namespace UwKluis\Client\Organization;
 
-use GuzzleHttp\ClientInterface;
+use UwKluis\Client\Client\UwkluisClientInterface;
 
 /**
  * Class Scopes
  */
 final class Scopes
 {
-    /** @var ClientInterface */
-    private $client;
-    /** @var Config */
-    private $config;
-
-    /**
-     * Scopes constructor.
-     *
-     * @param Config          $config
-     * @param ClientInterface $client
-     */
     public function __construct(
-        Config $config,
-        ClientInterface $client
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     ) {
-        $this->client = $client;
-        $this->config = $config;
     }
 
     /**
@@ -37,7 +24,7 @@ final class Scopes
      */
     public function getScopes(): array
     {
-        $response = $this->client->request('get', $this->config->getApiHost() . '/scopes')->getBody()->getContents();
+        $response = $this->uwkluisClient->request('get', $this->config->getApiHost() . '/scopes')->getBody()->getContents();
 
         return json_decode($response, true);
     }

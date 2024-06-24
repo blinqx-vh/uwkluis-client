@@ -4,11 +4,11 @@ declare(strict_types = 1);
 namespace UwKluis\Client\Consumer;
 
 use Fig\Http\Message\RequestMethodInterface;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Psr\Http\Message\UploadedFileInterface;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
@@ -18,23 +18,11 @@ use UwKluis\Client\Traits\ProcessesBadResponses;
 final class FileType
 {
     use ProcessesBadResponses;
-    /** @var ClientInterface */
-    private $guzzleClient;
-    /** @var Config */
-    private $config;
 
-    /**
-     * Files constructor.
-     *
-     * @param Config          $config
-     * @param ClientInterface $guzzleClient
-     */
     public function __construct(
-        Config $config,
-        ClientInterface $guzzleClient
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     ) {
-        $this->guzzleClient = $guzzleClient;
-        $this->config = $config;
     }
 
     /**
@@ -52,7 +40,7 @@ final class FileType
     ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_PUT,
                 "{$this->config->getApiHost()}/document-types/{$documentTypeId}/approve?{$queryString}",
                 [
@@ -65,7 +53,6 @@ final class FileType
         } catch (BadResponseException $e) {
             $this->processBadResponse($e);
         }
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse->getBody()->getContents(), true);
     }
 
@@ -86,7 +73,7 @@ final class FileType
     ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_PUT,
                 "{$this->config->getApiHost()}/document-types/{$documentTypeId}/unapprove?{$queryString}",
                 [
@@ -102,7 +89,6 @@ final class FileType
         } catch (BadResponseException $e) {
             $this->processBadResponse($e);
         }
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse->getBody()->getContents(), true);
     }
 
@@ -123,7 +109,7 @@ final class FileType
     ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_PUT,
                 "{$this->config->getApiHost()}/document-types/{$documentTypeId}/edit-description?{$queryString}",
                 [
@@ -139,7 +125,6 @@ final class FileType
         } catch (BadResponseException $e) {
             $this->processBadResponse($e);
         }
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse->getBody()->getContents(), true);
     }
 
@@ -159,7 +144,7 @@ final class FileType
     ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_DELETE,
                 "{$this->config->getApiHost()}/files/request/{$fileRequestId}/document-type/{$documentTypeId}?{$queryString}",
                 [
@@ -172,7 +157,6 @@ final class FileType
         } catch (BadResponseException $e) {
             $this->processBadResponse($e);
         }
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse->getBody()->getContents(), true);
     }
 
@@ -196,7 +180,7 @@ final class FileType
         $queryString = http_build_query(['consumer_id' => $consumerId]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/files/request/{$fileRequestId}/document-type/{$documentTypeId}/upload?{$queryString}",
                 [
@@ -230,7 +214,7 @@ final class FileType
     ) {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_DELETE,
                 "{$this->config->getApiHost()}/files/request/{$fileRequestId}/document-type/{$documentTypeId}/file/{$fileId}?{$queryString}",
                 [

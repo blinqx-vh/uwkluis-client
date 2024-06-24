@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Lcobucci\JWT\Token;
 use PHPUnit\Framework\TestCase;
+use UwKluis\Client\Client\UwkluisClient;
 
 /**
  * Class InformationTest
@@ -20,13 +21,12 @@ class InformationTest extends TestCase
         /** @var Token $token */
         $token = $this->createMock(Token::class);
         /** @var Client $guzzleClientMock */
-        $guzzleClientMock = $this->createMock(Client::class);
+        $guzzleClientMock = $this->createMock(UwkluisClient::class);
         $guzzleClientMock->expects($this->any())
             ->method('request')
             ->willReturn(
                 new Response(200, [], json_encode(['organization_name' => 'organization', 'email' => 'example@example.com', 'name' => 'example b.v.']))
             );
-        /** @noinspection PhpParamsInspection */
         $information = new Information(new Config(
             'foo',
             'https://example.org/test/',

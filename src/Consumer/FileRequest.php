@@ -4,11 +4,11 @@ declare(strict_types = 1);
 namespace UwKluis\Client\Consumer;
 
 use Fig\Http\Message\RequestMethodInterface;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Psr\Http\Message\ResponseInterface;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
@@ -18,23 +18,11 @@ use UwKluis\Client\Traits\ProcessesBadResponses;
 class FileRequest
 {
     use ProcessesBadResponses;
-    /** @var ClientInterface */
-    private $guzzleClient;
-    /** @var Config */
-    private $config;
 
-    /**
-     * Files constructor.
-     *
-     * @param Config          $config
-     * @param ClientInterface $guzzleClient
-     */
     public function __construct(
-        Config $config,
-        ClientInterface $guzzleClient
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     ) {
-        $this->guzzleClient = $guzzleClient;
-        $this->config = $config;
     }
 
 
@@ -55,7 +43,7 @@ class FileRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/request?{$queryString}",
                 [
@@ -69,7 +57,6 @@ class FileRequest
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -92,7 +79,7 @@ class FileRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/request/{$fileRequestId}?{$queryString}",
                 [
@@ -106,7 +93,6 @@ class FileRequest
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -128,7 +114,7 @@ class FileRequest
         ]);
 
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/request/{$fileRequestId}/zip?{$queryString}",
                 [
@@ -142,7 +128,6 @@ class FileRequest
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return $response;
     }
 
@@ -156,7 +141,7 @@ class FileRequest
         bool $additionalFiles = false
     ): ResponseInterface {
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/files/request/{$fileRequestId}/zip/merged-pdf",
                 [
@@ -174,7 +159,6 @@ class FileRequest
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return $response;
     }
 
@@ -193,7 +177,7 @@ class FileRequest
         ]);
 
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/document-types/{$documentTypeId}/merged-pdf?{$queryString}",
                 [
@@ -207,7 +191,6 @@ class FileRequest
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return $response;
     }
 
@@ -232,7 +215,7 @@ class FileRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_PUT,
                 "{$this->config->getApiHost()}/files/request/{$fileRequestId}?{$queryString}",
                 [
@@ -249,7 +232,6 @@ class FileRequest
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -272,7 +254,7 @@ class FileRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/files/request?{$queryString}",
                 [
@@ -289,7 +271,6 @@ class FileRequest
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -312,7 +293,7 @@ class FileRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_DELETE,
                 "{$this->config->getApiHost()}/files/request/{$fileRequestId}?{$queryString}",
                 [
@@ -326,7 +307,6 @@ class FileRequest
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 
@@ -351,7 +331,7 @@ class FileRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/files/request/{$fileRequestId}/document-type?{$queryString}",
                 [
@@ -366,7 +346,6 @@ class FileRequest
             $this->processBadResponse($e);
         }
 
-        /** @noinspection PhpUndefinedVariableInspection */
         return json_decode($httpResponse, true);
     }
 }

@@ -6,6 +6,7 @@ namespace UwKluis\Client\Consumer;
 use Exception;
 use GuzzleHttp\ClientInterface;
 use PHPUnit\Framework\TestCase;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Organization\Config;
 
 class SignRequestTest extends TestCase
@@ -20,7 +21,7 @@ class SignRequestTest extends TestCase
         $this->checkResponseFlow('list');
     }
 
-    public function getApiClient(ClientInterface $client)
+    public function getApiClient(UwkluisClientInterface $client)
     {
         /** @noinspection PhpParamsInspection */
         return new SignRequest(

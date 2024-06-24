@@ -3,10 +3,19 @@
   "description": "Client package for the UwKluis APIs",
   "license": "MIT",
   "type": "library",
+  "archive": {
+    "exclude": [
+      "tests/",
+      "phpunit.xml",
+      ".scrutinizer.yml",
+      "bitbucket-pipelines.yml"
+    ]
+  },
   "require": {
-    "php": "^7.1.0|~8.0",
+    "php": "^8.1",
     "ext-json": "*",
     "beberlei/assert": "^3.2",
+    "caseyamcl/guzzle_retry_middleware": "^2.9",
     "fig/http-message-util": "^1.1",
     "guzzlehttp/guzzle": "^6.3|^7.0",
     "lcobucci/jwt": "^4.1",
@@ -15,9 +24,12 @@
     "uwkluis/enums": "^0.1.8"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.5|^7.4|^8.0",
-    "roave/backward-compatibility-check": "~6.0.0",
+    "phpunit/phpunit": "^8.0",
+    "roave/backward-compatibility-check": "~8.0",
     "squizlabs/php_codesniffer": "^3.3"
+  },
+  "suggest": {
+    "illuminate/support": "Needed to use the Laravel service provider"
   },
   "autoload": {
     "psr-4": {

@@ -16,6 +16,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactory;
 use Ramsey\Uuid\UuidInterface;
 use Throwable;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Exception\ConsumerConnectionException;
 use UwKluis\Client\Exception\InvalidRequestException;
 use UwKluis\Client\Exception\OrganizationConnectionException;
@@ -134,11 +135,7 @@ class DossierTest extends TestCase
         return $e;
     }
 
-    /**
-     * @param ClientInterface $client
-     * @return Dossier
-     */
-    public function getApiClient(ClientInterface $client)
+    public function getApiClient(UwkluisClientInterface $client): Dossier
     {
         /** @noinspection PhpParamsInspection */
         return new Dossier(

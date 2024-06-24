@@ -7,30 +7,25 @@ use Fig\Http\Message\RequestMethodInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Organization\Config;
-use GuzzleHttp\ClientInterface;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
 class QuestionnaireType
 {
     use ProcessesBadResponses;
 
-    private ClientInterface $guzzleClient;
-    private Config $config;
-
     public function __construct(
-        Config          $config,
-        ClientInterface $guzzleClient
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     ) {
-        $this->config = $config;
-        $this->guzzleClient = $guzzleClient;
     }
 
     public function list(
         Token $accessToken
     ): array {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/questionnaires/types",
                 [
@@ -52,7 +47,7 @@ class QuestionnaireType
         string $questionnaireTypeId
     ): array {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/questionnaires/types/{$questionnaireTypeId}",
                 [
@@ -74,7 +69,7 @@ class QuestionnaireType
         array  $body
     ): array {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/questionnaires/types",
                 [
@@ -100,7 +95,7 @@ class QuestionnaireType
         array  $body
     ): array {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_PUT,
                 "{$this->config->getApiHost()}/questionnaires/types/{$questionnaireTypeId}",
                 [
@@ -125,7 +120,7 @@ class QuestionnaireType
         string $questionnaireTypeId
     ): bool {
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_DELETE,
                 "{$this->config->getApiHost()}/questionnaires/types/{$questionnaireTypeId}",
                 [

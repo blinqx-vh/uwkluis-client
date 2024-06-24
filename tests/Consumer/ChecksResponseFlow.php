@@ -15,6 +15,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactory;
 use Throwable;
+use UwKluis\Client\Client\UwkluisClient;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Exception\InvalidRequestException;
 
 trait ChecksResponseFlow
@@ -59,7 +61,7 @@ trait ChecksResponseFlow
      */
     private function getMockGuzzleClient(): Client
     {
-        $mockGuzzleClient = $this->createMock(Client::class);
+        $mockGuzzleClient = $this->createMock(UwkluisClient::class);
         $mockGuzzleClient
             ->method('request')
             ->willReturn(new Response(
@@ -71,5 +73,5 @@ trait ChecksResponseFlow
         return $mockGuzzleClient;
     }
 
-    abstract public function getApiClient(ClientInterface $client);
+    abstract public function getApiClient(UwkluisClientInterface $client);
 }

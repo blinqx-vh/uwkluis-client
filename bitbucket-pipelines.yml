@@ -1,0 +1,14 @@
+image:
+  name: 751567812571.dkr.ecr.eu-central-1.amazonaws.com/hypotheekbond/uwkluis-client-development:php-8.2-alpine-20240617134349
+  aws:
+    access-key: $AWS_ACCESS_KEY
+    secret-key: $AWS_SECRET_KEY
+
+pipelines:
+  default:
+    - step:
+        script:
+          - PATH=$PATH:$PWD
+          - composer validate
+          - composer install
+          - vendor/bin/phpunit

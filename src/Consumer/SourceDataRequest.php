@@ -4,26 +4,22 @@ declare(strict_types = 1);
 namespace UwKluis\Client\Consumer;
 
 use Fig\Http\Message\RequestMethodInterface;
-use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\RequestOptions;
 use Lcobucci\JWT\Token;
 use Psr\Http\Message\ResponseInterface;
+use UwKluis\Client\Client\UwkluisClientInterface;
 use UwKluis\Client\Organization\Config;
 use UwKluis\Client\Traits\ProcessesBadResponses;
 
 class SourceDataRequest
 {
     use ProcessesBadResponses;
-    private ClientInterface $guzzleClient;
-    private Config $config;
 
     public function __construct(
-        Config $config,
-        ClientInterface $guzzleClient
+        private readonly Config        $config,
+        private readonly UwkluisClientInterface $uwkluisClient
     ) {
-        $this->guzzleClient = $guzzleClient;
-        $this->config = $config;
     }
 
     public function list(
@@ -35,7 +31,7 @@ class SourceDataRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/source-data-request?{$queryString}",
                 [
@@ -62,7 +58,7 @@ class SourceDataRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/source-data-request/{$sourceDataRequestId}?{$queryString}",
                 [
@@ -89,7 +85,7 @@ class SourceDataRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_DELETE,
                 "{$this->config->getApiHost()}/source-data-request/{$sourceDataRequestId}?{$queryString}",
                 [
@@ -121,7 +117,7 @@ class SourceDataRequest
         ]);
 
         try {
-            $httpResponse = $this->guzzleClient->request(
+            $httpResponse = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_POST,
                 "{$this->config->getApiHost()}/source-data-request/?{$queryString}",
                 [
@@ -153,7 +149,7 @@ class SourceDataRequest
     ): ResponseInterface {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/source-data-request/{$sourceDataRequestId}/pdf?{$queryString}",
                 [
@@ -177,7 +173,7 @@ class SourceDataRequest
     ): ResponseInterface {
         $queryString = http_build_query(['consumer_id' => $consumerId]);
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/source-data-request/{$sourceDataRequestId}/zip?{$queryString}",
                 [
@@ -209,7 +205,7 @@ class SourceDataRequest
             ]
         );
         try {
-            $response = $this->guzzleClient->request(
+            $response = $this->uwkluisClient->request(
                 RequestMethodInterface::METHOD_GET,
                 "{$this->config->getApiHost()}/source-data-request/{$sourceDataRequestId}/ockto-hbx?{$queryString}",
                 [
