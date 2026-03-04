@@ -191,6 +191,10 @@ final class Connect
             $this->processInvalidRequest($data);
         }
 
+        if ($data['error'] === 'invalid_grant') {
+            $this->processInvalidRequest($data);
+        }
+
         if ($data['error'] === 'invalid_client') {
             throw new InvalidOauthClientException('Oauth client is not valid');
         }
@@ -218,6 +222,10 @@ final class Connect
      */
     private function processInvalidRequest(array $data)
     {
+        if (isset($data['error_description']) && $data['error_description'] === 'The refresh token is invalid.') {
+            throw new RefreshTokenInvalidException();
+        }
+
         if (isset($data['message']) && $data['message'] === 'The refresh token is invalid.') {
             throw new RefreshTokenInvalidException();
         }
