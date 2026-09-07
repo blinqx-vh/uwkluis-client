@@ -8,6 +8,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Lcobucci\JWT\Token;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
